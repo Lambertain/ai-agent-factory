@@ -1,0 +1,71 @@
+#!/usr/bin/env python3
+"""
+Archon Blueprint Architect Agent - главный архитектор команды Archon.
+
+Специализация: проектирование архитектуры, дизайн системы, структурные решения.
+"""
+
+from pydantic_ai import Agent, RunContext
+from .dependencies import BlueprintArchitectDependencies
+from .tools import (
+    design_architecture,
+    create_system_blueprint,
+    analyze_architectural_patterns,
+    validate_architecture,
+    search_architecture_knowledge
+)
+from .prompts import get_system_prompt
+from .settings import get_llm_model
+
+# Создание агента
+blueprint_architect_agent = Agent(
+    model=get_llm_model(),
+    deps_type=BlueprintArchitectDependencies,
+    system_prompt=get_system_prompt()
+)
+
+# Регистрация инструментов
+blueprint_architect_agent.tool(design_architecture)
+blueprint_architect_agent.tool(create_system_blueprint)
+blueprint_architect_agent.tool(analyze_architectural_patterns)
+blueprint_architect_agent.tool(validate_architecture)
+blueprint_architect_agent.tool(search_architecture_knowledge)
+
+
+async def run_blueprint_architect(
+    query: str,
+    project_id: str = None,
+    dependencies: BlueprintArchitectDependencies = None
+) -> str:
+    """
+    Запустить Blueprint Architect агент для архитектурного планирования.
+
+    Args:
+        query: Запрос для архитектурного проектирования
+        project_id: ID проекта в Archon
+        dependencies: Зависимости агента
+
+    Returns:
+        Результат архитектурного проектирования
+    """
+    if not dependencies:
+        dependencies = BlueprintArchitectDependencies(
+            project_id=project_id or "default",
+            archon_project_id=project_id
+        )
+
+    async with blueprint_architect_agent:
+        result = await blueprint_architect_agent.run(query, deps=dependencies)
+        return result.data
+
+
+if __name__ == "__main__":
+    import asyncio
+
+    async def main():
+        result = await run_blueprint_architect(
+            "Спроектируй архитектуру микросервисной системы управления задачами"
+        )
+        print(result)
+
+    asyncio.run(main())

@@ -1,0 +1,200 @@
+"""
+Psychology Content Architect Agent
+Универсальный агент для проектирования архитектуры психологических программ
+"""
+
+from pydantic_ai import Agent, RunContext
+from pydantic_ai.models import Model
+from .dependencies import ArchitectDependencies, get_architect_config
+from .tools import (
+    analyze_program_requirements,
+    design_modular_structure,
+    optimize_sequence,
+    create_adaptation_framework,
+    search_architectural_patterns
+)
+from .prompts import get_architect_prompt
+from .settings import ArchitectSettings
+from typing import Any, Dict, List, Optional
+
+psychology_architect = Agent(
+    model='openai:gpt-4o',
+    deps_type=ArchitectDependencies,
+    result_type=str,
+    system_prompt=get_architect_prompt,
+    tools=[
+        analyze_program_requirements,
+        design_modular_structure,
+        optimize_sequence,
+        create_adaptation_framework,
+        search_architectural_patterns
+    ]
+)
+
+@psychology_architect.system_prompt
+def system_prompt(ctx: RunContext[ArchitectDependencies]) -> str:
+    """Системный промпт для архитектора психологических программ"""
+    return get_architect_prompt(
+        domain=ctx.deps.psychological_domain,
+        target_population=ctx.deps.target_population,
+        program_type=ctx.deps.program_type,
+        complexity_level=ctx.deps.complexity_level
+    )
+
+async def design_psychological_program(
+    requirements: str,
+    psychological_domain: str = "general",
+    target_population: str = "adults",
+    program_type: str = "therapeutic",
+    delivery_format: str = "hybrid",
+    duration_weeks: int = 8,
+    **kwargs
+) -> Dict[str, Any]:
+    """
+    Основная функция проектирования архитектуры психологической программы
+
+    Args:
+        requirements: Описание требований к программе
+        psychological_domain: Область психологии (anxiety, depression, relationships, etc.)
+        target_population: Целевая аудитория (adults, adolescents, couples, etc.)
+        program_type: Тип программы (therapeutic, educational, preventive, developmental)
+        delivery_format: Формат доставки (online, offline, hybrid, self-guided)
+        duration_weeks: Планируемая длительность программы в неделях
+
+    Returns:
+        Детальная архитектура психологической программы
+    """
+    settings = ArchitectSettings(
+        psychological_domain=psychological_domain,
+        target_population=target_population,
+        program_type=program_type,
+        delivery_format=delivery_format,
+        duration_weeks=duration_weeks
+    )
+
+    architect_config = ArchitectDependencies(
+        psychological_domain=psychological_domain,
+        target_population=target_population,
+        program_type=program_type,
+        complexity_level=determine_complexity(requirements),
+        delivery_constraints={
+            "format": delivery_format,
+            "duration": duration_weeks,
+            "resources": kwargs.get("resources", "standard")
+        },
+        knowledge_tags=["psychology-architecture", psychological_domain, program_type],
+        agent_name="psychology_content_architect"
+    )
+
+    result = await psychology_architect.run(
+        requirements,
+        deps=architect_config
+    )
+
+    # Структурируем результат в формат архитектуры
+    architecture = parse_architecture_result(result.data)
+
+    return {
+        "success": True,
+        "architecture": architecture,
+        "settings": settings.dict(),
+        "metadata": {
+            "total_modules": len(architecture.get("modules", [])),
+            "estimated_duration": duration_weeks,
+            "complexity": architect_config.complexity_level,
+            "adaptability_score": calculate_adaptability(architecture)
+        },
+        "message": "Program architecture designed successfully"
+    }
+
+def determine_complexity(requirements: str) -> str:
+    """Определить уровень сложности программы на основе требований"""
+    complexity_indicators = {
+        "high": ["trauma", "personality", "complex", "severe", "chronic"],
+        "medium": ["moderate", "specific", "focused", "targeted"],
+        "low": ["basic", "introductory", "prevention", "wellness"]
+    }
+
+    requirements_lower = requirements.lower()
+    for level, indicators in complexity_indicators.items():
+        if any(indicator in requirements_lower for indicator in indicators):
+            return level
+
+    return "medium"
+
+def parse_architecture_result(result_text: str) -> Dict[str, Any]:
+    """Парсинг текстового результата в структурированную архитектуру"""
+    # Здесь должна быть логика парсинга результата от LLM
+    # Для примера возвращаем базовую структуру
+    return {
+        "phases": extract_phases(result_text),
+        "modules": extract_modules(result_text),
+        "progression_logic": extract_progression(result_text),
+        "adaptation_rules": extract_adaptation_rules(result_text),
+        "integration_points": extract_integration_points(result_text)
+    }
+
+def extract_phases(text: str) -> List[Dict]:
+    """Извлечь фазы программы из текста"""
+    # Placeholder для реальной логики извлечения
+    return [
+        {"name": "Foundation", "duration": "2 weeks", "focus": "baseline"},
+        {"name": "Development", "duration": "4 weeks", "focus": "skills"},
+        {"name": "Integration", "duration": "2 weeks", "focus": "consolidation"}
+    ]
+
+def extract_modules(text: str) -> List[Dict]:
+    """Извлечь модули программы из текста"""
+    # Placeholder для реальной логики извлечения
+    return [
+        {"id": "M1", "name": "Assessment", "type": "core", "duration": "1 week"},
+        {"id": "M2", "name": "Skill Building", "type": "core", "duration": "3 weeks"},
+        {"id": "M3", "name": "Practice", "type": "core", "duration": "2 weeks"}
+    ]
+
+def extract_progression(text: str) -> Dict:
+    """Извлечь логику прогрессии из текста"""
+    return {
+        "type": "linear",
+        "rules": ["completion_based", "time_based"],
+        "flexibility": "moderate"
+    }
+
+def extract_adaptation_rules(text: str) -> List[Dict]:
+    """Извлечь правила адаптации из текста"""
+    return [
+        {"condition": "high_anxiety", "adaptation": "slower_pace"},
+        {"condition": "low_engagement", "adaptation": "increase_support"}
+    ]
+
+def extract_integration_points(text: str) -> List[str]:
+    """Извлечь точки интеграции из текста"""
+    return ["assessment_results", "skill_practice", "progress_review"]
+
+def calculate_adaptability(architecture: Dict) -> float:
+    """Рассчитать показатель адаптивности архитектуры"""
+    score = 0.5  # Базовый показатель
+
+    if "adaptation_rules" in architecture:
+        score += 0.1 * min(len(architecture["adaptation_rules"]), 5)
+
+    if architecture.get("progression_logic", {}).get("flexibility") == "high":
+        score += 0.2
+
+    return min(score, 1.0)
+
+if __name__ == "__main__":
+    import asyncio
+
+    async def test_architect():
+        result = await design_psychological_program(
+            requirements="Создать программу когнитивно-поведенческой терапии для лечения генерализованного тревожного расстройства у взрослых",
+            psychological_domain="anxiety",
+            target_population="adults",
+            program_type="therapeutic",
+            delivery_format="hybrid",
+            duration_weeks=10
+        )
+        print("Архитектура программы:", result)
+
+    asyncio.run(test_architect())

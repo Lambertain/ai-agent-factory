@@ -1,0 +1,90 @@
+# API Development Agent Dependencies
+
+# Core framework
+pydantic-ai>=0.0.13
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# LLM providers
+openai>=1.0.0
+
+# Environment management
+python-dotenv>=1.0.0
+
+# Data validation and serialization
+pydantic>=2.0.0
+
+# Async support
+asyncio
+aiohttp>=3.8.0
+
+# Database support (optional - based on configuration)
+sqlalchemy>=2.0.0
+alembic>=1.12.0
+asyncpg>=0.28.0  # PostgreSQL async driver
+aiomysql>=0.2.0  # MySQL async driver
+motor>=3.0.0     # MongoDB async driver
+
+# Caching support
+redis>=4.5.0
+aioredis>=2.0.0
+
+# Security
+cryptography>=41.0.0
+passlib>=1.7.4
+python-jose[cryptography]>=3.3.0
+bcrypt>=4.0.0
+
+# HTTP client for integrations
+httpx>=0.24.0
+requests>=2.31.0
+
+# JSON processing
+orjson>=3.9.0
+
+# Testing framework
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-mock>=3.11.0
+httpx>=0.24.0  # For testing HTTP APIs
+
+# Development tools
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.5.0
+isort>=5.12.0
+
+# Documentation
+mkdocs>=1.5.0
+mkdocs-material>=9.0.0
+
+# Optional framework-specific dependencies
+# (Install based on framework_type configuration)
+
+# Express.js related (for code generation examples)
+# - None required for Python agent
+
+# NestJS related (for code generation examples)
+# - None required for Python agent
+
+# FastAPI related
+fastapi>=0.104.0
+uvicorn[standard]>=0.23.0
+python-multipart>=0.0.6
+
+# Django REST related
+django>=4.2.0
+djangorestframework>=3.14.0
+django-cors-headers>=4.3.0
+
+# ASP.NET Core related (for code generation examples)
+# - None required for Python agent
+
+# Spring Boot related (for code generation examples)
+# - None required for Python agent
+
+# Monitoring and observability
+prometheus-client>=0.17.0
+
+# File processing
+pathlib2>=2.3.7

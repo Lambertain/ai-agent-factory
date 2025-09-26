@@ -1,0 +1,60 @@
+# Основные зависимости для Universal Analytics & Tracking Agent
+
+# Pydantic AI фреймворк
+pydantic-ai>=0.0.14
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+
+# Поддержка переменных окружения
+python-dotenv>=1.0.0
+
+# LLM провайдеры
+openai>=1.10.0
+
+# HTTP клиенты для API интеграций
+httpx>=0.26.0
+requests>=2.31.0
+
+# Analytics провайдеры SDK (опциональные)
+# Для Google Analytics
+google-analytics-data>=0.18.0
+google-cloud-analytics-data>=0.18.0
+
+# Для других провайдеров (установить по необходимости)
+# mixpanel>=4.10.0
+# amplitude-python>=1.1.0
+# analytics-python>=1.4.0  # Segment
+
+# Утилиты для обработки данных
+pandas>=2.0.0
+numpy>=1.24.0
+
+# JSON обработка
+ujson>=5.7.0
+
+# Асинхронные операции
+asyncio-compat>=0.1.2
+aiofiles>=23.1.0
+
+# Логирование и мониторинг
+structlog>=23.1.0
+
+# Время и дата
+python-dateutil>=2.8.2
+
+# Валидация URL и данных
+validators>=0.22.0
+
+# Криптография для безопасности (для privacy compliance)
+cryptography>=41.0.0
+
+# Тестирование (для development)
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-mock>=3.11.0
+
+# Линтеры и форматтеры (для development)
+black>=23.7.0
+isort>=5.12.0
+flake8>=6.0.0
+mypy>=1.5.0

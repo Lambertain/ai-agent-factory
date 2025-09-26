@@ -1,0 +1,29 @@
+# Enhanced validation system requirements
+
+# Core dependencies
+pydantic>=2.5.0
+email-validator>=2.1.0
+phonenumbers>=8.13.0
+jsonschema>=4.20.0
+
+# Testing dependencies
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+pytest-mock>=3.12.0
+
+# Development dependencies
+black>=23.0.0
+isort>=5.12.0
+flake8>=6.1.0
+mypy>=1.7.0
+
+# Optional dependencies for enhanced features
+rapidfuzz>=3.5.0  # For fuzzy string matching and suggestions
+python-dateutil>=2.8.0  # For advanced date parsing
+pytz>=2023.3  # For timezone handling
+babel>=2.13.0  # For localization support
+
+# Performance dependencies
+orjson>=3.9.0  # Fast JSON parsing
+ujson>=5.8.0   # Alternative fast JSON library

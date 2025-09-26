@@ -1,0 +1,51 @@
+# Performance Optimization Agent Dependencies
+
+# Core AI framework
+pydantic-ai>=0.0.14
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# Environment and configuration
+python-dotenv>=1.0.0
+
+# HTTP clients for API calls
+httpx>=0.24.0
+aiohttp>=3.8.0
+
+# System monitoring and analysis
+psutil>=5.9.0
+
+# Async support
+asyncio-timeout>=4.0.0
+
+# Data processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# File and path utilities
+pathlib>=1.0.0
+
+# JSON and data serialization
+orjson>=3.8.0
+
+# Testing (optional, for development)
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+
+# Performance profiling tools (optional)
+py-spy>=0.3.14
+memory-profiler>=0.61.0
+
+# Database clients (optional, based on project needs)
+asyncpg>=0.28.0  # PostgreSQL
+aiomysql>=0.2.0  # MySQL
+motor>=3.3.0     # MongoDB
+
+# Web framework support (optional)
+fastapi>=0.104.0
+uvicorn>=0.24.0
+django>=4.2.0
+flask>=2.3.0
+
+# Frontend build tools integration (optional)
+nodejs>=0.1.1  # For npm/webpack integration

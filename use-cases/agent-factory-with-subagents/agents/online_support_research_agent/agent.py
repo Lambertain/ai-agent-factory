@@ -1,0 +1,594 @@
+"""
+Psychology Research Agent
+
+Универсальный агент для валидации психологических исследований и обеспечения
+научной строгости в области психологии.
+"""
+
+from typing import Dict, Any, List, Optional, Union
+from dataclasses import dataclass, field
+import asyncio
+from datetime import datetime
+
+from pydantic_ai import Agent, RunContext
+from pydantic import BaseModel, Field
+
+from .dependencies import ResearchAgentDependencies, create_clinical_dependencies
+from ..common import check_pm_switch
+from .providers import get_llm_model, get_model_provider
+from .prompts import get_system_prompt
+from .settings import load_settings
+from .tools import (
+    search_research_knowledge,
+    analyze_study_methodology,
+    validate_statistical_analysis,
+    search_literature,
+    evaluate_study_quality,
+    perform_meta_analysis_planning,
+    break_down_to_microtasks,
+    delegate_task_to_agent,
+    check_delegation_need,
+    StudyAnalysisRequest,
+    LiteratureSearchRequest,
+    StatisticalValidationRequest,
+    MethodologyAssessmentRequest
+)
+
+
+# ===== МОДЕЛИ ЗАПРОСОВ =====
+
+class ResearchValidationRequest(BaseModel):
+    """Основной запрос на валидацию исследования."""
+    research_data: Dict[str, Any] = Field(description="Данные исследования")
+    validation_scope: List[str] = Field(
+        default=["methodology", "statistics", "ethics"],
+        description="Области валидации"
+    )
+    research_domain: str = Field(default="general", description="Домен исследований")
+    validation_level: str = Field(default="standard", description="Уровень валидации")
+    target_population: str = Field(default="adults", description="Целевая популяция")
+
+
+class LiteratureReviewRequest(BaseModel):
+    """Запрос на литературный обзор."""
+    research_question: str = Field(description="Исследовательский вопрос")
+    search_strategy: Dict[str, Any] = Field(default_factory=dict, description="Стратегия поиска")
+    inclusion_criteria: List[str] = Field(default_factory=list, description="Критерии включения")
+    review_type: str = Field(default="narrative", description="Тип обзора")
+
+
+class QualityAssessmentRequest(BaseModel):
+    """Запрос на оценку качества исследования."""
+    study_data: Dict[str, Any] = Field(description="Данные исследования")
+    assessment_framework: str = Field(default="custom", description="Фреймворк оценки")
+    quality_dimensions: List[str] = Field(
+        default_factory=lambda: ["design", "sample", "measures", "analysis", "reporting"],
+        description="Измерения качества"
+    )
+
+
+# ===== ОСНОВНОЙ АГЕНТ =====
+
+def create_psychology_research_agent(
+    dependencies: Optional[ResearchAgentDependencies] = None
+) -> Agent[ResearchAgentDependencies, str]:
+    """
+    Создать агента для валидации психологических исследований.
+
+    Args:
+        dependencies: Зависимости агента
+
+    Returns:
+        Экземпляр агента
+    """
+    # Загружаем зависимости по умолчанию если не предоставлены
+    if dependencies is None:
+        settings = load_settings()
+        dependencies = ResearchAgentDependencies(
+            api_key=settings.llm_api_key,
+            research_domain=settings.research_domain,
+            validation_level=settings.validation_level,
+            target_population=settings.target_population
+        )
+
+    # Получаем модель для агента
+    model = get_llm_model(
+        task_type="general",
+        research_domain=dependencies.research_domain,
+        complexity=dependencies.validation_level
+    )
+
+    # Создаем системный промпт
+    system_prompt = get_system_prompt(dependencies)
+
+    # Создаем агента
+    agent = Agent(
+        model=model,
+        deps_type=ResearchAgentDependencies,
+        system_prompt=system_prompt
+    )
+
+    # Регистрируем инструменты
+    agent.tool(search_research_knowledge)
+    agent.tool(analyze_study_methodology)
+    agent.tool(validate_statistical_analysis)
+    agent.tool(search_literature)
+    agent.tool(evaluate_study_quality)
+    agent.tool(perform_meta_analysis_planning)
+
+    # Коллективные инструменты
+    agent.tool(break_down_to_microtasks)
+    agent.tool(delegate_task_to_agent)
+    agent.tool(check_delegation_need)
+
+    return agent
+
+
+# ===== ГЛОБАЛЬНЫЙ ЭКЗЕМПЛЯР =====
+
+# Создаем глобальный экземпляр агента
+psychology_research_agent = create_psychology_research_agent()
+
+
+# ===== ОСНОВНЫЕ ФУНКЦИИ =====
+
+async def validate_research_study(
+    request: ResearchValidationRequest,
+    dependencies: Optional[ResearchAgentDependencies] = None
+) -> str:
+    """
+    Провести комплексную валидацию психологического исследования.
+
+    Args:
+        request: Запрос на валидацию
+        dependencies: Зависимости агента
+
+    Returns:
+        Отчет о валидации
+    """
+    if dependencies is None:
+        settings = load_settings()
+        dependencies = ResearchAgentDependencies(
+            api_key=settings.llm_api_key,
+            research_domain=request.research_domain,
+            validation_level=request.validation_level,
+            target_population=request.target_population
+        )
+
+    agent = create_psychology_research_agent(dependencies)
+
+    # Формируем промпт для валидации
+    validation_prompt = f"""
+Проведите комплексную валидацию психологического исследования:
+
+**ИССЛЕДОВАНИЕ:**
+{request.research_data}
+
+**ОБЛАСТИ ВАЛИДАЦИИ:** {', '.join(request.validation_scope)}
+**ДОМЕН:** {request.research_domain}
+**УРОВЕНЬ:** {request.validation_level}
+**ПОПУЛЯЦИЯ:** {request.target_population}
+
+Выполните анализ по каждой области валидации и предоставьте итоговую оценку с рекомендациями.
+"""
+
+    result = await agent.run(validation_prompt, deps=dependencies)
+    return result.data
+
+
+async def conduct_literature_review(
+    request: LiteratureReviewRequest,
+    dependencies: Optional[ResearchAgentDependencies] = None
+) -> str:
+    """
+    Провести литературный обзор по исследовательскому вопросу.
+
+    Args:
+        request: Запрос на литературный обзор
+        dependencies: Зависимости агента
+
+    Returns:
+        Результаты литературного обзора
+    """
+    if dependencies is None:
+        settings = load_settings()
+        dependencies = ResearchAgentDependencies(
+            api_key=settings.llm_api_key
+        )
+
+    agent = create_psychology_research_agent(dependencies)
+
+    literature_prompt = f"""
+Проведите литературный обзор по исследовательскому вопросу:
+
+**ВОПРОС:** {request.research_question}
+**ТИП ОБЗОРА:** {request.review_type}
+**КРИТЕРИИ ВКЛЮЧЕНИЯ:** {', '.join(request.inclusion_criteria)}
+**СТРАТЕГИЯ ПОИСКА:** {request.search_strategy}
+
+Выполните систематический поиск, анализ и синтез литературы.
+"""
+
+    result = await agent.run(literature_prompt, deps=dependencies)
+    return result.data
+
+
+async def assess_study_quality(
+    request: QualityAssessmentRequest,
+    dependencies: Optional[ResearchAgentDependencies] = None
+) -> str:
+    """
+    Оценить качество психологического исследования.
+
+    Args:
+        request: Запрос на оценку качества
+        dependencies: Зависимости агента
+
+    Returns:
+        Отчет о качестве исследования
+    """
+    if dependencies is None:
+        settings = load_settings()
+        dependencies = ResearchAgentDependencies(
+            api_key=settings.llm_api_key
+        )
+
+    agent = create_psychology_research_agent(dependencies)
+
+    quality_prompt = f"""
+Оцените качество исследования по следующим параметрам:
+
+**ИССЛЕДОВАНИЕ:**
+{request.study_data}
+
+**ФРЕЙМВОРК ОЦЕНКИ:** {request.assessment_framework}
+**ИЗМЕРЕНИЯ КАЧЕСТВА:** {', '.join(request.quality_dimensions)}
+
+Проведите детальную оценку качества с рейтингами и рекомендациями.
+"""
+
+    result = await agent.run(quality_prompt, deps=dependencies)
+    return result.data
+
+
+async def create_meta_analysis_plan(
+    research_question: str,
+    inclusion_criteria: List[str],
+    dependencies: Optional[ResearchAgentDependencies] = None
+) -> str:
+    """
+    Создать план мета-анализа или систематического обзора.
+
+    Args:
+        research_question: Исследовательский вопрос
+        inclusion_criteria: Критерии включения
+        dependencies: Зависимости агента
+
+    Returns:
+        План мета-анализа
+    """
+    if dependencies is None:
+        settings = load_settings()
+        dependencies = ResearchAgentDependencies(
+            api_key=settings.llm_api_key
+        )
+
+    agent = create_psychology_research_agent(dependencies)
+
+    meta_analysis_prompt = f"""
+Разработайте детальный план мета-анализа:
+
+**ИССЛЕДОВАТЕЛЬСКИЙ ВОПРОС:** {research_question}
+**КРИТЕРИИ ВКЛЮЧЕНИЯ:** {', '.join(inclusion_criteria)}
+
+Создайте протокол исследования со всеми необходимыми разделами.
+"""
+
+    result = await agent.run(meta_analysis_prompt, deps=dependencies)
+    return result.data
+
+
+async def provide_research_consultation(
+    consultation_request: str,
+    research_context: Dict[str, Any] = None,
+    dependencies: Optional[ResearchAgentDependencies] = None
+) -> str:
+    """
+    Предоставить исследовательскую консультацию.
+
+    Args:
+        consultation_request: Запрос на консультацию
+        research_context: Контекст исследования
+        dependencies: Зависимости агента
+
+    Returns:
+        Результат консультации
+    """
+    if dependencies is None:
+        settings = load_settings()
+        dependencies = ResearchAgentDependencies(
+            api_key=settings.llm_api_key
+        )
+
+    agent = create_psychology_research_agent(dependencies)
+
+    consultation_prompt = f"""
+Предоставьте экспертную консультацию по исследовательскому вопросу:
+
+**ЗАПРОС:** {consultation_request}
+
+**КОНТЕКСТ:**
+{research_context if research_context else 'Контекст не предоставлен'}
+
+Дайте подробную консультацию с практическими рекомендациями.
+"""
+
+    result = await agent.run(consultation_prompt, deps=dependencies)
+    return result.data
+
+
+# ===== ПАКЕТНАЯ ОБРАБОТКА =====
+
+async def batch_validate_studies(
+    studies: List[Dict[str, Any]],
+    validation_parameters: Dict[str, Any],
+    dependencies: Optional[ResearchAgentDependencies] = None
+) -> List[Dict[str, Any]]:
+    """
+    Пакетная валидация нескольких исследований.
+
+    Args:
+        studies: Список исследований для валидации
+        validation_parameters: Параметры валидации
+        dependencies: Зависимости агента
+
+    Returns:
+        Результаты валидации для каждого исследования
+    """
+    if dependencies is None:
+        settings = load_settings()
+        dependencies = ResearchAgentDependencies(
+            api_key=settings.llm_api_key
+        )
+
+    results = []
+
+    # Оптимизация для пакетной обработки
+    batch_model = dependencies.model_provider.get_batch_processing_model(
+        batch_size=len(studies),
+        task_complexity=validation_parameters.get("complexity", "standard")
+    )
+
+    agent = Agent(
+        model=batch_model,
+        deps_type=ResearchAgentDependencies,
+        system_prompt=get_system_prompt(dependencies)
+    )
+
+    # Обрабатываем исследования параллельно
+    tasks = []
+    for i, study in enumerate(studies):
+        request = ResearchValidationRequest(
+            research_data=study,
+            **validation_parameters
+        )
+
+        task = validate_research_study(request, dependencies)
+        tasks.append(task)
+
+        # Контролируем размер пакета
+        if len(tasks) >= dependencies.batch_size_studies:
+            batch_results = await asyncio.gather(*tasks)
+            results.extend([
+                {"study_index": i - len(tasks) + j + 1, "validation_result": result}
+                for j, result in enumerate(batch_results)
+            ])
+            tasks = []
+
+    # Обрабатываем оставшиеся задачи
+    if tasks:
+        batch_results = await asyncio.gather(*tasks)
+        results.extend([
+            {"study_index": len(studies) - len(tasks) + j + 1, "validation_result": result}
+            for j, result in enumerate(batch_results)
+        ])
+
+    return results
+
+
+# ===== ФАБРИЧНЫЕ ФУНКЦИИ =====
+
+def create_clinical_research_agent(
+    api_key: str,
+    target_population: str = "clinical",
+    validation_level: str = "rigorous"
+) -> Agent[ResearchAgentDependencies, str]:
+    """
+    Создать агента для клинических исследований.
+
+    Args:
+        api_key: API ключ
+        target_population: Целевая популяция
+        validation_level: Уровень валидации
+
+    Returns:
+        Агент для клинических исследований
+    """
+    dependencies = create_clinical_dependencies(
+        api_key=api_key,
+        target_population=target_population,
+        validation_level=validation_level
+    )
+
+    return create_psychology_research_agent(dependencies)
+
+
+def create_cognitive_research_agent(
+    api_key: str,
+    target_population: str = "adults",
+    validation_level: str = "standard"
+) -> Agent[ResearchAgentDependencies, str]:
+    """
+    Создать агента для когнитивных исследований.
+
+    Args:
+        api_key: API ключ
+        target_population: Целевая популяция
+        validation_level: Уровень валидации
+
+    Returns:
+        Агент для когнитивных исследований
+    """
+    from .dependencies import create_cognitive_dependencies
+
+    dependencies = create_cognitive_dependencies(
+        api_key=api_key,
+        target_population=target_population,
+        validation_level=validation_level
+    )
+
+    return create_psychology_research_agent(dependencies)
+
+
+def create_social_research_agent(
+    api_key: str,
+    target_population: str = "adults",
+    validation_level: str = "standard"
+) -> Agent[ResearchAgentDependencies, str]:
+    """
+    Создать агента для социально-психологических исследований.
+
+    Args:
+        api_key: API ключ
+        target_population: Целевая популяция
+        validation_level: Уровень валидации
+
+    Returns:
+        Агент для социальных исследований
+    """
+    from .dependencies import create_social_dependencies
+
+    dependencies = create_social_dependencies(
+        api_key=api_key,
+        target_population=target_population,
+        validation_level=validation_level
+    )
+
+    return create_psychology_research_agent(dependencies)
+
+
+# ===== УТИЛИТЫ =====
+
+async def get_research_recommendations(
+    research_stage: str,
+    domain: str,
+    dependencies: Optional[ResearchAgentDependencies] = None
+) -> str:
+    """
+    Получить рекомендации для конкретной стадии исследования.
+
+    Args:
+        research_stage: Стадия исследования (planning, design, analysis, reporting)
+        domain: Домен исследований
+        dependencies: Зависимости агента
+
+    Returns:
+        Рекомендации для стадии исследования
+    """
+    if dependencies is None:
+        settings = load_settings()
+        dependencies = ResearchAgentDependencies(
+            api_key=settings.llm_api_key,
+            research_domain=domain
+        )
+
+    # Получаем модель для стадии исследования
+    model = dependencies.model_provider.get_model_for_research_phase(
+        research_stage, domain
+    )
+
+    agent = Agent(
+        model=model,
+        deps_type=ResearchAgentDependencies,
+        system_prompt=get_system_prompt(dependencies)
+    )
+
+    recommendations_prompt = f"""
+Предоставьте экспертные рекомендации для стадии "{research_stage}" исследования в области {domain} психологии.
+
+Включите:
+1. Ключевые задачи на данной стадии
+2. Методологические требования
+3. Потенциальные проблемы и их решения
+4. Контрольные точки качества
+5. Переход к следующей стадии
+
+Дайте практические, действенные рекомендации.
+"""
+
+    result = await agent.run(recommendations_prompt, deps=dependencies)
+    return result.data
+
+
+def get_validation_summary(
+    validation_results: List[Dict[str, Any]]
+) -> Dict[str, Any]:
+    """
+    Создать сводку результатов валидации.
+
+    Args:
+        validation_results: Результаты валидации
+
+    Returns:
+        Сводка результатов
+    """
+    total_studies = len(validation_results)
+    if total_studies == 0:
+        return {"total_studies": 0, "summary": "Нет данных для анализа"}
+
+    # Анализируем результаты (упрощенная версия)
+    summary = {
+        "total_studies": total_studies,
+        "timestamp": datetime.now().isoformat(),
+        "overview": f"Валидация {total_studies} исследований завершена",
+        "recommendations": [
+            "Проверьте индивидуальные отчеты для каждого исследования",
+            "Обратите внимание на повторяющиеся методологические проблемы",
+            "Рассмотрите возможность стандартизации процедур"
+        ]
+    }
+
+    return summary
+
+
+# ===== ЭКСПОРТ =====
+
+__all__ = [
+    # Основной агент
+    "psychology_research_agent",
+    "create_psychology_research_agent",
+
+    # Основные функции
+    "validate_research_study",
+    "conduct_literature_review",
+    "assess_study_quality",
+    "create_meta_analysis_plan",
+    "provide_research_consultation",
+
+    # Пакетная обработка
+    "batch_validate_studies",
+
+    # Специализированные агенты
+    "create_clinical_research_agent",
+    "create_cognitive_research_agent",
+    "create_social_research_agent",
+
+    # Утилиты
+    "get_research_recommendations",
+    "get_validation_summary",
+
+    # Модели запросов
+    "ResearchValidationRequest",
+    "LiteratureReviewRequest",
+    "QualityAssessmentRequest"
+]

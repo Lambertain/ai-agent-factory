@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+"""
+Archon Project Manager Agent - главный координатор команды Archon.
+
+Специализация: управление проектами, координация команды, планирование и контроль выполнения.
+"""
+
+from pydantic_ai import Agent, RunContext
+from .dependencies import ProjectManagerDependencies
+from .tools import (
+    create_project_plan,
+    manage_task_priorities,
+    coordinate_team_work,
+    generate_status_report,
+    manage_project_risks,
+    schedule_tasks,
+    track_progress,
+    search_management_knowledge,
+    delegate_task
+)
+from .prompts import get_system_prompt
+from .settings import get_llm_model
+
+# Создание агента
+project_manager_agent = Agent(
+    model=get_llm_model(),
+    deps_type=ProjectManagerDependencies,
+    system_prompt=get_system_prompt()
+)
+
+# Регистрация инструментов
+project_manager_agent.tool(create_project_plan)
+project_manager_agent.tool(manage_task_priorities)
+project_manager_agent.tool(coordinate_team_work)
+project_manager_agent.tool(generate_status_report)
+project_manager_agent.tool(manage_project_risks)
+project_manager_agent.tool(schedule_tasks)
+project_manager_agent.tool(track_progress)
+project_manager_agent.tool(search_management_knowledge)
+project_manager_agent.tool(delegate_task)
+
+
+async def run_project_manager(
+    query: str,
+    project_id: str = None,
+    dependencies: ProjectManagerDependencies = None
+) -> str:
+    """
+    Запустить Project Manager агент для управления проектом.
+
+    Args:
+        query: Запрос для управления проектом
+        project_id: ID проекта в Archon
+        dependencies: Зависимости агента
+
+    Returns:
+        Результат управления проектом
+    """
+    if not dependencies:
+        dependencies = ProjectManagerDependencies(
+            project_id=project_id or "default",
+            archon_project_id=project_id
+        )
+
+    async with project_manager_agent:
+        result = await project_manager_agent.run(query, deps=dependencies)
+        return result.data
+
+
+if __name__ == "__main__":
+    import asyncio
+
+    async def main():
+        result = await run_project_manager(
+            "Создай план проекта для разработки системы управления задачами"
+        )
+        print(result)
+
+    asyncio.run(main())

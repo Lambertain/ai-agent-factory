@@ -1,0 +1,624 @@
+"""
+NLP Content Quality Guardian Agent
+
+Универсальный агент для валидации качества NLP контента и программ трансформации
+с использованием методологии PatternShift 2.0 и строгих стандартов безопасности.
+"""
+
+from typing import Dict, Any, List, Optional, Union
+from dataclasses import dataclass
+import asyncio
+from datetime import datetime
+import json
+
+from pydantic_ai import Agent, RunContext
+from pydantic_ai.models.openai import OpenAIModel
+from pydantic import BaseModel, Field
+
+from .dependencies import (
+    NLPQualityGuardianDependencies,
+    create_psychology_quality_guardian_dependencies,
+    create_universal_quality_guardian_dependencies,
+    create_test_quality_guardian_dependencies,
+    ValidationResult, ValidationAspect, QualityLevel,
+    ContentType, ValidationDomain, CriticalFlag
+)
+from .settings import load_settings
+from .prompts import create_adaptive_system_prompt
+from .providers import create_model_manager, ValidationTaskType
+from .tools import (
+    search_quality_knowledge,
+    validate_content_structure,
+    check_safety_and_ethics,
+    validate_nlp_techniques,
+    generate_quality_report,
+    break_down_validation_tasks,
+    delegate_validation_task
+)
+
+
+# === МОДЕЛИ РЕЗУЛЬТАТОВ ===
+
+class ContentValidationResult(BaseModel):
+    """Результат валидации контента."""
+    content_id: str = Field(..., description="Уникальный ID контента")
+    validation_type: str = Field(..., description="Тип валидации")
+    overall_quality: str = Field(..., description="Общий уровень качества")
+    overall_score: float = Field(..., description="Общий балл (0-100)")
+    is_ready_for_publication: bool = Field(..., description="Готово к публикации")
+    critical_issues_count: int = Field(..., description="Количество критических проблем")
+    recommendations_count: int = Field(..., description="Количество рекомендаций")
+    validation_timestamp: str = Field(..., description="Время валидации")
+
+
+class QualityReportSummary(BaseModel):
+    """Краткий отчет о качестве."""
+    overall_assessment: str = Field(..., description="Общая оценка")
+    key_strengths: List[str] = Field(..., description="Основные достоинства")
+    critical_issues: List[str] = Field(..., description="Критические проблемы")
+    top_recommendations: List[str] = Field(..., description="Топ рекомендации")
+    ready_for_use: bool = Field(..., description="Готовность к использованию")
+
+
+# === ОСНОВНОЙ АГЕНТ ===
+
+def create_nlp_quality_guardian_agent(
+    dependencies: Optional[NLPQualityGuardianDependencies] = None
+) -> Agent[NLPQualityGuardianDependencies, str]:
+    """Создать агент валидации качества NLP контента."""
+
+    if dependencies is None:
+        settings = load_settings()
+        dependencies = create_universal_quality_guardian_dependencies(
+            api_key=settings.llm_api_key
+        )
+
+    # Создание адаптивного промпта
+    system_prompt = create_adaptive_system_prompt(
+        validation_domain=dependencies.validation_domain,
+        content_type=dependencies.target_content_type,
+        quality_threshold=dependencies.min_acceptable_score,
+        enable_deep_analysis=dependencies.enable_deep_analysis
+    )
+
+    # Менеджер моделей для оптимизации затрат
+    model_manager = create_model_manager(load_settings())
+    model = model_manager.get_optimal_model_for_task(ValidationTaskType.DEEP_ANALYSIS)
+
+    # Создание агента
+    agent = Agent(
+        model=model,
+        deps_type=NLPQualityGuardianDependencies,
+        system_prompt=system_prompt
+    )
+
+    # Добавление инструментов валидации
+    agent.tool(search_quality_knowledge)
+    agent.tool(validate_content_structure)
+    agent.tool(check_safety_and_ethics)
+    agent.tool(validate_nlp_techniques)
+    agent.tool(generate_quality_report)
+    agent.tool(break_down_validation_tasks)
+    agent.tool(delegate_validation_task)
+
+    return agent
+
+
+# === ОСНОВНЫЕ ФУНКЦИИ ===
+
+async def validate_content_quality(
+    content: str,
+    content_type: str = "mixed_content",
+    validation_domain: str = "universal",
+    deep_analysis: bool = True,
+    **kwargs
+) -> str:
+    """
+    Провести полную валидацию качества контента.
+
+    Args:
+        content: Контент для валидации
+        content_type: Тип контента (test, program, technique)
+        validation_domain: Домен валидации (psychology, astrology, universal)
+        deep_analysis: Включить глубокий анализ
+        **kwargs: Дополнительные параметры
+
+    Returns:
+        JSON с детальным отчетом о качестве
+    """
+    try:
+        # Создание зависимостей на основе параметров
+        settings = load_settings()
+
+        domain_enum = ValidationDomain(validation_domain)
+        content_type_enum = ContentType(content_type)
+
+        if domain_enum == ValidationDomain.PSYCHOLOGY:
+            dependencies = create_psychology_quality_guardian_dependencies(
+                api_key=settings.llm_api_key,
+                **kwargs
+            )
+        elif content_type == "test":
+            dependencies = create_test_quality_guardian_dependencies(
+                api_key=settings.llm_api_key,
+                domain=domain_enum,
+                **kwargs
+            )
+        else:
+            dependencies = create_universal_quality_guardian_dependencies(
+                api_key=settings.llm_api_key,
+                **kwargs
+            )
+
+        # Обновляем параметры зависимостей
+        dependencies.validation_domain = domain_enum
+        dependencies.target_content_type = content_type_enum
+        dependencies.enable_deep_analysis = deep_analysis
+
+        # Создание агента
+        agent = create_nlp_quality_guardian_agent(dependencies)
+
+        # Формирование запроса на валидацию
+        request = f"""
+Проведи полную валидацию качества следующего контента:
+
+**Тип контента:** {content_type}
+**Домен валидации:** {validation_domain}
+**Режим анализа:** {'Глубокий' if deep_analysis else 'Стандартный'}
+
+**КОНТЕНТ ДЛЯ ВАЛИДАЦИИ:**
+{content}
+
+**ТРЕБУЕТСЯ:**
+1. Начни с разбивки на микрозадачи валидации
+2. Проведи поиск в базе знаний по критериям качества
+3. Выполни систематическую проверку всех аспектов:
+   - Соответствие методологии PatternShift 2.0
+   - Психологическая корректность и научность
+   - Качество NLP техник (если применимо)
+   - Безопасность и этичность
+   - Культурная чувствительность
+4. Сгенерируй детальный отчет с конкретными рекомендациями
+5. Проведи критическую рефлексию результата
+
+Обязательно отчитывайся о прогрессе каждой микрозадачи в процессе работы.
+"""
+
+        # Валидация контента
+        result = await agent.run(request, deps=dependencies)
+        return result.data
+
+    except Exception as e:
+        return f"Ошибка валидации контента: {e}"
+
+
+async def validate_test_quality(
+    test_content: str,
+    domain: str = "psychology",
+    min_questions: int = 15,
+    **kwargs
+) -> Dict[str, Any]:
+    """
+    Специализированная валидация качества тестов.
+
+    Args:
+        test_content: Содержимое теста
+        domain: Домен теста
+        min_questions: Минимальное количество вопросов
+        **kwargs: Дополнительные параметры
+
+    Returns:
+        Словарь с результатами валидации теста
+    """
+    try:
+        settings = load_settings()
+
+        # Обновляем критерии для тестов
+        dependencies = create_test_quality_guardian_dependencies(
+            api_key=settings.llm_api_key,
+            domain=ValidationDomain(domain)
+        )
+        dependencies.validation_criteria.min_test_questions = min_questions
+
+        agent = create_nlp_quality_guardian_agent(dependencies)
+
+        request = f"""
+Проведи специализированную валидацию теста:
+
+**Домен:** {domain}
+**Минимум вопросов:** {min_questions}
+
+**КОНТЕНТ ТЕСТА:**
+{test_content}
+
+**ФОКУС ВАЛИДАЦИИ:**
+- Количество и качество вопросов
+- Использование жизненных ситуаций вместо клинических терминов
+- Сбалансированность вариантов ответов
+- Отсутствие ведущих вопросов
+- Культурная адекватность примеров
+- Возрастная подходящность
+- Гибкость системы оценки
+
+Создай подробный анализ с конкретными предложениями по улучшению.
+"""
+
+        result = await agent.run(request, deps=dependencies)
+
+        # Парсим результат в структурированный формат
+        return {
+            "validation_type": "test_quality",
+            "domain": domain,
+            "raw_result": result.data,
+            "validation_timestamp": datetime.now().isoformat()
+        }
+
+    except Exception as e:
+        return {"error": f"Ошибка валидации теста: {e}"}
+
+
+async def validate_transformation_program(
+    program_content: str,
+    domain: str = "psychology",
+    check_vak_adaptation: bool = True,
+    **kwargs
+) -> Dict[str, Any]:
+    """
+    Валидация программ трансформации PatternShift.
+
+    Args:
+        program_content: Содержимое программы
+        domain: Домен программы
+        check_vak_adaptation: Проверять VAK адаптацию
+        **kwargs: Дополнительные параметры
+
+    Returns:
+        Словарь с результатами валидации программы
+    """
+    try:
+        settings = load_settings()
+        dependencies = create_psychology_quality_guardian_dependencies(
+            api_key=settings.llm_api_key
+        )
+
+        dependencies.validation_domain = ValidationDomain(domain)
+        dependencies.target_content_type = ContentType.TRANSFORMATION_PROGRAM
+
+        agent = create_nlp_quality_guardian_agent(dependencies)
+
+        request = f"""
+Проведи валидацию программы трансформации PatternShift:
+
+**Домен:** {domain}
+**Проверка VAK адаптации:** {'Да' if check_vak_adaptation else 'Нет'}
+
+**ПРОГРАММА ДЛЯ ВАЛИДАЦИИ:**
+{program_content}
+
+**КРИТЕРИИ PATTERNSHIFT 2.0:**
+- Трехуровневая структура: Кризис (21 день) → Стабилизация (21 день) → Развитие (14 дней)
+- VAK персонализация для всех типов восприятия
+- Мультиформатный контент (текст + аудио)
+- Антиповторная система - уникальность каждого дня
+- Прогрессивная структура сложности
+- Интеграция NLP техник и Эриксоновских паттернов
+
+**БЕЗОПАСНОСТЬ И ЭТИЧНОСТЬ:**
+- Научная обоснованность методов
+- Этическая безопасность техник
+- Возрастная адекватность
+- Информированное согласие
+- Противопоказания и ограничения
+
+Создай детальный отчет с оценкой готовности к использованию.
+"""
+
+        result = await agent.run(request, deps=dependencies)
+
+        return {
+            "validation_type": "transformation_program",
+            "domain": domain,
+            "vak_check_enabled": check_vak_adaptation,
+            "raw_result": result.data,
+            "validation_timestamp": datetime.now().isoformat()
+        }
+
+    except Exception as e:
+        return {"error": f"Ошибка валидации программы трансформации: {e}"}
+
+
+async def validate_nlp_technique_safety(
+    technique_content: str,
+    technique_type: str = "general",
+    target_audience: str = "adults",
+    **kwargs
+) -> Dict[str, Any]:
+    """
+    Валидация безопасности NLP техник.
+
+    Args:
+        technique_content: Содержимое техники
+        technique_type: Тип техники (rapport, reframing, anchoring, etc.)
+        target_audience: Целевая аудитория (adults, teens, children)
+        **kwargs: Дополнительные параметры
+
+    Returns:
+        Словарь с результатами валидации безопасности техник
+    """
+    try:
+        settings = load_settings()
+        dependencies = create_psychology_quality_guardian_dependencies(
+            api_key=settings.llm_api_key
+        )
+
+        dependencies.target_content_type = ContentType.NLP_TECHNIQUE
+
+        agent = create_nlp_quality_guardian_agent(dependencies)
+
+        request = f"""
+Проведи валидацию безопасности NLP техники:
+
+**Тип техники:** {technique_type}
+**Целевая аудитория:** {target_audience}
+
+**ТЕХНИКА ДЛЯ ВАЛИДАЦИИ:**
+{technique_content}
+
+**КРИТЕРИИ БЕЗОПАСНОСТИ NLP:**
+- Корректность применения паттернов НЛП
+- Соответствие принципам Эриксона (Utilization, Indirect approach, Client respect)
+- Отсутствие манипулятивных элементов
+- Этическая безопасность воздействия
+- Научная обоснованность техники
+- Возрастная адекватность для {target_audience}
+
+**КРИТИЧЕСКИЕ ПРОВЕРКИ:**
+- Информированное согласие
+- Право прервать применение
+- Прозрачность механизмов воздействия
+- Противопоказания и ограничения
+- Потенциальные риски и побочные эффекты
+
+Создай отчет о безопасности с четкими рекомендациями по использованию или улучшению.
+"""
+
+        result = await agent.run(request, deps=dependencies)
+
+        return {
+            "validation_type": "nlp_technique_safety",
+            "technique_type": technique_type,
+            "target_audience": target_audience,
+            "raw_result": result.data,
+            "validation_timestamp": datetime.now().isoformat()
+        }
+
+    except Exception as e:
+        return {"error": f"Ошибка валидации безопасности техники: {e}"}
+
+
+async def batch_validate_content(
+    content_list: List[Dict[str, Any]],
+    optimize_costs: bool = True,
+    **kwargs
+) -> List[Dict[str, Any]]:
+    """
+    Батчевая валидация списка контента.
+
+    Args:
+        content_list: Список контента для валидации
+        optimize_costs: Оптимизировать затраты
+        **kwargs: Дополнительные параметры
+
+    Returns:
+        Список результатов валидации
+    """
+    try:
+        results = []
+        settings = load_settings()
+
+        # Оптимизация батча если включена
+        if optimize_costs:
+            model_manager = create_model_manager(settings)
+            batch_plan = model_manager.create_batch_validation_plan(content_list)
+            print(f"Оптимизированный план валидации: {batch_plan['optimization_applied']}")
+
+        for i, content_item in enumerate(content_list):
+            try:
+                print(f"Валидация элемента {i+1}/{len(content_list)}")
+
+                content = content_item.get("content", "")
+                content_type = content_item.get("content_type", "mixed_content")
+                domain = content_item.get("domain", "universal")
+
+                result = await validate_content_quality(
+                    content=content,
+                    content_type=content_type,
+                    validation_domain=domain,
+                    **kwargs
+                )
+
+                results.append({
+                    "item_id": content_item.get("id", f"batch_{i}"),
+                    "status": "success",
+                    "result": result,
+                    "content_type": content_type,
+                    "domain": domain
+                })
+
+            except Exception as e:
+                results.append({
+                    "item_id": content_item.get("id", f"batch_{i}"),
+                    "status": "error",
+                    "error": str(e),
+                    "content_type": content_item.get("content_type", "unknown"),
+                    "domain": content_item.get("domain", "unknown")
+                })
+
+        return results
+
+    except Exception as e:
+        return [{"error": f"Ошибка батчевой валидации: {e}"}]
+
+
+async def get_quality_recommendations(
+    validation_result: str,
+    priority_level: str = "high"
+) -> Dict[str, Any]:
+    """
+    Извлечь приоритизированные рекомендации из результата валидации.
+
+    Args:
+        validation_result: Результат валидации
+        priority_level: Уровень приоритета (high, medium, low)
+
+    Returns:
+        Структурированные рекомендации по улучшению
+    """
+    try:
+        settings = load_settings()
+        dependencies = create_universal_quality_guardian_dependencies(
+            api_key=settings.llm_api_key
+        )
+
+        agent = create_nlp_quality_guardian_agent(dependencies)
+
+        request = f"""
+Извлеки и приоритизируй рекомендации по улучшению из следующего результата валидации:
+
+**Уровень приоритета:** {priority_level}
+
+**РЕЗУЛЬТАТ ВАЛИДАЦИИ:**
+{validation_result}
+
+**ТРЕБУЕТСЯ:**
+1. Выдели все критические проблемы безопасности (высший приоритет)
+2. Определи важные структурные улучшения
+3. Найди рекомендации по повышению качества техник
+4. Сгруппируй предложения по приоритетам
+5. Создай план действий с временными рамками
+
+**ФОРМАТ ОТВЕТА:**
+- Критичные исправления (немедленно)
+- Важные улучшения (до недели)
+- Желательные оптимизации (до месяца)
+- Долгосрочные цели (несколько месяцев)
+
+Для каждой рекомендации укажи конкретные шаги выполнения.
+"""
+
+        result = await agent.run(request, deps=dependencies)
+
+        return {
+            "priority_level": priority_level,
+            "recommendations": result.data,
+            "extraction_timestamp": datetime.now().isoformat()
+        }
+
+    except Exception as e:
+        return {"error": f"Ошибка извлечения рекомендаций: {e}"}
+
+
+# === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===
+
+def get_nlp_quality_guardian_agent():
+    """Получить экземпляр агента валидации качества."""
+    return create_nlp_quality_guardian_agent()
+
+
+async def quick_safety_check(content: str, target_audience: str = "adults") -> bool:
+    """
+    Быстрая проверка безопасности контента.
+
+    Args:
+        content: Контент для проверки
+        target_audience: Целевая аудитория
+
+    Returns:
+        True если контент безопасен, False если есть проблемы
+    """
+    try:
+        result = await validate_content_quality(
+            content=content,
+            deep_analysis=False,
+            validation_domain="universal"
+        )
+
+        # Простая проверка на наличие критических флагов
+        return "критически" not in result.lower() and "опасно" not in result.lower()
+
+    except Exception:
+        return False  # В случае ошибки считаем небезопасным
+
+
+# === ПРИМЕРЫ ИСПОЛЬЗОВАНИЯ ===
+
+async def validate_psychology_test_example():
+    """Пример валидации психологического теста."""
+    test_content = """
+    # Тест на уровень стресса в повседневной жизни
+
+    1. Как часто в последнее время вы чувствуете усталость без видимой причины?
+    а) Почти никогда
+    б) Иногда
+    в) Часто
+    г) Постоянно
+
+    2. Насколько сложно вам сосредоточиться на важных задачах?
+    а) Легко концентрируюсь
+    б) Иногда отвлекаюсь
+    в) Часто теряю фокус
+    г) Очень трудно сосредоточиться
+
+    [... остальные вопросы ...]
+    """
+
+    return await validate_test_quality(
+        test_content=test_content,
+        domain="psychology",
+        min_questions=15
+    )
+
+
+async def validate_transformation_program_example():
+    """Пример валидации программы трансформации."""
+    program_content = """
+    # Программа "Путь к внутренней гармонии" - 56 дней
+
+    ## Этап 1: Кризис и стабилизация (21 день)
+    День 1: Осознание текущего состояния
+    - Визуальное упражнение: создание карты эмоций
+    - Аудио-медитация на принятие
+    - Кинестетическая практика заземления
+
+    [... программа на все дни ...]
+    """
+
+    return await validate_transformation_program(
+        program_content=program_content,
+        domain="psychology",
+        check_vak_adaptation=True
+    )
+
+
+async def validate_nlp_technique_example():
+    """Пример валидации NLP техники."""
+    technique_content = """
+    # Техника рефрейминга для снятия тревожности
+
+    ## Описание
+    Данная техника помогает изменить восприятие тревожных ситуаций...
+
+    ## Пошаговые инструкции
+    1. Определите тревожную мысль
+    2. Найдите альтернативную интерпретацию
+    3. Закрепите новое восприятие
+
+    ## Противопоказания
+    Не рекомендуется при острых тревожных расстройствах...
+    """
+
+    return await validate_nlp_technique_safety(
+        technique_content=technique_content,
+        technique_type="reframing",
+        target_audience="adults"
+    )

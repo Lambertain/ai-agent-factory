@@ -1,0 +1,307 @@
+"""
+Psychology Research Agent
+Универсальный агент для научного обоснования психологических методик
+"""
+
+from pydantic_ai import Agent, RunContext
+from pydantic_ai.models import Model
+from .dependencies import ResearchDependencies, get_research_config
+from .tools import (
+    search_literature,
+    analyze_evidence_quality,
+    synthesize_research_findings,
+    assess_clinical_significance,
+    evaluate_safety_profile,
+    generate_recommendations
+)
+from .prompts import get_research_prompt
+from .settings import ResearchSettings
+from typing import Any, Dict, List, Optional
+
+psychology_researcher = Agent(
+    model='openai:gpt-4o',
+    deps_type=ResearchDependencies,
+    result_type=str,
+    system_prompt=get_research_prompt,
+    tools=[
+        search_literature,
+        analyze_evidence_quality,
+        synthesize_research_findings,
+        assess_clinical_significance,
+        evaluate_safety_profile,
+        generate_recommendations
+    ]
+)
+
+@psychology_researcher.system_prompt
+def system_prompt(ctx: RunContext[ResearchDependencies]) -> str:
+    """Системный промпт для исследователя психологических методик"""
+    return get_research_prompt(
+        domain=ctx.deps.research_domain,
+        evidence_standard=ctx.deps.evidence_standard,
+        population=ctx.deps.target_population,
+        research_question_type=ctx.deps.research_question_type
+    )
+
+async def conduct_evidence_review(
+    research_question: str,
+    research_domain: str = "general",
+    target_population: str = "adults",
+    evidence_standard: str = "moderate",
+    intervention_type: str = "psychotherapy",
+    outcome_measures: Optional[List[str]] = None,
+    **kwargs
+) -> Dict[str, Any]:
+    """
+    Основная функция проведения обзора доказательной базы
+
+    Args:
+        research_question: Исследовательский вопрос
+        research_domain: Область психологии (anxiety, depression, trauma, etc.)
+        target_population: Целевая популяция (adults, adolescents, children, etc.)
+        evidence_standard: Стандарт доказательности (high, moderate, low)
+        intervention_type: Тип интервенции (psychotherapy, medication, combined)
+        outcome_measures: Интересующие исходы
+
+    Returns:
+        Комплексный обзор доказательной базы с рекомендациями
+    """
+    settings = ResearchSettings(
+        research_domain=research_domain,
+        target_population=target_population,
+        evidence_standard=evidence_standard,
+        intervention_type=intervention_type,
+        outcome_measures=outcome_measures or []
+    )
+
+    research_config = ResearchDependencies(
+        research_domain=research_domain,
+        target_population=target_population,
+        evidence_standard=evidence_standard,
+        research_question_type=determine_question_type(research_question),
+        search_parameters={
+            "databases": ["pubmed", "psycinfo", "cochrane"],
+            "years": kwargs.get("years", "2010-2024"),
+            "languages": kwargs.get("languages", ["en"]),
+            "study_types": kwargs.get("study_types", ["rct", "meta-analysis", "systematic_review"])
+        },
+        quality_criteria=settings.get_quality_criteria(),
+        knowledge_tags=["psychology-research", research_domain, "evidence-based"],
+        agent_name="psychology_research"
+    )
+
+    result = await psychology_researcher.run(
+        research_question,
+        deps=research_config
+    )
+
+    # Структурируем результат
+    evidence_review = parse_research_result(result.data)
+
+    return {
+        "success": True,
+        "evidence_review": evidence_review,
+        "settings": settings.dict(),
+        "metadata": {
+            "search_strategy": research_config.search_parameters,
+            "quality_standard": evidence_standard,
+            "evidence_level": determine_evidence_level(evidence_review),
+            "recommendation_grade": determine_recommendation_grade(evidence_review)
+        },
+        "message": "Evidence review completed successfully"
+    }
+
+def determine_question_type(question: str) -> str:
+    """Определить тип исследовательского вопроса"""
+    question_types = {
+        "effectiveness": ["эффективность", "эффект", "результат", "исход"],
+        "safety": ["безопасность", "риск", "побочн", "вред"],
+        "comparison": ["сравнен", "против", "vs", "лучше"],
+        "mechanism": ["механизм", "почему", "как работает", "процесс"],
+        "population": ["для кого", "популяция", "группа", "возраст"]
+    }
+
+    question_lower = question.lower()
+    for q_type, keywords in question_types.items():
+        if any(keyword in question_lower for keyword in keywords):
+            return q_type
+
+    return "effectiveness"
+
+def parse_research_result(result_text: str) -> Dict[str, Any]:
+    """Парсинг текстового результата в структурированный обзор"""
+    return {
+        "executive_summary": extract_executive_summary(result_text),
+        "literature_search": extract_search_results(result_text),
+        "quality_assessment": extract_quality_assessment(result_text),
+        "evidence_synthesis": extract_evidence_synthesis(result_text),
+        "clinical_significance": extract_clinical_significance(result_text),
+        "safety_profile": extract_safety_profile(result_text),
+        "recommendations": extract_recommendations(result_text),
+        "limitations": extract_limitations(result_text),
+        "future_research": extract_future_research(result_text)
+    }
+
+def extract_executive_summary(text: str) -> str:
+    """Извлечь резюме из текста"""
+    return "Краткое резюме доказательной базы"
+
+def extract_search_results(text: str) -> Dict[str, Any]:
+    """Извлечь результаты поиска литературы"""
+    return {
+        "total_studies": 0,
+        "included_studies": 0,
+        "excluded_studies": 0,
+        "databases_searched": [],
+        "search_terms": []
+    }
+
+def extract_quality_assessment(text: str) -> Dict[str, Any]:
+    """Извлечь оценку качества исследований"""
+    return {
+        "high_quality": 0,
+        "moderate_quality": 0,
+        "low_quality": 0,
+        "quality_tools_used": [],
+        "major_limitations": []
+    }
+
+def extract_evidence_synthesis(text: str) -> Dict[str, Any]:
+    """Извлечь синтез доказательств"""
+    return {
+        "overall_effect_size": None,
+        "confidence_interval": None,
+        "heterogeneity": None,
+        "subgroup_analyses": [],
+        "publication_bias": None
+    }
+
+def extract_clinical_significance(text: str) -> Dict[str, Any]:
+    """Извлечь клиническую значимость"""
+    return {
+        "clinically_meaningful": None,
+        "number_needed_to_treat": None,
+        "minimal_important_difference": None,
+        "real_world_applicability": None
+    }
+
+def extract_safety_profile(text: str) -> Dict[str, Any]:
+    """Извлечь профиль безопасности"""
+    return {
+        "common_adverse_events": [],
+        "serious_adverse_events": [],
+        "contraindications": [],
+        "monitoring_requirements": []
+    }
+
+def extract_recommendations(text: str) -> List[Dict[str, str]]:
+    """Извлечь рекомендации"""
+    return [
+        {"grade": "A", "recommendation": "Рекомендация высокого уровня"},
+        {"grade": "B", "recommendation": "Рекомендация среднего уровня"}
+    ]
+
+def extract_limitations(text: str) -> List[str]:
+    """Извлечь ограничения"""
+    return ["Ограничение 1", "Ограничение 2"]
+
+def extract_future_research(text: str) -> List[str]:
+    """Извлечь направления будущих исследований"""
+    return ["Направление 1", "Направление 2"]
+
+def determine_evidence_level(evidence_review: Dict[str, Any]) -> str:
+    """Определить уровень доказательности"""
+    quality_assessment = evidence_review.get("quality_assessment", {})
+    high_quality = quality_assessment.get("high_quality", 0)
+    total_studies = quality_assessment.get("high_quality", 0) + \
+                   quality_assessment.get("moderate_quality", 0) + \
+                   quality_assessment.get("low_quality", 0)
+
+    if total_studies == 0:
+        return "insufficient"
+
+    high_quality_ratio = high_quality / total_studies
+
+    if high_quality_ratio >= 0.6 and total_studies >= 5:
+        return "strong"
+    elif high_quality_ratio >= 0.4 and total_studies >= 3:
+        return "moderate"
+    elif total_studies >= 2:
+        return "limited"
+    else:
+        return "insufficient"
+
+def determine_recommendation_grade(evidence_review: Dict[str, Any]) -> str:
+    """Определить уровень рекомендации"""
+    evidence_level = determine_evidence_level(evidence_review)
+    clinical_significance = evidence_review.get("clinical_significance", {})
+    safety_profile = evidence_review.get("safety_profile", {})
+
+    meaningful = clinical_significance.get("clinically_meaningful", False)
+    safe = len(safety_profile.get("serious_adverse_events", [])) == 0
+
+    if evidence_level == "strong" and meaningful and safe:
+        return "A"
+    elif evidence_level in ["strong", "moderate"] and (meaningful or safe):
+        return "B"
+    elif evidence_level == "limited":
+        return "C"
+    else:
+        return "D"
+
+async def quick_literature_search(
+    topic: str,
+    domain: str = "general",
+    max_studies: int = 10
+) -> Dict[str, Any]:
+    """
+    Быстрый поиск литературы по теме
+
+    Args:
+        topic: Тема для поиска
+        domain: Психологический домен
+        max_studies: Максимальное количество исследований
+
+    Returns:
+        Краткий обзор найденной литературы
+    """
+    research_config = ResearchDependencies(
+        research_domain=domain,
+        evidence_standard="moderate",
+        search_parameters={
+            "max_results": max_studies,
+            "recent_only": True
+        }
+    )
+
+    # Здесь должен быть вызов поиска через RAG или внешние API
+    # Для демонстрации возвращаем mock данные
+    return {
+        "success": True,
+        "topic": topic,
+        "domain": domain,
+        "studies_found": max_studies,
+        "key_findings": [
+            f"Исследования по {topic} показывают положительные результаты",
+            f"Методики в области {domain} имеют умеренную доказательную базу"
+        ],
+        "recommendations": [
+            "Требуются дополнительные качественные исследования",
+            "Необходима стандартизация измерительных инструментов"
+        ]
+    }
+
+if __name__ == "__main__":
+    import asyncio
+
+    async def test_researcher():
+        result = await conduct_evidence_review(
+            research_question="Эффективность когнитивно-поведенческой терапии для лечения генерализованного тревожного расстройства у взрослых",
+            research_domain="anxiety",
+            target_population="adults",
+            evidence_standard="high",
+            intervention_type="psychotherapy"
+        )
+        print("Обзор доказательной базы:", result)
+
+    asyncio.run(test_researcher())

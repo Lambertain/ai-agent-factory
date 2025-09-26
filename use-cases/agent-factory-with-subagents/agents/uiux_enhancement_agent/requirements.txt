@@ -1,0 +1,35 @@
+# UI/UX Enhancement Agent Dependencies
+
+# Core AI framework
+pydantic-ai[openai,gemini]>=0.0.13
+
+# Configuration and environment
+pydantic-settings>=2.0.0
+python-dotenv>=1.0.0
+
+# Data processing
+aiohttp>=3.8.0
+httpx>=0.25.0
+
+# Testing framework
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+
+# Development tools
+black>=23.0.0
+isort>=5.12.0
+mypy>=1.5.0
+
+# UI/UX specific tools (optional, for advanced features)
+beautifulsoup4>=4.12.0  # HTML parsing for component analysis
+cssutils>=2.7.0         # CSS parsing and optimization
+Pillow>=10.0.0          # Image processing for design analysis
+selenium>=4.15.0        # Browser automation for visual testing (optional)
+
+# Performance monitoring
+psutil>=5.9.0
+
+# Optional MCP servers (install separately)
+# npm install @modelcontextprotocol/server-shadcn
+# npm install @modelcontextprotocol/server-tailwind
+# npm install @modelcontextprotocol/server-figma

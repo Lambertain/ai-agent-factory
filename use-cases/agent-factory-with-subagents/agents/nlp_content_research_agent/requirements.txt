@@ -1,0 +1,48 @@
+# Core Pydantic AI framework
+pydantic-ai>=0.0.7
+pydantic>=2.7.0
+
+# Async HTTP client for web research
+httpx>=0.26.0
+aiohttp>=3.9.0
+
+# Web scraping and parsing
+beautifulsoup4>=4.12.0
+lxml>=5.0.0
+
+# NLP processing
+spacy>=3.7.0
+nltk>=3.8.1
+textstat>=0.7.3
+
+# Text processing and analysis
+PyYAML>=6.0.1
+requests>=2.31.0
+
+# Data validation and serialization
+pydantic>=2.7.0
+typing-extensions>=4.9.0
+
+# Cost optimization models
+openai>=1.30.0  # For GPT models if needed
+google-generativeai>=0.7.2  # For Gemini models
+anthropic>=0.25.0  # For Claude models
+
+# Async processing
+asyncio>=3.4.3
+aiofiles>=23.2.0
+
+# JSON and data handling
+orjson>=3.9.0
+ujson>=5.9.0
+
+# Environment management
+python-dotenv>=1.0.0
+
+# Logging and monitoring
+structlog>=23.2.0
+loguru>=0.7.2
+
+# Testing dependencies (optional)
+pytest>=7.4.0
+pytest-asyncio>=0.21.0

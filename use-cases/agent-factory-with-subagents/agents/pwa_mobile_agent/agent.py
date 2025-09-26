@@ -1,0 +1,107 @@
+"""
+PWA & Cross-Platform Mobile Agent - универсальный агент для Progressive Web Apps и кроссплатформенной мобильной разработки.
+
+Этот агент объединяет создание мобильных веб-приложений (PWA) и нативных кроссплатформенных приложений
+с поддержкой React Native, Flutter, Capacitor, offline режима, push-уведомлений, и оптимизации под различные типы проектов.
+"""
+
+import asyncio
+from dataclasses import dataclass
+from pydantic_ai import Agent, RunContext
+from .tools import (
+from ..common import check_pm_switch
+    generate_pwa_manifest,
+    create_service_worker,
+    optimize_mobile_ux,
+    analyze_mobile_performance,
+    setup_offline_sync,
+    search_agent_knowledge,
+    # Modern Web APIs
+    implement_file_system_access_api,
+    implement_badging_api,
+    implement_wake_lock_api,
+    implement_idle_detection_api,
+    implement_web_locks_api,
+    # Performance Monitoring
+    implement_web_vitals_monitoring,
+    implement_adaptive_caching_strategies,
+    # Security Enhancements
+    implement_csp_generation,
+    implement_secure_storage,
+    implement_privacy_compliance
+)
+from .dependencies import PWAMobileAgentDependencies
+from .prompts import SYSTEM_PROMPT
+from .providers import get_llm_model
+
+
+# Создаем агента
+agent = Agent(
+    get_llm_model(),
+    deps_type=PWAMobileAgentDependencies,
+    system_prompt=SYSTEM_PROMPT
+)
+
+# Регистрируем основные инструменты
+agent.tool(generate_pwa_manifest)
+agent.tool(create_service_worker)
+agent.tool(optimize_mobile_ux)
+agent.tool(analyze_mobile_performance)
+agent.tool(setup_offline_sync)
+agent.tool(search_agent_knowledge)
+
+# Регистрируем Modern Web APIs инструменты
+agent.tool(implement_file_system_access_api)
+agent.tool(implement_badging_api)
+agent.tool(implement_wake_lock_api)
+agent.tool(implement_idle_detection_api)
+agent.tool(implement_web_locks_api)
+
+# Регистрируем Performance Monitoring инструменты
+agent.tool(implement_web_vitals_monitoring)
+agent.tool(implement_adaptive_caching_strategies)
+
+# Регистрируем Security Enhancement инструменты
+agent.tool(implement_csp_generation)
+agent.tool(implement_secure_storage)
+agent.tool(implement_privacy_compliance)
+
+
+async def run_pwa_mobile_analysis(
+    context: str,
+    project_path: str = "",
+    pwa_type: str = "general"
+) -> str:
+    """
+    Запустить анализ и оптимизацию PWA Mobile проекта.
+
+    Args:
+        context: Описание задачи или проблемы
+        project_path: Путь к проекту
+        pwa_type: Тип PWA приложения
+
+    Returns:
+        Результат анализа и рекомендации
+    """
+
+    deps = PWAMobileAgentDependencies(
+        project_path=project_path,
+        pwa_type=pwa_type
+    )
+
+    result = await agent.run(context, deps=deps)
+    return result.data
+
+
+if __name__ == "__main__":
+    import asyncio
+
+    # Пример использования
+    async def main():
+        result = await run_pwa_mobile_analysis(
+            context="Создать PWA манифест для e-commerce приложения",
+            pwa_type="ecommerce"
+        )
+        print(result)
+
+    asyncio.run(main())

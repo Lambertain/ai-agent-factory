@@ -1,0 +1,122 @@
+{
+  "filesystem": {
+    "package": "@modelcontextprotocol/server-filesystem",
+    "command": "npx",
+    "args": ["@modelcontextprotocol/server-filesystem", "C:\\"],
+    "package_manager": "npm",
+    "description": "Доступ к файловой системе - чтение и запись файлов",
+    "install_command": "npm install -g @modelcontextprotocol/server-filesystem",
+    "env_required": [],
+    "transport": "stdio"
+  },
+  "brave-search": {
+    "package": "@modelcontextprotocol/server-brave-search",
+    "command": "npx",
+    "args": ["@modelcontextprotocol/server-brave-search"],
+    "package_manager": "npm",
+    "description": "Поиск в интернете через Brave Search API",
+    "install_command": "npm install -g @modelcontextprotocol/server-brave-search",
+    "env_required": ["BRAVE_API_KEY"],
+    "transport": "stdio"
+  },
+  "postgres": {
+    "package": "@modelcontextprotocol/server-postgres",
+    "command": "npx",
+    "args": ["@modelcontextprotocol/server-postgres"],
+    "package_manager": "npm",
+    "description": "Подключение к PostgreSQL базе данных",
+    "install_command": "npm install -g @modelcontextprotocol/server-postgres",
+    "env_required": ["POSTGRES_CONNECTION_STRING"],
+    "transport": "stdio"
+  },
+  "github": {
+    "package": "@modelcontextprotocol/server-github",
+    "command": "npx",
+    "args": ["@modelcontextprotocol/server-github"],
+    "package_manager": "npm",
+    "description": "Интеграция с GitHub API для работы с репозиториями",
+    "install_command": "npm install -g @modelcontextprotocol/server-github",
+    "env_required": ["GITHUB_PERSONAL_ACCESS_TOKEN"],
+    "transport": "stdio"
+  },
+  "slack": {
+    "package": "@modelcontextprotocol/server-slack",
+    "command": "npx",
+    "args": ["@modelcontextprotocol/server-slack"],
+    "package_manager": "npm",
+    "description": "Интеграция со Slack для отправки сообщений",
+    "install_command": "npm install -g @modelcontextprotocol/server-slack",
+    "env_required": ["SLACK_BOT_TOKEN"],
+    "transport": "stdio"
+  },
+  "linear": {
+    "package": "@modelcontextprotocol/server-linear",
+    "command": "npx",
+    "args": ["@modelcontextprotocol/server-linear"],
+    "package_manager": "npm",
+    "description": "Интеграция с Linear для управления задачами",
+    "install_command": "npm install -g @modelcontextprotocol/server-linear",
+    "env_required": ["LINEAR_API_KEY"],
+    "transport": "stdio"
+  },
+  "figma": {
+    "package": "@modelcontextprotocol/server-figma",
+    "command": "npx",
+    "args": ["@modelcontextprotocol/server-figma"],
+    "package_manager": "npm",
+    "description": "Интеграция с Figma для работы с дизайн-макетами",
+    "install_command": "npm install -g @modelcontextprotocol/server-figma",
+    "env_required": ["FIGMA_ACCESS_TOKEN"],
+    "transport": "stdio"
+  },
+  "docker": {
+    "package": "@modelcontextprotocol/server-docker",
+    "command": "npx",
+    "args": ["@modelcontextprotocol/server-docker"],
+    "package_manager": "npm",
+    "description": "Управление Docker контейнерами и образами",
+    "install_command": "npm install -g @modelcontextprotocol/server-docker",
+    "env_required": [],
+    "transport": "stdio"
+  },
+  "kubernetes": {
+    "package": "@modelcontextprotocol/server-kubernetes",
+    "command": "npx",
+    "args": ["@modelcontextprotocol/server-kubernetes"],
+    "package_manager": "npm",
+    "description": "Управление Kubernetes кластерами",
+    "install_command": "npm install -g @modelcontextprotocol/server-kubernetes",
+    "env_required": ["KUBECONFIG"],
+    "transport": "stdio"
+  },
+  "redis": {
+    "package": "@modelcontextprotocol/server-redis",
+    "command": "npx",
+    "args": ["@modelcontextprotocol/server-redis"],
+    "package_manager": "npm",
+    "description": "Подключение к Redis для кэширования и очередей",
+    "install_command": "npm install -g @modelcontextprotocol/server-redis",
+    "env_required": ["REDIS_URL"],
+    "transport": "stdio"
+  },
+  "jupyter": {
+    "package": "@modelcontextprotocol/server-jupyter",
+    "command": "npx",
+    "args": ["@modelcontextprotocol/server-jupyter"],
+    "package_manager": "npm",
+    "description": "Интеграция с Jupyter Notebook для научных вычислений",
+    "install_command": "npm install -g @modelcontextprotocol/server-jupyter",
+    "env_required": [],
+    "transport": "stdio"
+  },
+  "vector-db": {
+    "package": "@modelcontextprotocol/server-vectordb",
+    "command": "npx",
+    "args": ["@modelcontextprotocol/server-vectordb"],
+    "package_manager": "npm",
+    "description": "Подключение к векторным базам данных для AI/ML",
+    "install_command": "npm install -g @modelcontextprotocol/server-vectordb",
+    "env_required": ["VECTOR_DB_URL"],
+    "transport": "stdio"
+  }
+}

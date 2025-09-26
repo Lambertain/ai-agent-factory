@@ -5,6 +5,7 @@ from pydantic_ai import RunContext
 from pydantic import BaseModel, Field
 import asyncpg
 import json
+import httpx
 from dependencies import AgentDependencies
 
 
@@ -147,3 +148,50 @@ async def hybrid_search(
     except Exception as e:
         print(e)
         return f"Failed to perform hybrid search: {e}"
+
+
+async def search_agent_knowledge(
+    ctx: RunContext[AgentDependencies],
+    query: str,
+    match_count: int = 5
+) -> str:
+    """
+    Поиск в специализированной базе знаний RAG Agent.
+
+    Args:
+        query: Поисковый запрос
+        match_count: Количество результатов
+
+    Returns:
+        Найденная информация из базы знаний
+    """
+    try:
+        # Используем теги для фильтрации по знаниям агента
+        search_query = f"{query} {' '.join(ctx.deps.knowledge_tags)}"
+
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                f"{ctx.deps.archon_url}/rag/search-knowledge-base",
+                json={
+                    "query": search_query,
+                    "source_domain": ctx.deps.knowledge_domain,
+                    "match_count": match_count
+                }
+            )
+
+            if response.status_code == 200:
+                result = response.json()
+
+                if result.get("success") and result.get("results"):
+                    knowledge = "\n".join([
+                        f"**{r.get('metadata', {}).get('title', 'Знания')}:**\n{r['content']}"
+                        for r in result["results"]
+                    ])
+                    return f"База знаний RAG Agent:\n{knowledge}"
+                else:
+                    return "Информация не найдена в базе знаний агента."
+            else:
+                return f"Ошибка поиска: {response.status_code}"
+
+    except Exception as e:
+        return f"Ошибка доступа к базе знаний: {e}"
