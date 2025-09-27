@@ -1,0 +1,62 @@
+# Universal Opportunity Analyzer Agent - Python Dependencies
+
+# Core AI Framework
+pydantic-ai>=0.0.15
+pydantic>=2.8.0
+pydantic-settings>=2.4.0
+
+# LLM Providers
+openai>=1.50.0
+google-generativeai>=0.8.0
+
+# Environment and Configuration
+python-dotenv>=1.0.0
+dataclasses-json>=0.6.0
+
+# HTTP and API
+httpx>=0.27.0
+aiohttp>=3.9.0
+
+# Data Processing and Analysis
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Async Support
+asyncio>=3.4.3
+aiofiles>=24.1.0
+
+# JSON and Data Handling
+orjson>=3.9.0
+jsonschema>=4.19.0
+
+# Text Processing
+regex>=2023.10.0
+textstat>=0.7.3
+
+# Caching and Performance
+cachetools>=5.3.0
+memory-profiler>=0.61.0
+
+# Logging and Monitoring
+structlog>=23.2.0
+colorlog>=6.8.0
+
+# Development and Testing
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+pytest-mock>=3.12.0
+black>=24.0.0
+isort>=5.13.0
+mypy>=1.8.0
+
+# Optional: MCP Integration (если доступно)
+# mcp-client>=0.1.0
+
+# Optional: Advanced Analytics
+scikit-learn>=1.4.0
+matplotlib>=3.8.0
+seaborn>=0.13.0
+
+# Optional: Web Scraping (для конкурентного анализа)
+beautifulsoup4>=4.12.0
+requests>=2.31.0

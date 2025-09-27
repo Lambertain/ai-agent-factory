@@ -1,0 +1,101 @@
+# Core dependencies
+pydantic-ai>=0.0.14
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# Environment and configuration
+python-dotenv>=1.0.0
+
+# Async support
+asyncio
+aiohttp>=3.8.0
+
+# LLM Providers
+openai>=1.12.0
+anthropic>=0.18.0
+google-generativeai>=0.4.0
+
+# Data handling and content processing
+typing-extensions>=4.5.0
+dataclasses-json>=0.6.0
+
+# Text processing and NLP
+nltk>=3.8
+textstat>=0.7.0  # Readability analysis
+spacy>=3.6.0  # Advanced text processing
+beautifulsoup4>=4.12.0  # HTML processing
+
+# Content optimization
+markdown>=3.5.0  # Markdown processing
+html2text>=2020.1.16  # HTML to text conversion
+markdownify>=0.11.0  # HTML to Markdown conversion
+
+# SEO and content analysis
+yake>=0.4.8  # Keyword extraction
+wordcloud>=1.9.0  # Keyword visualization
+pyenchant>=3.2.0  # Spell checking
+
+# JSON and YAML processing
+pyyaml>=6.0
+ujson>=5.7.0
+
+# Logging and debugging
+loguru>=0.7.0
+
+# Optional integrations
+httpx>=0.25.0  # For HTTP requests in tools
+requests>=2.31.0  # Fallback HTTP client
+
+# Content metrics and analytics
+textdistance>=4.6.0  # Text similarity metrics
+fuzzywuzzy>=0.18.0  # Fuzzy string matching
+python-levenshtein>=0.21.0  # String distance calculations
+
+# Language detection and processing
+langdetect>=1.0.9  # Language detection
+polyglot>=16.7.4  # Multilingual processing (optional)
+
+# Content validation
+validators>=0.22.0  # URL and data validation
+dateparser>=1.1.8  # Date parsing and validation
+
+# Performance optimization
+cachetools>=5.3.0  # Caching utilities
+concurrent-futures>=3.1.1  # Async processing
+
+# Content formatting
+rich>=13.6.0  # Rich text formatting
+tabulate>=0.9.0  # Table formatting
+
+# Development dependencies (optional)
+pytest>=7.0.0
+pytest-asyncio>=0.23.0
+pytest-mock>=3.10.0
+black>=23.0.0
+isort>=5.12.0
+mypy>=1.5.0
+
+# Documentation (optional)
+mkdocs>=1.5.0
+mkdocs-material>=9.0.0
+
+# Content-specific libraries
+# Blog and article generation
+newspaper3k>=0.2.8  # News article processing
+feedparser>=6.0.10  # RSS feed processing
+
+# Social media content
+tweepy>=4.14.0  # Twitter API (optional)
+python-instagram>=1.3.2  # Instagram API (optional)
+
+# Email content
+email-validator>=2.1.0  # Email validation
+premailer>=3.10.0  # CSS inlining for emails
+
+# Marketing content
+mailchimp3>=3.0.21  # Mailchimp integration (optional)
+salesforce-bulk>=2.2.0  # Salesforce integration (optional)
+
+# Documentation generation
+sphinx>=7.0.0  # Documentation generator (optional)
+mkdocs-material>=9.0.0  # Material theme for docs

@@ -1,0 +1,94 @@
+# Universal Domain Knowledge Extractor Agent - Зависимости
+# Версия: 1.0.0
+
+# === ОСНОВНЫЕ ЗАВИСИМОСТИ ===
+pydantic-ai>=0.0.14
+pydantic>=2.9.0
+pydantic-settings>=2.6.0
+python-dotenv>=1.0.0
+
+# === LLM ПРОВАЙДЕРЫ ===
+openai>=1.51.0
+anthropic>=0.34.0
+
+# === ASYNC И ОБРАБОТКА ДАННЫХ ===
+aiohttp>=3.10.0
+asyncio-throttle>=1.0.2
+tenacity>=9.0.0
+
+# === ОБРАБОТКА ТЕКСТА И ЗНАНИЙ ===
+nltk>=3.8.1
+spacy>=3.7.2
+transformers>=4.44.0
+sentence-transformers>=3.0.1
+
+# === НАУЧНЫЕ ВЫЧИСЛЕНИЯ ===
+numpy>=1.26.0
+pandas>=2.2.0
+scikit-learn>=1.5.0
+
+# === СТРУКТУРИРОВАНИЕ ДАННЫХ ===
+jsonschema>=4.23.0
+pyyaml>=6.0.1
+toml>=0.10.2
+
+# === МНОГОЯЗЫЧНАЯ ПОДДЕРЖКА ===
+polyglot>=16.7.4
+langdetect>=1.0.9
+googletrans>=4.0.0
+
+# === КАЧЕСТВО КОДА ===
+black>=24.0.0
+isort>=5.13.0
+flake8>=7.0.0
+mypy>=1.11.0
+
+# === ТЕСТИРОВАНИЕ ===
+pytest>=8.3.0
+pytest-asyncio>=0.24.0
+pytest-cov>=5.0.0
+pytest-mock>=3.14.0
+
+# === ЛОГИРОВАНИЕ И МОНИТОРИНГ ===
+structlog>=24.4.0
+rich>=13.8.0
+
+# === ИНТЕГРАЦИИ ===
+# MCP клиент (если доступен)
+# archon-client>=1.0.0
+
+# === ПСИХОЛОГИЯ (доменно-специфичные) ===
+# psychological-test-framework>=1.0.0  # Если существует
+# clinical-validation>=1.0.0  # Если существует
+
+# === АСТРОЛОГИЯ (доменно-специфичные) ===
+# astro-calculations>=1.0.0  # Если существует
+# ephemeris-data>=1.0.0  # Если существует
+
+# === НУМЕРОЛОГИЯ (доменно-специфичные) ===
+# numerology-calculator>=1.0.0  # Если существует
+
+# === БИЗНЕС-АНАЛИЗ (доменно-специфичные) ===
+# business-frameworks>=1.0.0  # Если существует
+# metrics-calculator>=1.0.0  # Если существует
+
+# === БЕЗОПАСНОСТЬ ===
+cryptography>=43.0.0
+PyJWT>=2.9.0
+
+# === ПРОИЗВОДИТЕЛЬНОСТЬ ===
+uvloop>=0.20.0; sys_platform != "win32"
+orjson>=3.10.0
+
+# === ДОПОЛНИТЕЛЬНЫЕ УТИЛИТЫ ===
+click>=8.1.0
+typer>=0.12.0
+tqdm>=4.66.0
+
+# === РАЗРАБОТКА (dev dependencies) ===
+# pre-commit>=3.8.0
+# bandit>=1.7.0
+# safety>=3.2.0
+
+# Примечание: Некоторые доменно-специфичные пакеты могут не существовать
+# В таком случае функциональность реализуется внутри агента

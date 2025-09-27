@@ -174,93 +174,27 @@ async def run_analytics_task(user_message: str, target_type: str = "web_analytic
         logger.error(f"Ошибка выполнения запроса аналитики: {e}")
         return f"Произошла ошибка при обработке запроса аналитики: {e}"
 
-    async def setup_project_analytics(self, project_config: Dict[str, Any]) -> str:
-        """
-        Настроить аналитику для нового проекта.
+def get_available_providers() -> List[str]:
+    """Получить список доступных analytics провайдеров."""
+    deps = load_dependencies()
+    return deps.analytics_providers
 
-        Args:
-            project_config: Конфигурация проекта
-
-        Returns:
-            Результат настройки
-        """
-        setup_message = f"""
-        Настрой аналитику для нового проекта со следующими параметрами:
-
-        Тип проекта: {project_config.get('project_type', 'web_analytics')}
-        Домен: {project_config.get('domain_type', 'analytics')}
-        Фокус трекинга: {project_config.get('tracking_focus', 'conversion')}
-        Analytics провайдеры: {project_config.get('analytics_providers', ['google_analytics'])}
-
-        Дополнительные настройки: {project_config.get('additional_settings', {})}
-        """
-
-        return await self.run(setup_message)
-
-    async def analyze_project_performance(self, analysis_request: Dict[str, Any]) -> str:
-        """
-        Проанализировать производительность аналитики проекта.
-
-        Args:
-            analysis_request: Запрос на анализ
-
-        Returns:
-            Результат анализа
-        """
-        analysis_message = f"""
-        Проанализируй производительность аналитики для проекта:
-
-        Период анализа: {analysis_request.get('period', 'последние 30 дней')}
-        Метрики для анализа: {analysis_request.get('metrics', 'все основные метрики')}
-        Сегменты пользователей: {analysis_request.get('segments', 'все сегменты')}
-
-        Особое внимание: {analysis_request.get('focus_areas', [])}
-        """
-
-        return await self.run(analysis_message)
-
-    def get_available_providers(self) -> List[str]:
-        """Получить список доступных analytics провайдеров."""
-        return self.dependencies.analytics_providers
-
-    def get_project_info(self) -> Dict[str, Any]:
-        """Получить информацию о текущем проекте."""
-        return {
-            "project_type": self.dependencies.project_type,
-            "domain_type": self.dependencies.domain_type,
-            "tracking_focus": self.dependencies.tracking_focus,
-            "analytics_providers": self.dependencies.analytics_providers,
-            "primary_provider": self.dependencies.primary_provider,
-            "key_metrics": self.dependencies.get_key_metrics(),
-            "recommended_events": self.dependencies.get_recommended_events(),
-            "privacy_compliant": {
-                "gdpr": self.dependencies.gdpr_enabled,
-                "ccpa": self.dependencies.ccpa_enabled
-            }
+def get_project_info() -> Dict[str, Any]:
+    """Получить информацию о текущем проекте."""
+    deps = load_dependencies()
+    return {
+        "project_type": deps.project_type,
+        "domain_type": deps.domain_type,
+        "tracking_focus": deps.tracking_focus,
+        "analytics_providers": deps.analytics_providers,
+        "primary_provider": deps.primary_provider,
+        "key_metrics": deps.get_key_metrics(),
+        "recommended_events": deps.get_recommended_events(),
+        "privacy_compliant": {
+            "gdpr": deps.gdpr_enabled,
+            "ccpa": deps.ccpa_enabled
         }
-
-
-# Функции для быстрого создания агентов разных типов
-
-def create_web_analytics_agent() -> UniversalAnalyticsTrackingAgent:
-    """Создать агента для веб-аналитики."""
-    from .examples.web_config import get_web_config
-    return UniversalAnalyticsTrackingAgent(get_web_config())
-
-def create_ecommerce_agent() -> UniversalAnalyticsTrackingAgent:
-    """Создать агента для e-commerce."""
-    from .examples.ecommerce_config import get_ecommerce_config
-    return UniversalAnalyticsTrackingAgent(get_ecommerce_config())
-
-def create_saas_agent() -> UniversalAnalyticsTrackingAgent:
-    """Создать агента для SaaS метрик."""
-    from .examples.saas_config import get_saas_config
-    return UniversalAnalyticsTrackingAgent(get_saas_config())
-
-def create_blog_agent() -> UniversalAnalyticsTrackingAgent:
-    """Создать агента для блога."""
-    from .examples.blog_config import get_blog_config
-    return UniversalAnalyticsTrackingAgent(get_blog_config())
+    }
 
 
 # CLI интерфейс (опциональный)
@@ -277,24 +211,13 @@ async def main():
 
     args = parser.parse_args()
 
-    # Выбираем соответствующего агента
-    agent_creators = {
-        "web_analytics": create_web_analytics_agent,
-        "ecommerce_tracking": create_ecommerce_agent,
-        "saas_metrics": create_saas_agent,
-        "blog_analytics": create_blog_agent
-    }
-
-    agent_creator = agent_creators.get(args.project_type, create_web_analytics_agent)
-    agent = agent_creator()
-
     print(f"🎯 Analytics Agent запущен для проекта типа: {args.project_type}")
-    print(f"📊 Доступные провайдеры: {', '.join(agent.get_available_providers())}")
+    print(f"📊 Доступные провайдеры: {', '.join(get_available_providers())}")
     print("-" * 50)
 
     if args.message:
         # Одноразовый режим
-        response = await agent.run(args.message)
+        response = await run_analytics_task(args.message, args.project_type)
         print(f"Ответ: {response}")
 
     elif args.interactive:
@@ -309,7 +232,7 @@ async def main():
                     break
 
                 if user_input.strip():
-                    response = await agent.run(user_input)
+                    response = await run_analytics_task(user_input, args.project_type)
                     print(f"🤖 Агент: {response}")
 
             except KeyboardInterrupt:
@@ -319,7 +242,7 @@ async def main():
 
     else:
         # Показываем информацию о проекте
-        project_info = agent.get_project_info()
+        project_info = get_project_info()
         print("📋 Информация о проекте:")
         for key, value in project_info.items():
             print(f"  {key}: {value}")
