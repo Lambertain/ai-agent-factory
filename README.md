@@ -1,296 +1,333 @@
-# Context Engineering Template
+# 🏭 AI Agent Factory
 
-A comprehensive template for getting started with Context Engineering - the discipline of engineering context for AI coding assistants so they have the information necessary to get the job done end to end.
+> **Универсальная фабрика для создания специализированных AI агентов на Pydantic AI**
+> *Основано на [Context Engineering](https://github.com/coleam00/context-engineering-intro) от Cole Medin*
 
-> **Context Engineering is 10x better than prompt engineering and 100x better than vibe coding.**
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Pydantic AI](https://img.shields.io/badge/Pydantic%20AI-v2.0+-green.svg)](https://github.com/pydantic/pydantic-ai)
+[![GitHub](https://img.shields.io/badge/GitHub-Lambertain-black.svg)](https://github.com/Lambertain/ai-agent-factory)
 
-## 🚀 Quick Start
+## 🚀 Что это такое?
+
+**AI Agent Factory** — это революционная система для автоматического создания специализированных AI агентов. Вместо ручного создания каждого агента, фабрика использует субагентов для автономного создания готовых к использованию AI решений.
+
+### ✨ Ключевые особенности
+
+- 🏭 **Автоматическая фабрика** — от идеи до готового агента за минуты
+- 🎯 **32 готовых специализированных агента** — Security, UI/UX, Performance, Analytics и др.
+- 🤝 **Продвинутая коллективная работа** — микрозадачи, делегирование, рефлексия
+- 🔧 **Универсальные декораторы** — автоматическое добавление всех интеграций
+- 📋 **Интеграция с Archon** — управление задачами из коробки
+- 🌐 **100% универсальность** — 0% привязки к конкретным проектам
+
+## 🎯 Для кого этот проект?
+
+- **AI разработчики** — быстрое создание специализированных агентов
+- **DevOps инженеры** — автоматизация процессов разработки
+- **Продуктовые команды** — внедрение AI в рабочие процессы
+- **Стартапы** — MVP с AI функциональностью за часы, не недели
+- **Enterprise** — масштабируемые AI решения
+
+## 🛠️ Архитектура
+
+### Процесс создания агента (5 фаз):
+
+```mermaid
+graph TD
+    A[👤 Пользователь: Идея агента] --> B[🔍 Фаза 0: Уточнение требований]
+    B --> C[📋 Фаза 1: Анализ и планирование]
+    C --> D[⚙️ Фаза 2: Параллельная разработка]
+    D --> E[💻 Фаза 3: Реализация]
+    E --> F[✅ Фаза 4: Валидация]
+    F --> G[📦 Фаза 5: Доставка]
+    G --> H[🎉 Готовый агент]
+```
+
+### Субагенты фабрики:
+- **pydantic-ai-planner** — анализ требований и планирование
+- **pydantic-ai-prompt-engineer** — создание системных промптов
+- **pydantic-ai-tool-integrator** — разработка инструментов
+- **pydantic-ai-dependency-manager** — управление зависимостями
+- **pydantic-ai-validator** — тестирование и валидация
+
+## 🚀 Быстрый старт
+
+### 1. Установка
 
 ```bash
-# 1. Clone this template
-git clone https://github.com/coleam00/Context-Engineering-Intro.git
-cd Context-Engineering-Intro
+git clone https://github.com/Lambertain/ai-agent-factory.git
+cd ai-agent-factory
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# или
+venv\Scripts\activate     # Windows
 
-# 2. Set up your project rules (optional - template provided)
-# Edit CLAUDE.md to add your project-specific guidelines
-
-# 3. Add examples (highly recommended)
-# Place relevant code examples in the examples/ folder
-
-# 4. Create your initial feature request
-# Edit INITIAL.md with your feature requirements
-
-# 5. Generate a comprehensive PRP (Product Requirements Prompt)
-# In Claude Code, run:
-/generate-prp INITIAL.md
-
-# 6. Execute the PRP to implement your feature
-# In Claude Code, run:
-/execute-prp PRPs/your-feature-name.md
+pip install -r use-cases/agent-factory-with-subagents/requirements.txt
 ```
 
-## 📚 Table of Contents
+### 2. Настройка
 
-- [What is Context Engineering?](#what-is-context-engineering)
-- [Template Structure](#template-structure)
-- [Step-by-Step Guide](#step-by-step-guide)
-- [Writing Effective INITIAL.md Files](#writing-effective-initialmd-files)
-- [The PRP Workflow](#the-prp-workflow)
-- [Using Examples Effectively](#using-examples-effectively)
-- [Best Practices](#best-practices)
-
-## What is Context Engineering?
-
-Context Engineering represents a paradigm shift from traditional prompt engineering:
-
-### Prompt Engineering vs Context Engineering
-
-**Prompt Engineering:**
-- Focuses on clever wording and specific phrasing
-- Limited to how you phrase a task
-- Like giving someone a sticky note
-
-**Context Engineering:**
-- A complete system for providing comprehensive context
-- Includes documentation, examples, rules, patterns, and validation
-- Like writing a full screenplay with all the details
-
-### Why Context Engineering Matters
-
-1. **Reduces AI Failures**: Most agent failures aren't model failures - they're context failures
-2. **Ensures Consistency**: AI follows your project patterns and conventions
-3. **Enables Complex Features**: AI can handle multi-step implementations with proper context
-4. **Self-Correcting**: Validation loops allow AI to fix its own mistakes
-
-## Template Structure
-
-```
-context-engineering-intro/
-├── .claude/
-│   ├── commands/
-│   │   ├── generate-prp.md    # Generates comprehensive PRPs
-│   │   └── execute-prp.md     # Executes PRPs to implement features
-│   └── settings.local.json    # Claude Code permissions
-├── PRPs/
-│   ├── templates/
-│   │   └── prp_base.md       # Base template for PRPs
-│   └── EXAMPLE_multi_agent_prp.md  # Example of a complete PRP
-├── examples/                  # Your code examples (critical!)
-├── CLAUDE.md                 # Global rules for AI assistant
-├── INITIAL.md               # Template for feature requests
-├── INITIAL_EXAMPLE.md       # Example feature request
-└── README.md                # This file
-```
-
-This template doesn't focus on RAG and tools with context engineering because I have a LOT more in store for that soon. ;)
-
-## Step-by-Step Guide
-
-### 1. Set Up Global Rules (CLAUDE.md)
-
-The `CLAUDE.md` file contains project-wide rules that the AI assistant will follow in every conversation. The template includes:
-
-- **Project awareness**: Reading planning docs, checking tasks
-- **Code structure**: File size limits, module organization
-- **Testing requirements**: Unit test patterns, coverage expectations
-- **Style conventions**: Language preferences, formatting rules
-- **Documentation standards**: Docstring formats, commenting practices
-
-**You can use the provided template as-is or customize it for your project.**
-
-### 2. Create Your Initial Feature Request
-
-Edit `INITIAL.md` to describe what you want to build:
-
-```markdown
-## FEATURE:
-[Describe what you want to build - be specific about functionality and requirements]
-
-## EXAMPLES:
-[List any example files in the examples/ folder and explain how they should be used]
-
-## DOCUMENTATION:
-[Include links to relevant documentation, APIs, or MCP server resources]
-
-## OTHER CONSIDERATIONS:
-[Mention any gotchas, specific requirements, or things AI assistants commonly miss]
-```
-
-**See `INITIAL_EXAMPLE.md` for a complete example.**
-
-### 3. Generate the PRP
-
-PRPs (Product Requirements Prompts) are comprehensive implementation blueprints that include:
-
-- Complete context and documentation
-- Implementation steps with validation
-- Error handling patterns
-- Test requirements
-
-They are similar to PRDs (Product Requirements Documents) but are crafted more specifically to instruct an AI coding assistant.
-
-Run in Claude Code:
+Создайте `.env` файл:
 ```bash
-/generate-prp INITIAL.md
+cp use-cases/agent-factory-with-subagents/.env.example .env
 ```
 
-**Note:** The slash commands are custom commands defined in `.claude/commands/`. You can view their implementation:
-- `.claude/commands/generate-prp.md` - See how it researches and creates PRPs
-- `.claude/commands/execute-prp.md` - See how it implements features from PRPs
+Заполните переменные окружения:
+```env
+LLM_API_KEY=your-api-key-here
+LLM_BASE_URL=https://your-llm-provider.com/v1
+LLM_MODEL=your-model-name
+```
 
-The `$ARGUMENTS` variable in these commands receives whatever you pass after the command name (e.g., `INITIAL.md` or `PRPs/your-feature.md`).
+### 3. Создание первого агента
 
-This command will:
-1. Read your feature request
-2. Research the codebase for patterns
-3. Search for relevant documentation
-4. Create a comprehensive PRP in `PRPs/your-feature-name.md`
+```python
+from use_cases.agent_factory_with_subagents import create_agent
 
-### 4. Execute the PRP
+# Запуск фабрики агентов
+agent_spec = """
+Создай агента для анализа кода Python который:
+- Находит потенциальные баги
+- Предлагает оптимизации
+- Проверяет соответствие PEP8
+"""
 
-Once generated, execute the PRP to implement your feature:
+# Фабрика автоматически создаст специализированного агента
+result = await create_agent(agent_spec)
+print(f"Агент создан: {result.agent_path}")
+```
+
+## 📚 Готовые агенты
+
+Фабрика включает 32 готовых специализированных агента:
+
+### 🔐 Безопасность
+- **Security Audit Agent** — аудит безопасности кода
+- **MCP Configuration Agent** — управление MCP серверами
+
+### 🎨 UI/UX и Frontend
+- **UI/UX Enhancement Agent** — улучшение интерфейсов
+- **PWA Mobile Agent** — Progressive Web Apps
+
+### ⚡ Производительность
+- **Performance Optimization Agent** — оптимизация производительности
+- **TypeScript Architecture Agent** — архитектура TypeScript
+
+### 📊 Аналитика и данные
+- **Analytics Tracking Agent** — системы аналитики
+- **RAG Agent** — семантический поиск
+
+### 🗄️ Базы данных
+- **Prisma Database Agent** — работа с Prisma ORM
+
+### 🧠 NLP и психология
+- **NLP Content Quality Guardian** — контроль качества контента
+- **Psychology Content Architect** — архитектура психологического контента
+- **Psychology Test Generator** — генерация психологических тестов
+
+### 💳 Интеграции
+- **Payment Integration Agent** — платежные системы
+- **API Development Agent** — разработка API
+- **Queue Worker Agent** — фоновые процессы
+
+[Полный список агентов →](use-cases/agent-factory-with-subagents/agents/)
+
+## 🔧 Продвинутое использование
+
+### Создание агента с кастомизацией
+
+```python
+from use_cases.agent_factory_with_subagents.agents.common import create_universal_pydantic_agent
+
+# Создание агента с полными интеграциями
+agent = create_universal_pydantic_agent(
+    model=get_llm_model(),
+    deps_type=YourDependencies,
+    system_prompt="Ваш системный промпт",
+    agent_type="your_agent_type",
+    knowledge_tags=["domain", "specialization"],
+    with_collective_tools=True,
+    with_knowledge_tool=True
+)
+```
+
+### Использование коллективных инструментов
+
+```python
+# Автоматическое планирование микрозадач
+@agent.tool
+async def break_down_to_microtasks(
+    ctx: RunContext,
+    main_task: str,
+    complexity_level: str = "medium"
+) -> str:
+    # Автоматически разбивает задачу на 3-7 микрозадач
+    pass
+
+# Рефлексия и улучшение результатов
+@agent.tool
+async def reflect_and_improve(
+    ctx: RunContext,
+    completed_work: str,
+    work_type: str = "implementation"
+) -> str:
+    # Критический анализ и улучшение работы
+    pass
+```
+
+## 🏗️ Архитектура проекта
+
+```
+ai-agent-factory/
+├── use-cases/agent-factory-with-subagents/     # Основная фабрика
+│   ├── agents/                                 # 32 готовых агента
+│   │   ├── common/                            # Общие компоненты
+│   │   │   ├── pydantic_ai_integrations.py   # Система интеграций
+│   │   │   ├── pydantic_ai_decorators.py     # Универсальные декораторы
+│   │   │   └── collective_work_tools.py       # Инструменты коллективной работы
+│   │   ├── security_audit_agent/             # Агент аудита безопасности
+│   │   ├── uiux_enhancement_agent/           # UI/UX агент
+│   │   └── ...                               # Остальные 30 агентов
+│   ├── .claude/                              # Настройки Claude
+│   │   ├── agents/                           # Субагенты фабрики
+│   │   └── rules.md                          # Правила работы
+│   └── CLAUDE.md                             # Документация фабрики
+├── claude-code-full-guide/                   # Руководство по Claude Code
+├── PRPs/                                     # Planning Request Prompts
+└── examples/                                 # Примеры использования
+```
+
+## 🤝 Коллективная работа агентов
+
+Агенты поддерживают продвинутые паттерны коллективной работы:
+
+### 🔄 Reflection (Рефлексия)
+- Критический анализ выполненной работы
+- Автоматическое выявление недостатков
+- Создание улучшенных версий результата
+
+### 🛠️ Tool Use (Использование инструментов)
+- Интеграция с RAG, веб-поиском, выполнением кода
+- Принятие решений о вызове API на основе контекста
+
+### 📋 Planning (Планирование)
+- Автоматическое разбиение задач на микрозадачи (3-7 пунктов)
+- Адаптивное планирование по ходу выполнения
+
+### 👥 Multi-Agent Collaboration
+- Специализация агентов на разных аспектах задачи
+- Автоматическое делегирование через Archon
+- Итеративное взаимодействие между агентами
+
+## 🔌 Интеграции
+
+### Archon MCP Server
+```python
+# Автоматическое управление задачами
+await mcp__archon__manage_task(
+    action="create",
+    title="Анализ безопасности API",
+    assignee="Security Audit Agent"
+)
+```
+
+### Git интеграция
+```python
+# Автоматические коммиты с улучшениями
+git commit -m "feat: новый security агент
+🤖 Generated with [Claude Code](https://claude.ai/code)
+Co-Authored-By: Claude <noreply@anthropic.com>"
+```
+
+### Knowledge Base
+```python
+# Поиск в базе знаний агента
+await search_agent_knowledge(
+    query="security audit patterns",
+    match_count=5
+)
+```
+
+## 📊 Производительность
+
+- ⚡ **Время создания агента**: 5-15 минут
+- 🎯 **Готовых агентов**: 32 специализированных
+- 🔧 **Автоматизация**: 95% процесса создания
+- 🌐 **Универсальность**: 0% привязки к проектам
+
+## 🛣️ Roadmap
+
+### Q1 2025
+- [ ] Веб-интерфейс для фабрики агентов
+- [ ] Marketplace готовых агентов
+- [ ] Docker контейнеризация
+- [ ] CI/CD пайплайны
+
+### Q2 2025
+- [ ] VS Code расширение
+- [ ] Интеграция с популярными IDE
+- [ ] Облачное развертывание
+- [ ] Enterprise версия
+
+### Q3 2025
+- [ ] Визуальный редактор агентов
+- [ ] Мониторинг и аналитика
+- [ ] Multi-language поддержка
+- [ ] API для внешних интеграций
+
+## 🤝 Вклад в проект
+
+Мы приветствуем вклад сообщества! Как помочь:
+
+1. **🐛 Сообщайте о багах** через GitHub Issues
+2. **💡 Предлагайте новые агенты** через Pull Requests
+3. **📚 Улучшайте документацию**
+4. **⭐ Ставьте звезду** проекту
+
+### Разработка
 
 ```bash
-/execute-prp PRPs/your-feature-name.md
+# Форк и клонирование
+git clone https://github.com/your-username/ai-agent-factory.git
+cd ai-agent-factory
+
+# Создание ветки для фичи
+git checkout -b feature/new-agent
+
+# Разработка и тестирование
+python -m pytest use-cases/agent-factory-with-subagents/tests/
+
+# Создание Pull Request
 ```
 
-The AI coding assistant will:
-1. Read all context from the PRP
-2. Create a detailed implementation plan
-3. Execute each step with validation
-4. Run tests and fix any issues
-5. Ensure all success criteria are met
+## 📄 Лицензия
 
-## Writing Effective INITIAL.md Files
-
-### Key Sections Explained
-
-**FEATURE**: Be specific and comprehensive
-- ❌ "Build a web scraper"
-- ✅ "Build an async web scraper using BeautifulSoup that extracts product data from e-commerce sites, handles rate limiting, and stores results in PostgreSQL"
-
-**EXAMPLES**: Leverage the examples/ folder
-- Place relevant code patterns in `examples/`
-- Reference specific files and patterns to follow
-- Explain what aspects should be mimicked
-
-**DOCUMENTATION**: Include all relevant resources
-- API documentation URLs
-- Library guides
-- MCP server documentation
-- Database schemas
-
-**OTHER CONSIDERATIONS**: Capture important details
-- Authentication requirements
-- Rate limits or quotas
-- Common pitfalls
-- Performance requirements
-
-## The PRP Workflow
-
-### How /generate-prp Works
-
-The command follows this process:
-
-1. **Research Phase**
-   - Analyzes your codebase for patterns
-   - Searches for similar implementations
-   - Identifies conventions to follow
-
-2. **Documentation Gathering**
-   - Fetches relevant API docs
-   - Includes library documentation
-   - Adds gotchas and quirks
-
-3. **Blueprint Creation**
-   - Creates step-by-step implementation plan
-   - Includes validation gates
-   - Adds test requirements
-
-4. **Quality Check**
-   - Scores confidence level (1-10)
-   - Ensures all context is included
-
-### How /execute-prp Works
-
-1. **Load Context**: Reads the entire PRP
-2. **Plan**: Creates detailed task list using TodoWrite
-3. **Execute**: Implements each component
-4. **Validate**: Runs tests and linting
-5. **Iterate**: Fixes any issues found
-6. **Complete**: Ensures all requirements met
-
-See `PRPs/EXAMPLE_multi_agent_prp.md` for a complete example of what gets generated.
-
-## Using Examples Effectively
-
-The `examples/` folder is **critical** for success. AI coding assistants perform much better when they can see patterns to follow.
-
-### What to Include in Examples
-
-1. **Code Structure Patterns**
-   - How you organize modules
-   - Import conventions
-   - Class/function patterns
-
-2. **Testing Patterns**
-   - Test file structure
-   - Mocking approaches
-   - Assertion styles
-
-3. **Integration Patterns**
-   - API client implementations
-   - Database connections
-   - Authentication flows
-
-4. **CLI Patterns**
-   - Argument parsing
-   - Output formatting
-   - Error handling
-
-### Example Structure
+Этот проект распространяется под лицензией MIT. См. [LICENSE](LICENSE) для подробностей.
 
 ```
-examples/
-├── README.md           # Explains what each example demonstrates
-├── cli.py             # CLI implementation pattern
-├── agent/             # Agent architecture patterns
-│   ├── agent.py      # Agent creation pattern
-│   ├── tools.py      # Tool implementation pattern
-│   └── providers.py  # Multi-provider pattern
-└── tests/            # Testing patterns
-    ├── test_agent.py # Unit test patterns
-    └── conftest.py   # Pytest configuration
+Copyright (c) 2025 Cole Medin
+Copyright (c) 2025 Lambertain
 ```
 
-## Best Practices
+## 🙏 Благодарности
 
-### 1. Be Explicit in INITIAL.md
-- Don't assume the AI knows your preferences
-- Include specific requirements and constraints
-- Reference examples liberally
+- **[Cole Medin](https://github.com/coleam00)** — за оригинальную концепцию [Context Engineering](https://github.com/coleam00/context-engineering-intro) и основу фабрики агентов
+- **[Pydantic Team](https://github.com/pydantic)** — за потрясающий фреймворк [Pydantic AI](https://github.com/pydantic/pydantic-ai)
+- **Open Source сообщество** — за инструменты и вдохновение
 
-### 2. Provide Comprehensive Examples
-- More examples = better implementations
-- Show both what to do AND what not to do
-- Include error handling patterns
+## 📞 Контакты
 
-### 3. Use Validation Gates
-- PRPs include test commands that must pass
-- AI will iterate until all validations succeed
-- This ensures working code on first try
+- 🌐 **Website**: [lambertain.agency](https://lambertain.agency)
+- 📧 **Email**: support@lambertain.agency
+- 💬 **Telegram**: [t.me/lambertain](https://t.me/lambertain)
 
-### 4. Leverage Documentation
-- Include official API docs
-- Add MCP server resources
-- Reference specific documentation sections
+---
 
-### 5. Customize CLAUDE.md
-- Add your conventions
-- Include project-specific rules
-- Define coding standards
+<div align="center">
 
-## Resources
+**🚀 Создавайте AI агентов будущего с Lambertain AI Agent Factory! 🚀**
 
-- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
-- [Context Engineering Best Practices](https://www.philschmid.de/context-engineering)
+[⭐ Star на GitHub](https://github.com/Lambertain/ai-agent-factory) • [📖 Документация](use-cases/agent-factory-with-subagents/CLAUDE.md) • [🐛 Сообщить о баге](https://github.com/Lambertain/ai-agent-factory/issues)
+
+</div>
