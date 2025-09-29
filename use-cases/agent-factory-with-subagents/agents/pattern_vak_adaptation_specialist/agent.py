@@ -55,6 +55,31 @@ from .tools import (
     MultimodalVariant
 )
 
+# Попытка импорта универсальных декораторов
+try:
+    from ..common.pydantic_ai_decorators import (
+        create_universal_pydantic_agent,
+        with_integrations,
+        register_agent
+    )
+    HAS_DECORATORS = True
+except ImportError:
+    HAS_DECORATORS = False
+
+# Импорт обязательных инструментов коллективной работы
+try:
+    from ..common.collective_work_tools import (
+        break_down_to_microtasks,
+        report_microtask_progress,
+        reflect_and_improve,
+        check_delegation_need,
+        delegate_task_to_agent
+    )
+    HAS_COLLECTIVE_TOOLS = True
+except ImportError:
+    HAS_COLLECTIVE_TOOLS = False
+    logger.warning("Инструменты коллективной работы не доступны")
+
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
@@ -167,6 +192,27 @@ vak_adaptation_agent.tool(adapt_content_to_vak_modality)
 vak_adaptation_agent.tool(create_multimodal_variant)
 vak_adaptation_agent.tool(validate_adaptation_safety)
 vak_adaptation_agent.tool(generate_vak_metrics)
+
+# Регистрируем инструменты коллективной работы (если доступны)
+if HAS_COLLECTIVE_TOOLS:
+    vak_adaptation_agent.tool(break_down_to_microtasks)
+    vak_adaptation_agent.tool(report_microtask_progress)
+    vak_adaptation_agent.tool(reflect_and_improve)
+    vak_adaptation_agent.tool(check_delegation_need)
+    vak_adaptation_agent.tool(delegate_task_to_agent)
+    logger.info("Инструменты коллективной работы успешно зарегистрированы")
+
+# Регистрируем агента в глобальном реестре (если декораторы доступны)
+if HAS_DECORATORS:
+    try:
+        register_agent(
+            "pattern_vak_adaptation_specialist",
+            vak_adaptation_agent,
+            agent_type="pattern_content_specialist"
+        )
+        logger.info("Агент зарегистрирован в глобальном реестре")
+    except Exception as e:
+        logger.warning(f"Не удалось зарегистрировать агента: {e}")
 
 
 @vak_adaptation_agent.tool
@@ -504,6 +550,13 @@ async def run_pattern_vak_adaptation_specialist(
 ) -> VAKAdaptationResponse:
     """
     Основная функция запуска Pattern VAK Adaptation Specialist Agent.
+
+    Автоматические интеграции (если доступны):
+    - Переключение на Project Manager при необходимости
+    - Проверка компетенций агента
+    - Планирование микрозадач
+    - Автоматические Git коммиты
+    - Русская локализация
 
     Args:
         user_message: Сообщение пользователя или контент для адаптации

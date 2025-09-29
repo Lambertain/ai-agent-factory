@@ -1,0 +1,440 @@
+{
+  "questionnaire_info": {
+    "title_ru": "Определение культурного профиля для PatternShift",
+    "title_en": "Cultural Profile Assessment for PatternShift",
+    "description_ru": "Эта анкета поможет нам адаптировать программу психологической трансформации под ваши культурные особенности и предпочтения, независимо от того, где вы сейчас проживаете.",
+    "description_en": "This questionnaire will help us adapt the psychological transformation program to your cultural characteristics and preferences, regardless of where you currently live.",
+    "estimated_time_ru": "Время заполнения: 3-5 минут",
+    "estimated_time_en": "Completion time: 3-5 minutes",
+    "privacy_note_ru": "Ваши ответы будут использованы только для персонализации программы и обеспечения культурной безопасности контента.",
+    "privacy_note_en": "Your answers will be used only to personalize the program and ensure cultural safety of the content."
+  },
+
+  "questions": [
+    {
+      "id": "direct_culture",
+      "type": "single_choice",
+      "required": true,
+      "weight": 10,
+      "question_ru": "С какой культурой вы себя больше всего отождествляете?",
+      "question_en": "Which culture do you most identify with?",
+      "help_text_ru": "Выберите культуру, которая наиболее полно отражает ваши ценности и мировоззрение, независимо от места рождения или текущего проживания.",
+      "help_text_en": "Choose the culture that most fully reflects your values and worldview, regardless of place of birth or current residence.",
+      "options": [
+        {
+          "id": "ukrainian",
+          "text_ru": "🇺🇦 Украинская",
+          "text_en": "🇺🇦 Ukrainian",
+          "description_ru": "Семейные традиции, православные корни, природные метафоры",
+          "description_en": "Family traditions, Orthodox roots, nature metaphors"
+        },
+        {
+          "id": "polish",
+          "text_ru": "🇵🇱 Польская",
+          "text_en": "🇵🇱 Polish",
+          "description_ru": "Католические традиции, семейные ценности, историческая память",
+          "description_en": "Catholic traditions, family values, historical memory"
+        },
+        {
+          "id": "english",
+          "text_ru": "🇬🇧🇺🇸 Английская/Американская",
+          "text_en": "🇬🇧🇺🇸 English/American",
+          "description_ru": "Светские ценности, индивидуализм, практичность",
+          "description_en": "Secular values, individualism, practicality"
+        },
+        {
+          "id": "german",
+          "text_ru": "🇩🇪 Немецкая",
+          "text_en": "🇩🇪 German",
+          "description_ru": "Порядок, дисциплина, качество, смешанные религиозные традиции",
+          "description_en": "Order, discipline, quality, mixed religious traditions"
+        },
+        {
+          "id": "french",
+          "text_ru": "🇫🇷 Французская",
+          "text_en": "🇫🇷 French",
+          "description_ru": "Культура, искусство, индивидуальная свобода",
+          "description_en": "Culture, art, individual freedom"
+        },
+        {
+          "id": "italian",
+          "text_ru": "🇮🇹 Итальянская",
+          "text_en": "🇮🇹 Italian",
+          "description_ru": "Семья, католические традиции, эмоциональность",
+          "description_en": "Family, Catholic traditions, emotionality"
+        },
+        {
+          "id": "spanish",
+          "text_ru": "🇪🇸 Испанская",
+          "text_en": "🇪🇸 Spanish",
+          "description_ru": "Семейные связи, католические ценности, экспрессивность",
+          "description_en": "Family ties, Catholic values, expressiveness"
+        },
+        {
+          "id": "russian",
+          "text_ru": "🇷🇺 Русская",
+          "text_en": "🇷🇺 Russian",
+          "description_ru": "Православные традиции, коллективизм, глубина переживаний",
+          "description_en": "Orthodox traditions, collectivism, depth of experience"
+        },
+        {
+          "id": "other_european",
+          "text_ru": "🌍 Другая европейская",
+          "text_en": "🌍 Other European",
+          "description_ru": "Чешская, словацкая, венгерская и другие европейские культуры",
+          "description_en": "Czech, Slovak, Hungarian and other European cultures"
+        },
+        {
+          "id": "mixed",
+          "text_ru": "🌐 Смешанная/Мультикультурная",
+          "text_en": "🌐 Mixed/Multicultural",
+          "description_ru": "Сочетание нескольких культурных традиций",
+          "description_en": "Combination of several cultural traditions"
+        }
+      ]
+    },
+
+    {
+      "id": "religious_affiliation",
+      "type": "single_choice",
+      "required": true,
+      "weight": 8,
+      "question_ru": "Какая религиозная или духовная традиция вам ближе?",
+      "question_en": "Which religious or spiritual tradition is closest to you?",
+      "help_text_ru": "Это поможет нам подобрать метафоры и примеры, которые будут резонировать с вашей системой ценностей.",
+      "help_text_en": "This will help us choose metaphors and examples that will resonate with your value system.",
+      "options": [
+        {
+          "id": "orthodox",
+          "text_ru": "☦️ Православие",
+          "text_en": "☦️ Orthodox Christianity",
+          "description_ru": "Православные праздники, традиции, духовные практики",
+          "description_en": "Orthodox holidays, traditions, spiritual practices"
+        },
+        {
+          "id": "catholic",
+          "text_ru": "✝️ Католицизм",
+          "text_en": "✝️ Catholicism",
+          "description_ru": "Католические традиции, семейные ценности, моральные принципы",
+          "description_en": "Catholic traditions, family values, moral principles"
+        },
+        {
+          "id": "protestant",
+          "text_ru": "⛪ Протестантизм",
+          "text_en": "⛪ Protestantism",
+          "description_ru": "Протестантские конфессии, личная вера, трудовая этика",
+          "description_en": "Protestant denominations, personal faith, work ethic"
+        },
+        {
+          "id": "secular",
+          "text_ru": "🔬 Светские взгляды",
+          "text_en": "🔬 Secular views",
+          "description_ru": "Научный подход, рациональное мышление, гуманистические ценности",
+          "description_en": "Scientific approach, rational thinking, humanistic values"
+        },
+        {
+          "id": "mixed",
+          "text_ru": "🤝 Смешанные традиции",
+          "text_en": "🤝 Mixed traditions",
+          "description_ru": "Сочетание различных духовных и религиозных подходов",
+          "description_en": "Combination of different spiritual and religious approaches"
+        },
+        {
+          "id": "other",
+          "text_ru": "🙏 Другое",
+          "text_en": "🙏 Other",
+          "description_ru": "Другие духовные или философские традиции",
+          "description_en": "Other spiritual or philosophical traditions"
+        }
+      ]
+    },
+
+    {
+      "id": "language_preference",
+      "type": "single_choice",
+      "required": true,
+      "weight": 7,
+      "question_ru": "На каком языке вы предпочитаете получать психологические материалы?",
+      "question_en": "In which language do you prefer to receive psychological materials?",
+      "help_text_ru": "Язык влияет на восприятие психологических концепций и эмоциональный отклик.",
+      "help_text_en": "Language affects the perception of psychological concepts and emotional response.",
+      "options": [
+        {
+          "id": "ukrainian",
+          "text_ru": "🇺🇦 Украинский",
+          "text_en": "🇺🇦 Ukrainian"
+        },
+        {
+          "id": "polish",
+          "text_ru": "🇵🇱 Польский",
+          "text_en": "🇵🇱 Polish"
+        },
+        {
+          "id": "english",
+          "text_ru": "🇬🇧 Английский",
+          "text_en": "🇬🇧 English"
+        },
+        {
+          "id": "german",
+          "text_ru": "🇩🇪 Немецкий",
+          "text_en": "🇩🇪 German"
+        },
+        {
+          "id": "french",
+          "text_ru": "🇫🇷 Французский",
+          "text_en": "🇫🇷 French"
+        },
+        {
+          "id": "russian",
+          "text_ru": "🇷🇺 Русский",
+          "text_en": "🇷🇺 Russian"
+        },
+        {
+          "id": "other",
+          "text_ru": "🌍 Другой",
+          "text_en": "🌍 Other"
+        }
+      ]
+    },
+
+    {
+      "id": "family_traditions",
+      "type": "single_choice",
+      "required": false,
+      "weight": 6,
+      "question_ru": "Какие семейные традиции для вас наиболее значимы?",
+      "question_en": "Which family traditions are most meaningful to you?",
+      "help_text_ru": "Семейные традиции формируют наше восприятие изменений и поддержки.",
+      "help_text_en": "Family traditions shape our perception of change and support.",
+      "options": [
+        {
+          "id": "orthodox_holidays",
+          "text_ru": "☦️ Православные праздники и традиции",
+          "text_en": "☦️ Orthodox holidays and traditions"
+        },
+        {
+          "id": "catholic_traditions",
+          "text_ru": "✝️ Католические традиции и обряды",
+          "text_en": "✝️ Catholic traditions and rituals"
+        },
+        {
+          "id": "secular_family",
+          "text_ru": "👨‍👩‍👧‍👦 Светские семейные ценности",
+          "text_en": "👨‍👩‍👧‍👦 Secular family values"
+        },
+        {
+          "id": "mixed_traditions",
+          "text_ru": "🌐 Смешанные культурные традиции",
+          "text_en": "🌐 Mixed cultural traditions"
+        },
+        {
+          "id": "minimal_traditions",
+          "text_ru": "🎯 Минимум традиций, фокус на настоящем",
+          "text_en": "🎯 Minimal traditions, focus on present"
+        }
+      ]
+    },
+
+    {
+      "id": "communication_style",
+      "type": "single_choice",
+      "required": true,
+      "weight": 5,
+      "question_ru": "Какой стиль общения и подачи информации вам более комфортен?",
+      "question_en": "Which communication and information delivery style is more comfortable for you?",
+      "help_text_ru": "Это поможет адаптировать способ подачи упражнений и обратной связи.",
+      "help_text_en": "This will help adapt the way exercises and feedback are delivered.",
+      "options": [
+        {
+          "id": "high_context",
+          "text_ru": "💭 Эмоциональный, с историями и подтекстом",
+          "text_en": "💭 Emotional, with stories and subtext",
+          "description_ru": "Предпочитаю метафоры, притчи, эмоциональную окраску",
+          "description_en": "I prefer metaphors, parables, emotional coloring"
+        },
+        {
+          "id": "medium_context",
+          "text_ru": "🏛️ Традиционный, с уважением к авторитету",
+          "text_en": "🏛️ Traditional, with respect for authority",
+          "description_ru": "Ценю опытность, структуру, проверенные методы",
+          "description_en": "I value experience, structure, proven methods"
+        },
+        {
+          "id": "low_context",
+          "text_ru": "📊 Прямой, конкретный и практичный",
+          "text_en": "📊 Direct, specific and practical",
+          "description_ru": "Предпочитаю четкие инструкции, измеримые результаты",
+          "description_en": "I prefer clear instructions, measurable results"
+        },
+        {
+          "id": "flexible",
+          "text_ru": "🎨 Адаптивный в зависимости от ситуации",
+          "text_en": "🎨 Adaptive depending on situation",
+          "description_ru": "Легко переключаюсь между разными стилями",
+          "description_en": "I easily switch between different styles"
+        }
+      ]
+    },
+
+    {
+      "id": "metaphor_preferences",
+      "type": "multiple_choice",
+      "required": false,
+      "weight": 4,
+      "question_ru": "Какие образы и метафоры лучше всего помогают вам понять новые идеи? (можно выбрать несколько)",
+      "question_en": "Which images and metaphors best help you understand new ideas? (multiple choice allowed)",
+      "help_text_ru": "Выберите все подходящие варианты. Это поможет использовать понятные вам образы в упражнениях.",
+      "help_text_en": "Choose all applicable options. This will help use familiar images in exercises.",
+      "options": [
+        {
+          "id": "nature_home",
+          "text_ru": "🌳 Природа, дом, семейный очаг",
+          "text_en": "🌳 Nature, home, family hearth"
+        },
+        {
+          "id": "tradition_church",
+          "text_ru": "⛪ Традиции, церковь, духовные практики",
+          "text_en": "⛪ Traditions, church, spiritual practices"
+        },
+        {
+          "id": "business_tech",
+          "text_ru": "💼 Бизнес, технологии, достижения",
+          "text_en": "💼 Business, technology, achievements"
+        },
+        {
+          "id": "culture_art",
+          "text_ru": "🎨 Культура, искусство, философия",
+          "text_en": "🎨 Culture, art, philosophy"
+        },
+        {
+          "id": "sports_competition",
+          "text_ru": "🏆 Спорт, соревнования, командная работа",
+          "text_en": "🏆 Sports, competition, teamwork"
+        },
+        {
+          "id": "science_logic",
+          "text_ru": "🔬 Наука, логика, исследования",
+          "text_en": "🔬 Science, logic, research"
+        }
+      ]
+    },
+
+    {
+      "id": "cultural_values",
+      "type": "rank_order",
+      "required": true,
+      "weight": 6,
+      "question_ru": "Расположите эти ценности в порядке важности для вас (1 - самая важная):",
+      "question_en": "Rank these values in order of importance to you (1 - most important):",
+      "help_text_ru": "Перетащите или пронумеруйте ценности от самой важной к менее важной.",
+      "help_text_en": "Drag or number the values from most important to least important.",
+      "options": [
+        {
+          "id": "community_family",
+          "text_ru": "👥 Община, семья, взаимопомощь",
+          "text_en": "👥 Community, family, mutual aid"
+        },
+        {
+          "id": "individual_freedom",
+          "text_ru": "🗽 Индивидуальная свобода, самореализация",
+          "text_en": "🗽 Individual freedom, self-realization"
+        },
+        {
+          "id": "order_discipline",
+          "text_ru": "⚖️ Порядок, дисциплина, качество",
+          "text_en": "⚖️ Order, discipline, quality"
+        },
+        {
+          "id": "balance_harmony",
+          "text_ru": "☯️ Баланс между традициями и современностью",
+          "text_en": "☯️ Balance between tradition and modernity"
+        },
+        {
+          "id": "achievement_success",
+          "text_ru": "🎯 Достижения, успех, признание",
+          "text_en": "🎯 Achievement, success, recognition"
+        },
+        {
+          "id": "spiritual_growth",
+          "text_ru": "🌟 Духовный рост, самопознание",
+          "text_en": "🌟 Spiritual growth, self-knowledge"
+        }
+      ]
+    },
+
+    {
+      "id": "sensitive_topics_awareness",
+      "type": "checklist",
+      "required": false,
+      "weight": 3,
+      "question_ru": "Есть ли темы, которые могут вызвать у вас дискомфорт в психологических материалах? (необязательно)",
+      "question_en": "Are there topics that might cause discomfort in psychological materials? (optional)",
+      "help_text_ru": "Это поможет нам избежать потенциально травмирующего контента. Информация конфиденциальна.",
+      "help_text_en": "This will help us avoid potentially traumatic content. Information is confidential.",
+      "options": [
+        {
+          "id": "war_conflict",
+          "text_ru": "⚔️ Война, конфликты, насилие",
+          "text_en": "⚔️ War, conflicts, violence"
+        },
+        {
+          "id": "religious_criticism",
+          "text_ru": "🙏 Критика религиозных взглядов",
+          "text_en": "🙏 Criticism of religious views"
+        },
+        {
+          "id": "cultural_stereotypes",
+          "text_ru": "🏷️ Культурные стереотипы",
+          "text_en": "🏷️ Cultural stereotypes"
+        },
+        {
+          "id": "political_topics",
+          "text_ru": "🗳️ Политические темы",
+          "text_en": "🗳️ Political topics"
+        },
+        {
+          "id": "family_trauma",
+          "text_ru": "👨‍👩‍👧‍👦 Семейные травмы, разводы",
+          "text_en": "👨‍👩‍👧‍👦 Family trauma, divorces"
+        },
+        {
+          "id": "financial_stress",
+          "text_ru": "💰 Финансовые проблемы",
+          "text_en": "💰 Financial problems"
+        },
+        {
+          "id": "none",
+          "text_ru": "Нет особых ограничений",
+          "text_en": "No particular restrictions"
+        }
+      ]
+    }
+  ],
+
+  "completion_page": {
+    "title_ru": "Спасибо за уделенное время!",
+    "title_en": "Thank you for your time!",
+    "message_ru": "Ваш культурный профиль будет использован для персонализации программы PatternShift. Вы сможете изменить настройки в любое время в личном кабинете.",
+    "message_en": "Your cultural profile will be used to personalize the PatternShift program. You can change settings at any time in your personal account.",
+    "next_steps_ru": [
+      "Система автоматически подберет подходящие культурные метафоры",
+      "Материалы будут адаптированы под ваш стиль коммуникации",
+      "Чувствительные темы будут исключены из контента",
+      "Религиозный контекст будет учтен в духовных практиках"
+    ],
+    "next_steps_en": [
+      "The system will automatically select appropriate cultural metaphors",
+      "Materials will be adapted to your communication style",
+      "Sensitive topics will be excluded from content",
+      "Religious context will be considered in spiritual practices"
+    ]
+  },
+
+  "scoring_info": {
+    "algorithm": "weighted_cultural_matching",
+    "confidence_threshold": 0.6,
+    "min_questions_for_accuracy": 5,
+    "followup_questions_trigger": 0.6,
+    "auto_assignment_threshold": 0.8
+  }
+}

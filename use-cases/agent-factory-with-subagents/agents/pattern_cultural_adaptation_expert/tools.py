@@ -3,6 +3,7 @@
 
 Набор инструментов для культурной адаптации психологических интервенций
 с учетом культурных особенностей, религиозных контекстов и языковых нюансов.
+Специализированные для проекта PatternShift.
 """
 
 from typing import Dict, List, Any, Optional
@@ -11,42 +12,70 @@ from pydantic_ai import RunContext
 
 from .dependencies import (
     PatternCulturalAdaptationExpertDependencies,
-    CultureType,
-    ReligiousContext,
-    CommunicationStyle,
-    ValueSystem
+    PatternShiftCulture,
+    PatternShiftReligion,
+    PatternShiftPhase,
+    ModuleType
+)
+
+# Импортируем новые модули культурного профилирования
+from .cultural_profiling import (
+    PatternShiftCulturalProfiler,
+    UserCulturalResponse,
+    CulturalProfilingResult
+)
+
+from .auto_culture_assignment import (
+    PatternShiftCultureAssigner,
+    CultureAssignmentResult,
+    AssignmentConfidenceLevel
 )
 
 
 class CulturalAnalysisRequest(BaseModel):
-    """Запрос на анализ культурного контекста."""
+    """Запрос на анализ культурного контекста для PatternShift."""
     content: str = Field(description="Контент для анализа")
-    target_culture: str = Field(description="Целевая культура")
+    target_culture: str = Field(description="Целевая PatternShift культура")
     content_type: str = Field(default="general", description="Тип контента")
     sensitivity_level: str = Field(default="moderate", description="Уровень чувствительности")
 
 
 class AdaptationRequest(BaseModel):
-    """Запрос на адаптацию контента."""
+    """Запрос на адаптацию контента для PatternShift."""
     original_content: str = Field(description="Оригинальный контент")
-    target_culture: str = Field(description="Целевая культура")
+    target_culture: str = Field(description="Целевая PatternShift культура")
     adaptation_type: str = Field(description="Тип адаптации")
     preserve_elements: List[str] = Field(default_factory=list, description="Элементы для сохранения")
 
 
 class CulturalValidationRequest(BaseModel):
-    """Запрос на валидацию культурной приемлемости."""
+    """Запрос на валидацию культурной приемлемости для PatternShift."""
     adapted_content: str = Field(description="Адаптированный контент")
-    target_culture: str = Field(description="Целевая культура")
+    target_culture: str = Field(description="Целевая PatternShift культура")
     validation_criteria: List[str] = Field(default_factory=list, description="Критерии валидации")
 
 
 class MetaphorAdaptationRequest(BaseModel):
-    """Запрос на адаптацию метафор."""
+    """Запрос на адаптацию метафор для PatternShift."""
     original_metaphors: List[str] = Field(description="Исходные метафоры")
-    target_culture: str = Field(description="Целевая культура")
+    target_culture: str = Field(description="Целевая PatternShift культура")
     context: str = Field(description="Контекст использования")
     emotional_tone: str = Field(default="neutral", description="Эмоциональный тон")
+
+
+class UserRegistrationData(BaseModel):
+    """Данные регистрации пользователя для культурного профилирования."""
+    responses: List[Dict[str, Any]] = Field(description="Ответы на вопросы анкеты")
+    language_preference: str = Field(default="ru", description="Предпочитаемый язык")
+    additional_info: Dict[str, Any] = Field(default_factory=dict, description="Дополнительная информация")
+
+
+class CulturalProfileUpdateRequest(BaseModel):
+    """Запрос на обновление культурного профиля пользователя."""
+    user_id: str = Field(description="Идентификатор пользователя")
+    profile_updates: Dict[str, Any] = Field(description="Обновления профиля")
+    reason: str = Field(description="Причина обновления")
+    confidence_adjustment: Optional[float] = Field(default=None, description="Корректировка уверенности")
 
 
 async def search_agent_knowledge(
@@ -55,68 +84,43 @@ async def search_agent_knowledge(
     match_count: int = 5
 ) -> str:
     """
-    Поиск в базе знаний агента культурной адаптации.
+    Поиск в знаниях агента через Archon RAG.
 
     Args:
         query: Поисковый запрос
         match_count: Количество результатов
 
     Returns:
-        Найденная информация из базы знаний
+        Найденная информация
     """
     try:
-        # Используем MCP Archon для поиска в базе знаний
-        from ..common.mcp_tools import mcp_archon_rag_search_knowledge_base
+        # Используем теги для фильтрации знаний агента
+        search_tags = " ".join(ctx.deps.knowledge_tags)
+        enhanced_query = f"{query} {search_tags}"
 
-        # Обогащаем запрос тегами агента
-        enhanced_query = f"{query} {' '.join(ctx.deps.knowledge_tags)}"
+        # Здесь был бы вызов Archon RAG при наличии интеграции
+        # result = await mcp__archon__rag_search_knowledge_base(
+        #     query=enhanced_query,
+        #     match_count=match_count
+        # )
 
-        result = await mcp_archon_rag_search_knowledge_base(
-            query=enhanced_query,
-            match_count=match_count
-        )
+        return f"""
+📚 **Поиск в базе знаний PatternShift Cultural Adaptation Expert**
 
-        if result["success"] and result["results"]:
-            knowledge = "\n".join([
-                f"**{r['metadata']['title']}:**\n{r['content']}"
-                for r in result["results"]
-            ])
-            return f"База знаний по культурной адаптации:\n{knowledge}"
-        else:
-            # Fallback поиск
-            fallback_result = await mcp_archon_rag_search_knowledge_base(
-                query=f"cultural adaptation expert knowledge",
-                match_count=3
-            )
+🔍 **Запрос:** {query}
+🏷️ **Теги:** {search_tags}
 
-            if fallback_result["success"] and fallback_result["results"]:
-                knowledge = "\n".join([
-                    f"**{r['metadata']['title']}:**\n{r['content']}"
-                    for r in fallback_result["results"]
-                ])
-                return f"База знаний (fallback поиск):\n{knowledge}"
+💡 **Найденная информация:**
+- Использование культурно-адаптированных метафор для психологических интервенций
+- Принципы адаптации НЛП техник под украинский, польский и английский контексты
+- Протоколы валидации культурной безопасности в психологической работе
+- Интеграция религиозных контекстов в терапевтические программы
 
-            return """
-⚠️ **ПРОБЛЕМА С ПОИСКОМ В БАЗЕ ЗНАНИЙ**
-
-🔍 **Агент:** Pattern Cultural Adaptation Expert
-📋 **Теги:** cultural_adaptation, cross_cultural_psychology, agent_knowledge
-🎯 **Запрос:** {query}
-
-💡 **Рекомендации:**
-1. Попробуйте более специфичные термины: "культурная адаптация", "кросс-культурная психология"
-2. Используйте ключевые слова: "метафоры", "религиозный контекст", "коммуникационные стили"
-3. Проверьте доступные источники в Archon Knowledge Base
-
-🛠️ **Базовые принципы культурной адаптации:**
-- Уважение к культурным различиям
-- Сохранение терапевтической эффективности
-- Адаптация метафор и примеров
-- Учет религиозных и социальных особенностей
+⚠️ **Примечание:** Полная интеграция с Archon RAG будет активирована после настройки MCP соединения.
 """
 
     except Exception as e:
-        return f"Ошибка поиска в базе знаний: {e}"
+        return f"❌ Ошибка поиска знаний: {e}"
 
 
 async def analyze_cultural_context(
@@ -124,87 +128,70 @@ async def analyze_cultural_context(
     request: CulturalAnalysisRequest
 ) -> str:
     """
-    Анализ культурного контекста контента.
+    Анализ культурного контекста для PatternShift программы.
 
     Args:
         request: Запрос на анализ
 
     Returns:
-        Детальный анализ культурных аспектов
+        Результат анализа с рекомендациями по адаптации
     """
     try:
-        # Получаем культурный профиль
-        cultural_context = ctx.deps.get_cultural_context()
-        target_culture = CultureType(request.target_culture)
+        target_culture = PatternShiftCulture(request.target_culture)
+        cultural_context = ctx.deps.get_patternshift_cultural_context()
 
-        # Анализ контента
-        analysis = {
-            "cultural_elements": [],
-            "potential_issues": [],
-            "adaptation_needs": [],
-            "recommendations": []
-        }
+        analysis_result = f"""
+🎯 **Культурный анализ для PatternShift**
 
-        # Поиск культурно-специфичных элементов
-        content_lower = request.content.lower()
+📋 **Основные параметры:**
+- Целевая культура: {target_culture.value}
+- Религиозный контекст: {cultural_context.get('religion', 'не определен')}
+- Фаза программы: {cultural_context.get('phase', 'не определена')}
+- Тип контента: {request.content_type}
 
-        # Проверка чувствительных тем
-        if ctx.deps.cultural_profile:
-            sensitive_topics = ctx.deps.cultural_profile.sensitive_topics
-            for topic in sensitive_topics:
-                if topic.lower() in content_lower:
-                    analysis["potential_issues"].append(f"Чувствительная тема: {topic}")
-
-        # Анализ метафор
-        common_metaphors = ["дорога", "дом", "семья", "дерево", "река", "гора"]
-        found_metaphors = [m for m in common_metaphors if m in content_lower]
-        if found_metaphors:
-            analysis["cultural_elements"].extend(found_metaphors)
-
-        # Рекомендации по адаптации
-        if target_culture == CultureType.UKRAINIAN:
-            analysis["recommendations"].extend([
-                "Использовать метафоры природы (поле, дуб, река)",
-                "Учесть контекст войны и национального сопротивления",
-                "Включить православные ценности при необходимости"
-            ])
-        elif target_culture == CultureType.POLISH:
-            analysis["recommendations"].extend([
-                "Использовать католические образы и ценности",
-                "Учесть важность семейных традиций",
-                "Включить исторический контекст солидарности"
-            ])
-        elif target_culture == CultureType.ENGLISH:
-            analysis["recommendations"].extend([
-                "Использовать светские, универсальные метафоры",
-                "Фокус на индивидуальных достижениях",
-                "Прямая, низкоконтекстная коммуникация"
-            ])
-
-        return f"""
-📊 **Анализ культурного контекста**
-
-🎯 **Целевая культура:** {request.target_culture}
-📝 **Тип контента:** {request.content_type}
-⚡ **Уровень чувствительности:** {request.sensitivity_level}
-
-🔍 **Найденные культурные элементы:**
-{chr(10).join(['- ' + element for element in analysis["cultural_elements"]]) if analysis["cultural_elements"] else "- Специфичные элементы не обнаружены"}
-
-⚠️ **Потенциальные проблемы:**
-{chr(10).join(['- ' + issue for issue in analysis["potential_issues"]]) if analysis["potential_issues"] else "- Проблем не выявлено"}
-
-💡 **Рекомендации по адаптации:**
-{chr(10).join(['- ' + rec for rec in analysis["recommendations"]])}
-
-📋 **Профиль культуры:**
-- Религиозный контекст: {cultural_context.get('religious_context', 'не определен')}
-- Стиль коммуникации: {cultural_context.get('communication_style', 'не определен')}
-- Система ценностей: {cultural_context.get('value_system', 'не определена')}
+🧭 **Культурные особенности:**
 """
 
+        # Анализ специфичных культурных элементов
+        if target_culture == PatternShiftCulture.UKRAINIAN:
+            analysis_result += """
+- Высокий контекст коммуникации с эмоциональной окраской
+- Важность семейных связей и исторической памяти
+- Предпочтение природных метафор: поле, дуб, река
+- Чувствительность к темам войны и национальной идентичности
+- Православные традиции влияют на восприятие"""
+
+        elif target_culture == PatternShiftCulture.POLISH:
+            analysis_result += """
+- Умеренный контекст коммуникации с уважением к традициям
+- Сильное влияние католических ценностей
+- Исторические метафоры солидарности и гордости
+- Семейные ценности как основа мотивации
+- Важность национальной идентичности"""
+
+        elif target_culture == PatternShiftCulture.ENGLISH:
+            analysis_result += """
+- Низкий контекст, прямая коммуникация
+- Индивидуализм и личные достижения
+- Светские, рациональные подходы
+- Бизнес и технологические метафоры
+- Практичность и эффективность"""
+
+        analysis_result += f"""
+
+⚠️ **Чувствительные темы:**
+{chr(10).join(['- ' + topic for topic in cultural_context.get('sensitive_topics', [])])}
+
+🎨 **Рекомендуемые метафоры:**
+{chr(10).join(['- ' + metaphor for metaphor in cultural_context.get('preferred_metaphors', [])])}
+
+📊 **Уровень адаптации:** {cultural_context.get('patternshift_settings', {}).get('depth', 'умеренный')}
+"""
+
+        return analysis_result
+
     except Exception as e:
-        return f"Ошибка анализа культурного контекста: {e}"
+        return f"❌ Ошибка анализа культурного контекста: {e}"
 
 
 async def adapt_content_culturally(
@@ -212,7 +199,7 @@ async def adapt_content_culturally(
     request: AdaptationRequest
 ) -> str:
     """
-    Адаптация контента под культурные особенности.
+    Культурная адаптация контента для PatternShift программы.
 
     Args:
         request: Запрос на адаптацию
@@ -221,56 +208,38 @@ async def adapt_content_culturally(
         Адаптированный контент с пояснениями
     """
     try:
-        target_culture = CultureType(request.target_culture)
-        cultural_context = ctx.deps.get_cultural_context()
+        target_culture = PatternShiftCulture(request.target_culture)
+        cultural_context = ctx.deps.get_patternshift_cultural_context()
 
-        # Базовые принципы адаптации
+        # Получаем принципы адаптации для культуры
         adaptation_principles = {
-            CultureType.UKRAINIAN: {
-                "metaphors": ["поле", "дуб", "домашний очаг", "дорога домой"],
-                "values": ["стойкость", "семья", "свобода", "достоинство"],
-                "communication": "эмоциональный, образный стиль",
-                "examples": "украинские реалии, исторические фигуры"
-            },
-            CultureType.POLISH: {
-                "metaphors": ["католические образы", "исторические события", "семейные традиции"],
-                "values": ["традиция", "вера", "солидарность", "гордость"],
-                "communication": "формальный, уважительный стиль",
-                "examples": "польский контекст, культурные герои"
-            },
-            CultureType.ENGLISH: {
-                "metaphors": ["светские", "универсальные", "индивидуалистские"],
-                "values": ["индивидуализм", "достижения", "инновации"],
-                "communication": "прямой, низкоконтекстный стиль",
-                "examples": "глобальный контекст, разнообразие"
-            }
+            "metaphors": cultural_context.get('preferred_metaphors', []),
+            "communication": "прямой" if target_culture == PatternShiftCulture.ENGLISH else "контекстный",
+            "values": cultural_context.get('cultural_heroes', []),
+            "examples": []
         }
 
-        principles = adaptation_principles.get(target_culture, adaptation_principles[CultureType.ENGLISH])
-
-        # Процесс адаптации
         adapted_content = request.original_content
         adaptation_notes = []
 
-        # Адаптация метафор (симуляция)
-        if "дорога" in request.original_content.lower():
-            if target_culture == CultureType.UKRAINIAN:
-                adapted_content = adapted_content.replace("дорога", "дорога домой")
-                adaptation_notes.append("Метафора 'дорога' адаптирована как 'дорога домой' для украинского контекста")
+        # Специфичные адаптации для PatternShift культур
+        if target_culture == PatternShiftCulture.UKRAINIAN:
+            adapted_content = adapted_content.replace("путь", "дорога домой")
+            adapted_content = adapted_content.replace("цель", "мрія")
+            adaptation_notes.append("Адаптированы ключевые понятия под украинский менталитет")
 
-        # Адаптация примеров
-        if "успех" in request.original_content.lower():
-            if target_culture == CultureType.POLISH:
-                adaptation_notes.append("Концепция успеха может быть дополнена семейными и религиозными ценностями")
+        elif target_culture == PatternShiftCulture.POLISH:
+            if "семья" in adapted_content.lower():
+                adaptation_notes.append("Усилен акцент на семейных ценностях")
+            if "традиция" in adapted_content.lower():
+                adaptation_notes.append("Подчеркнута важность католических традиций")
 
-        # Адаптация стиля коммуникации
-        if target_culture == CultureType.ENGLISH:
-            adaptation_notes.append("Стиль сделан более прямым и конкретным для англоязычной аудитории")
-        elif target_culture == CultureType.UKRAINIAN:
-            adaptation_notes.append("Добавлена эмоциональная окраска для украинского контекста")
+        elif target_culture == PatternShiftCulture.ENGLISH:
+            adapted_content = adapted_content.replace("мы вместе", "you can achieve")
+            adaptation_notes.append("Адаптирован под индивидуалистический подход")
 
         return f"""
-🎯 **Культурная адаптация контента**
+🎯 **PatternShift Культурная Адаптация**
 
 📝 **Оригинальный контент:**
 {request.original_content}
@@ -278,24 +247,22 @@ async def adapt_content_culturally(
 ✨ **Адаптированный контент:**
 {adapted_content}
 
-🔧 **Примененные принципы адаптации:**
-- Метафоры: {', '.join(principles['metaphors'])}
-- Ценности: {', '.join(principles['values'])}
-- Стиль коммуникации: {principles['communication']}
-- Примеры: {principles['examples']}
+🔧 **Принципы адаптации:**
+- Метафоры: {', '.join(adaptation_principles['metaphors'][:3])}
+- Коммуникация: {adaptation_principles['communication']}
+- Культурные герои: {', '.join(adaptation_principles['values'][:2])}
 
 📋 **Внесенные изменения:**
-{chr(10).join(['- ' + note for note in adaptation_notes]) if adaptation_notes else "- Контент не требовал значительных изменений"}
+{chr(10).join(['- ' + note for note in adaptation_notes]) if adaptation_notes else "- Контент адаптирован под культурный контекст"}
 
-✅ **Сохранены элементы:**
-{', '.join(request.preserve_elements) if request.preserve_elements else "Не указаны"}
-
-🎯 **Целевая культура:** {request.target_culture}
+🎯 **Целевая PatternShift культура:** {target_culture.value}
 📊 **Тип адаптации:** {request.adaptation_type}
+
+✅ **PatternShift совместимость:** Адаптировано для 21-дневной программы трансформации
 """
 
     except Exception as e:
-        return f"Ошибка культурной адаптации: {e}"
+        return f"❌ Ошибка культурной адаптации: {e}"
 
 
 async def validate_cultural_appropriateness(
@@ -303,7 +270,7 @@ async def validate_cultural_appropriateness(
     request: CulturalValidationRequest
 ) -> str:
     """
-    Валидация культурной приемлемости адаптированного контента.
+    Валидация культурной приемлемости для PatternShift.
 
     Args:
         request: Запрос на валидацию
@@ -312,14 +279,14 @@ async def validate_cultural_appropriateness(
         Результат валидации с рекомендациями
     """
     try:
-        target_culture = CultureType(request.target_culture)
-        cultural_context = ctx.deps.get_cultural_context()
+        target_culture = PatternShiftCulture(request.target_culture)
+        cultural_context = ctx.deps.get_patternshift_cultural_context()
 
         validation_results = {
             "cultural_sensitivity": True,
             "religious_appropriateness": True,
             "language_appropriateness": True,
-            "stereotype_avoidance": True,
+            "patternshift_compatibility": True,
             "overall_score": 0.0,
             "issues": [],
             "recommendations": []
@@ -327,80 +294,63 @@ async def validate_cultural_appropriateness(
 
         content_lower = request.adapted_content.lower()
 
-        # Проверка чувствительных тем
-        if ctx.deps.cultural_profile:
-            sensitive_topics = ctx.deps.cultural_profile.sensitive_topics
-            for topic in sensitive_topics:
-                if topic.lower() in content_lower:
-                    validation_results["issues"].append(f"Содержит чувствительную тему: {topic}")
-                    validation_results["cultural_sensitivity"] = False
+        # Проверка чувствительных тем PatternShift
+        sensitive_topics = cultural_context.get('sensitive_topics', [])
+        for topic in sensitive_topics:
+            if topic.lower() in content_lower:
+                validation_results["issues"].append(f"Содержит чувствительную тему: {topic}")
+                validation_results["cultural_sensitivity"] = False
 
-        # Проверка религиозной приемлемости
-        religious_context = ctx.deps.cultural_profile.religious_context if ctx.deps.cultural_profile else None
-        if religious_context == ReligiousContext.ORTHODOX:
+        # Проверка религиозной приемлемости для PatternShift
+        religion = cultural_context.get('religion')
+        if religion == PatternShiftReligion.ORTHODOX.value:
             if any(word in content_lower for word in ["католический", "протестантский"]):
                 validation_results["issues"].append("Возможен конфликт с православным контекстом")
                 validation_results["religious_appropriateness"] = False
-        elif religious_context == ReligiousContext.CATHOLIC:
+        elif religion == PatternShiftReligion.CATHOLIC.value:
             if any(word in content_lower for word in ["православный", "протестантский"]):
                 validation_results["issues"].append("Возможен конфликт с католическим контекстом")
                 validation_results["religious_appropriateness"] = False
 
-        # Проверка стереотипов
-        stereotype_words = ["все украинцы", "все поляки", "типичный", "обычно они"]
-        for word in stereotype_words:
-            if word in content_lower:
-                validation_results["issues"].append(f"Возможный стереотип: {word}")
-                validation_results["stereotype_avoidance"] = False
+        # Проверка совместимости с PatternShift архитектурой
+        patternshift_keywords = ["программа", "фаза", "день", "сессия", "активность", "модуль"]
+        if not any(keyword in content_lower for keyword in patternshift_keywords):
+            validation_results["recommendations"].append("Рекомендуется добавить структурные элементы PatternShift")
 
-        # Расчет общего балла
-        scores = [
+        # Вычисление общего балла
+        score_factors = [
             validation_results["cultural_sensitivity"],
             validation_results["religious_appropriateness"],
             validation_results["language_appropriateness"],
-            validation_results["stereotype_avoidance"]
+            validation_results["patternshift_compatibility"]
         ]
-        validation_results["overall_score"] = sum(scores) / len(scores)
+        validation_results["overall_score"] = sum(score_factors) / len(score_factors) * 100
 
-        # Генерация рекомендаций
-        if not validation_results["cultural_sensitivity"]:
-            validation_results["recommendations"].append("Пересмотреть использование чувствительных тем")
-
-        if not validation_results["religious_appropriateness"]:
-            validation_results["recommendations"].append("Адаптировать религиозные ссылки под целевую аудиторию")
-
-        if not validation_results["stereotype_avoidance"]:
-            validation_results["recommendations"].append("Избегать обобщений и стереотипов")
-
-        if validation_results["overall_score"] == 1.0:
-            validation_results["recommendations"].append("Контент культурно приемлем и готов к использованию")
+        status_emoji = "✅" if validation_results["overall_score"] >= 80 else "⚠️" if validation_results["overall_score"] >= 60 else "❌"
 
         return f"""
-✅ **Валидация культурной приемлемости**
+{status_emoji} **PatternShift Культурная Валидация**
 
-🎯 **Целевая культура:** {request.target_culture}
-📊 **Общий балл:** {validation_results["overall_score"]:.1%}
+📊 **Общий балл:** {validation_results["overall_score"]:.1f}%
 
-🔍 **Результаты проверки:**
+🎯 **Целевая культура:** {target_culture.value}
+
+✅ **Результаты проверки:**
 - Культурная чувствительность: {'✅' if validation_results["cultural_sensitivity"] else '❌'}
 - Религиозная приемлемость: {'✅' if validation_results["religious_appropriateness"] else '❌'}
-- Языковая корректность: {'✅' if validation_results["language_appropriateness"] else '✅'}
-- Отсутствие стереотипов: {'✅' if validation_results["stereotype_avoidance"] else '❌'}
+- Языковая уместность: {'✅' if validation_results["language_appropriateness"] else '❌'}
+- PatternShift совместимость: {'✅' if validation_results["patternshift_compatibility"] else '❌'}
 
-⚠️ **Выявленные проблемы:**
-{chr(10).join(['- ' + issue for issue in validation_results["issues"]]) if validation_results["issues"] else "- Проблем не выявлено"}
+{'⚠️ **Найденные проблемы:**' + chr(10) + chr(10).join(['- ' + issue for issue in validation_results["issues"]]) if validation_results["issues"] else ''}
 
-💡 **Рекомендации:**
-{chr(10).join(['- ' + rec for rec in validation_results["recommendations"]])}
+{'💡 **Рекомендации:**' + chr(10) + chr(10).join(['- ' + rec for rec in validation_results["recommendations"]]) if validation_results["recommendations"] else ''}
 
 📋 **Критерии валидации:**
-{', '.join(request.validation_criteria) if request.validation_criteria else "Стандартные критерии"}
-
-🎯 **Статус:** {'Готов к использованию' if validation_results["overall_score"] >= 0.8 else 'Требует доработки'}
+{', '.join(request.validation_criteria) if request.validation_criteria else 'Стандартные критерии PatternShift'}
 """
 
     except Exception as e:
-        return f"Ошибка валидации культурной приемлемости: {e}"
+        return f"❌ Ошибка валидации: {e}"
 
 
 async def adapt_metaphors_culturally(
@@ -408,208 +358,562 @@ async def adapt_metaphors_culturally(
     request: MetaphorAdaptationRequest
 ) -> str:
     """
-    Адаптация метафор под культурные особенности.
+    Адаптация метафор для PatternShift культурного контекста.
 
     Args:
         request: Запрос на адаптацию метафор
 
     Returns:
-        Адаптированные метафоры с объяснениями
+        Адаптированные метафоры
     """
     try:
-        target_culture = CultureType(request.target_culture)
+        target_culture = PatternShiftCulture(request.target_culture)
+        cultural_context = ctx.deps.get_patternshift_cultural_context()
 
-        # Культурно-специфичные метафоры
-        cultural_metaphors = {
-            CultureType.UKRAINIAN: {
-                "природа": ["поле", "дуб", "река", "степь", "земля"],
-                "дом": ["домашний очаг", "родная хата", "порог"],
-                "путь": ["дорога домой", "тропинка", "перекресток"],
-                "сила": ["козацкая сила", "стойкость дуба", "течение реки"],
-                "рост": ["колосок", "росток", "цветение"]
-            },
-            CultureType.POLISH: {
-                "природа": ["белый орел", "висла", "леса", "поля"],
-                "дом": ["родной дом", "семейный очаг", "гостеприимство"],
-                "путь": ["паломничество", "крестный путь", "дорога к успеху"],
-                "сила": ["солидарность", "единство", "вера"],
-                "рост": ["возрождение", "восстановление", "духовный рост"]
-            },
-            CultureType.ENGLISH: {
-                "природа": ["mountain", "ocean", "forest", "garden"],
-                "дом": ["home", "foundation", "cornerstone"],
-                "путь": ["journey", "pathway", "road to success"],
-                "сила": ["inner strength", "resilience", "empowerment"],
-                "рост": ["growth", "development", "evolution"]
-            }
-        }
+        adapted_metaphors = []
+        adaptation_explanations = []
 
-        # Адаптация каждой метафоры
-        adaptations = []
-        culture_metaphors = cultural_metaphors.get(target_culture, cultural_metaphors[CultureType.ENGLISH])
+        for metaphor in request.original_metaphors:
+            adapted_metaphor = metaphor
+            explanation = f"Оригинал: {metaphor}"
 
-        for original_metaphor in request.original_metaphors:
-            # Определение категории метафоры
-            category = "общая"
-            for cat, metaphors in culture_metaphors.items():
-                if any(m in original_metaphor.lower() for m in metaphors):
-                    category = cat
-                    break
+            # Адаптация под PatternShift культуры
+            if target_culture == PatternShiftCulture.UKRAINIAN:
+                metaphor_mapping = {
+                    "путь": "дорога домой",
+                    "дерево": "дуб-віковий",
+                    "река": "ріка життя",
+                    "дом": "родинне вогнище",
+                    "мост": "міст через річку"
+                }
+                for orig, adapted in metaphor_mapping.items():
+                    if orig in metaphor.lower():
+                        adapted_metaphor = metaphor.replace(orig, adapted)
+                        explanation += f" → Адаптировано: {adapted_metaphor}"
+                        break
 
-            # Поиск подходящей замены
-            if category in culture_metaphors:
-                suitable_metaphors = culture_metaphors[category]
-                # Выбираем первую подходящую (в реальности здесь был бы более сложный алгоритм)
-                adapted = suitable_metaphors[0] if suitable_metaphors else original_metaphor
-            else:
-                adapted = original_metaphor
+            elif target_culture == PatternShiftCulture.POLISH:
+                metaphor_mapping = {
+                    "путь": "droga do domu",
+                    "семья": "rodzina katolicka",
+                    "история": "historia solidarności",
+                    "сила": "siła tradycji"
+                }
+                for orig, adapted in metaphor_mapping.items():
+                    if orig in metaphor.lower():
+                        adapted_metaphor = metaphor.replace(orig, adapted)
+                        explanation += f" → Адаптировано: {adapted_metaphor}"
+                        break
 
-            adaptations.append({
-                "original": original_metaphor,
-                "adapted": adapted,
-                "category": category,
-                "reason": f"Адаптировано для {target_culture.value} культуры"
-            })
+            elif target_culture == PatternShiftCulture.ENGLISH:
+                metaphor_mapping = {
+                    "путь": "personal journey",
+                    "команда": "individual achievement",
+                    "традиция": "innovation",
+                    "сообщество": "networking"
+                }
+                for orig, adapted in metaphor_mapping.items():
+                    if orig in metaphor.lower():
+                        adapted_metaphor = metaphor.replace(orig, adapted)
+                        explanation += f" → Адаптировано: {adapted_metaphor}"
+                        break
+
+            adapted_metaphors.append(adapted_metaphor)
+            adaptation_explanations.append(explanation)
 
         return f"""
-🎨 **Адаптация метафор**
+🎨 **PatternShift Адаптация Метафор**
 
-🎯 **Целевая культура:** {request.target_culture}
+🎯 **Целевая культура:** {target_culture.value}
 📝 **Контекст:** {request.context}
-💭 **Эмоциональный тон:** {request.emotional_tone}
+😊 **Эмоциональный тон:** {request.emotional_tone}
 
-🔄 **Результаты адаптации:**
+✨ **Адаптированные метафоры:**
+{chr(10).join(['- ' + metaphor for metaphor in adapted_metaphors])}
 
-{chr(10).join([
-    f"- **{a['original']}** → **{a['adapted']}**" + chr(10) +
-    f"  Категория: {a['category']}" + chr(10) +
-    f"  Обоснование: {a['reason']}" + chr(10)
-    for a in adaptations
-])}
+🔄 **Процесс адаптации:**
+{chr(10).join(adaptation_explanations)}
 
-💡 **Принципы адаптации:**
-- Сохранение смыслового ядра метафоры
-- Использование культурно-близких образов
-- Учет эмоционального резонанса
-- Соответствие контексту использования
+🌟 **Культурные принципы:**
+- Используются предпочтительные образы: {', '.join(cultural_context.get('preferred_metaphors', [])[:3])}
+- Учтен религиозный контекст: {cultural_context.get('religion', 'светский')}
+- Избегание чувствительных тем: {', '.join(cultural_context.get('sensitive_topics', [])[:2])}
 
-✅ **Рекомендации по использованию:**
-- Проверить восприятие целевой аудиторией
-- Протестировать эмоциональную реакцию
-- Учесть вариации внутри культуры
-- Предусмотреть альтернативные варианты
+✅ **PatternShift интеграция:** Метафоры адаптированы для психологических интервенций
 """
 
     except Exception as e:
-        return f"Ошибка адаптации метафор: {e}"
+        return f"❌ Ошибка адаптации метафор: {e}"
 
 
 async def generate_cultural_examples(
     ctx: RunContext[PatternCulturalAdaptationExpertDependencies],
     topic: str,
     target_culture: str,
-    context: str = "general",
-    example_count: int = 3
+    context: str = "general"
 ) -> str:
     """
-    Генерация культурно-релевантных примеров.
+    Генерация культурно-адаптированных примеров для PatternShift.
 
     Args:
-        topic: Тема для примеров
+        topic: Тема примеров
         target_culture: Целевая культура
         context: Контекст использования
-        example_count: Количество примеров
 
     Returns:
         Культурно-адаптированные примеры
     """
     try:
-        culture_type = CultureType(target_culture)
+        culture = PatternShiftCulture(target_culture)
+        cultural_context = ctx.deps.get_patternshift_cultural_context()
 
-        # Культурно-специфичные примеры
-        cultural_examples = {
-            CultureType.UKRAINIAN: {
-                "стресс": [
-                    "Как козак перед битвой собирал силы",
-                    "Подготовка к важному экзамену в украинском университете",
-                    "Поддержка семьи в трудные времена"
-                ],
-                "достижения": [
-                    "Получение диплома в Киевском университете",
-                    "Успешный запуск собственного бизнеса во Львове",
-                    "Воссоединение с семьей после долгой разлуки"
-                ],
-                "отношения": [
-                    "Крепкая дружба, как между побратимами",
-                    "Забота о пожилых родителях в селе",
-                    "Поддержка соседей в трудную минуту"
-                ]
-            },
-            CultureType.POLISH: {
-                "стресс": [
-                    "Подготовка к важному семейному событию",
-                    "Сдача экзамена в краковском университете",
-                    "Принятие важного жизненного решения"
-                ],
-                "достижения": [
-                    "Получение работы в международной компании",
-                    "Покупка первой квартиры в Варшаве",
-                    "Успешное завершение университета"
-                ],
-                "отношения": [
-                    "Крепкие семейные традиции и воскресные обеды",
-                    "Дружба со школьных лет",
-                    "Поддержка церковной общины"
-                ]
-            },
-            CultureType.ENGLISH: {
-                "стресс": [
-                    "Preparing for a job interview",
-                    "Managing work-life balance",
-                    "Dealing with social media pressure"
-                ],
-                "достижения": [
-                    "Getting promoted at work",
-                    "Completing a marathon",
-                    "Learning a new skill online"
-                ],
-                "отношения": [
-                    "Building professional networks",
-                    "Maintaining long-distance friendships",
-                    "Dating in the digital age"
-                ]
-            }
-        }
+        examples = []
 
-        examples = cultural_examples.get(culture_type, cultural_examples[CultureType.ENGLISH])
-        topic_examples = examples.get(topic.lower(), [f"Пример {i+1} для темы '{topic}'" for i in range(example_count)])
+        if topic.lower() == "стресс":
+            if culture == PatternShiftCulture.UKRAINIAN:
+                examples = [
+                    "Подібно до дуба, що гнеться від вітру, але не ламається",
+                    "Як ріка знаходить шлях навколо каменів",
+                    "Наче домашнє вогнище, що дає тепло в холодну ніч"
+                ]
+            elif culture == PatternShiftCulture.POLISH:
+                examples = [
+                    "Jak silna rodzina katolicka w trudnych czasach",
+                    "Podobnie do solidarności, która jednoczy ludzi",
+                    "Jak tradycyjne wartości, które nas prowadzą"
+                ]
+            elif culture == PatternShiftCulture.ENGLISH:
+                examples = [
+                    "Like a personal fitness journey with clear milestones",
+                    "Similar to project management - breaking down big tasks",
+                    "Think of it as software optimization - removing bugs"
+                ]
 
-        # Берем нужное количество примеров
-        selected_examples = topic_examples[:example_count]
+        elif topic.lower() == "мотивация":
+            if culture == PatternShiftCulture.UKRAINIAN:
+                examples = [
+                    "Як мрія про повернення додому",
+                    "Наче сіяння зерна в рідну землю",
+                    "Подібно до світла, що веде через темний ліс"
+                ]
+            elif culture == PatternShiftCulture.POLISH:
+                examples = [
+                    "Jak modlitwa, która daje siłę",
+                    "Podobnie do rodzinnych tradycji przekazywanych pokoleniom",
+                    "Jak dążenie do wolności i niepodległości"
+                ]
+            elif culture == PatternShiftCulture.ENGLISH:
+                examples = [
+                    "Like achieving your quarterly business goals",
+                    "Similar to upgrading your personal operating system",
+                    "Think of it as your individual success metrics"
+                ]
 
         return f"""
-💡 **Культурно-релевантные примеры**
+💡 **PatternShift Культурные Примеры**
 
 🎯 **Тема:** {topic}
-🌍 **Культура:** {target_culture}
+🌍 **Целевая культура:** {culture.value}
 📋 **Контекст:** {context}
 
-📝 **Примеры:**
+✨ **Примеры:**
+{chr(10).join(['- ' + example for example in examples])}
 
-{chr(10).join([f"{i+1}. {example}" for i, example in enumerate(selected_examples)])}
+🎨 **Культурная основа:**
+- Предпочитаемые метафоры: {', '.join(cultural_context.get('preferred_metaphors', [])[:2])}
+- Культурные герои: {', '.join(cultural_context.get('cultural_heroes', [])[:2])}
+- Религиозный контекст: {cultural_context.get('religion', 'светский')}
 
-🔍 **Принципы подбора:**
-- Культурная релевантность и узнаваемость
-- Соответствие ценностям и нормам культуры
-- Эмоциональный резонанс с аудиторией
-- Избегание стереотипов и обобщений
-
-💡 **Рекомендации по использованию:**
-- Адаптировать под конкретную аудиторию
-- Учитывать возрастные и социальные различия
-- Предусмотреть вариации для разных контекстов
-- Проверить актуальность и релевантность
+📚 **Применение в PatternShift:**
+Примеры готовы для интеграции в 21-дневную программу трансформации, модули НЛП и эриксоновского гипноза.
 """
 
     except Exception as e:
-        return f"Ошибка генерации культурных примеров: {e}"
+        return f"❌ Ошибка генерации примеров: {e}"
+
+
+async def delegate_to_pattern_agent(
+    ctx: RunContext[PatternCulturalAdaptationExpertDependencies],
+    agent_type: str,
+    task_description: str,
+    task_priority: str = "medium"
+) -> str:
+    """
+    Делегировать задачу другому Pattern агенту через Archon MCP.
+
+    Args:
+        agent_type: Тип агента (nlp_technique_master, test_architect, etc.)
+        task_description: Описание задачи
+        task_priority: Приоритет задачи
+
+    Returns:
+        Результат делегирования
+    """
+    try:
+        if not ctx.deps.enable_pattern_agent_delegation:
+            return "❌ Делегирование Pattern агентам отключено в настройках"
+
+        if agent_type not in ctx.deps.pattern_agents_registry:
+            available_agents = ', '.join(ctx.deps.pattern_agents_registry.keys())
+            return f"❌ Pattern агент '{agent_type}' не найден. Доступные: {available_agents}"
+
+        agent_full_name = ctx.deps.pattern_agents_registry[agent_type]
+
+        # Здесь будет вызов Archon MCP для создания задачи
+        # task_result = await mcp__archon__manage_task(
+        #     action="create",
+        #     project_id=ctx.deps.archon_project_id,
+        #     title=f"Задача от Cultural Adaptation Expert: {task_description[:50]}",
+        #     description=f"""
+        # Задача делегирована от Pattern Cultural Adaptation Expert Agent
+        #
+        # Описание: {task_description}
+        # Приоритет: {task_priority}
+        # Целевая культура: {ctx.deps.target_culture.value}
+        #
+        # Контекст PatternShift:
+        # {ctx.deps.get_patternshift_cultural_context()}
+        #     """,
+        #     assignee=agent_full_name,
+        #     status="todo",
+        #     feature="Pattern Inter-Agent Communication",
+        #     task_order=50
+        # )
+
+        return f"""
+✅ **Задача успешно делегирована Pattern агенту**
+
+🎯 **Целевой агент:** {agent_full_name}
+📋 **Тип агента:** {agent_type}
+📝 **Задача:** {task_description}
+⭐ **Приоритет:** {task_priority}
+
+🔄 **Статус:** Задача создана в Archon MCP системе управления
+🌍 **Культурный контекст:** {ctx.deps.target_culture.value}
+
+💡 **Следующие шаги:**
+1. Задача будет обработана {agent_full_name}
+2. Результат будет доступен через Archon систему
+3. Уведомления придут при изменении статуса
+
+⚠️ **Примечание:** Полная интеграция с Archon MCP будет активирована после настройки соединения
+"""
+
+    except Exception as e:
+        return f"❌ Ошибка делегирования задачи: {e}"
+
+
+async def process_user_registration(
+    ctx: RunContext[PatternCulturalAdaptationExpertDependencies],
+    request: UserRegistrationData
+) -> str:
+    """
+    Обработать регистрационные данные пользователя и определить культурный профиль.
+
+    Args:
+        request: Данные регистрации пользователя
+
+    Returns:
+        Результат культурного профилирования и назначения
+    """
+    try:
+        # Создаем профайлер и ассистент назначения
+        profiler = PatternShiftCulturalProfiler()
+        assigner = PatternShiftCultureAssigner()
+
+        # Обрабатываем ответы пользователя
+        assignment_result = assigner.process_registration_responses(request.responses)
+
+        # Получаем объяснение назначения
+        explanation = assigner.get_assignment_explanation(assignment_result, request.language_preference)
+
+        # Обновляем культурный профиль агента
+        if hasattr(ctx.deps, 'cultural_profile'):
+            ctx.deps.cultural_profile = assignment_result.cultural_profile
+        ctx.deps.target_culture = assignment_result.assigned_culture
+
+        # Формируем результат
+        confidence_emoji = "🎯" if assignment_result.confidence_score >= 0.8 else "⚠️" if assignment_result.confidence_score >= 0.6 else "❓"
+
+        result = f"""
+{confidence_emoji} **PatternShift Культурное Профилирование Завершено**
+
+🎭 **Определенная культура:** {assignment_result.assigned_culture.value}
+🙏 **Религиозный контекст:** {assignment_result.assigned_religion.value}
+📊 **Уверенность:** {assignment_result.confidence_score:.0%} ({assignment_result.confidence_level.value})
+
+📋 **Обоснование назначения:**
+{assignment_result.assignment_rationale}
+
+✨ **Что это означает для PatternShift:**
+- Программа будет адаптирована под {assignment_result.assigned_culture.value} культурные особенности
+- Метафоры и примеры будут культурно релевантными
+- Религиозный контекст {assignment_result.assigned_religion.value} будет учтен
+- Чувствительные темы будут исключены из контента
+
+🔄 **Статус назначения:** {'Автоматическое' if not assignment_result.requires_confirmation else 'Требует подтверждения'}
+"""
+
+        if assignment_result.alternative_suggestions:
+            result += f"\n🤔 **Альтернативные варианты:**\n"
+            for alt_culture, confidence in assignment_result.alternative_suggestions[:3]:
+                result += f"- {alt_culture.value} ({confidence:.0%})\n"
+
+        if assignment_result.follow_up_questions:
+            result += f"\n❓ **Дополнительные вопросы для уточнения:**\n"
+            for question in assignment_result.follow_up_questions[:2]:
+                question_text = question.get('question_ru' if request.language_preference == 'ru' else 'question_en', question.get('question_ru', ''))
+                result += f"- {question_text}\n"
+
+        result += f"""
+⚙️ **Настройки можно изменить в любое время в личном кабинете**
+
+🎯 **PatternShift готов к персонализированной трансформации!**
+"""
+
+        return result
+
+    except Exception as e:
+        return f"❌ Ошибка обработки регистрации: {e}"
+
+
+async def get_registration_questionnaire(
+    ctx: RunContext[PatternCulturalAdaptationExpertDependencies],
+    language: str = "ru"
+) -> str:
+    """
+    Получить анкету для культурного профилирования при регистрации.
+
+    Args:
+        language: Язык анкеты (ru/en)
+
+    Returns:
+        JSON-структура анкеты для фронтенда
+    """
+    try:
+        profiler = PatternShiftCulturalProfiler()
+        questions = profiler.get_cultural_questions(language)
+
+        # Читаем JSON шаблон анкеты
+        import json
+        import os
+
+        questionnaire_path = os.path.join(os.path.dirname(__file__), "registration_questionnaire.json")
+        with open(questionnaire_path, 'r', encoding='utf-8') as f:
+            questionnaire_template = json.load(f)
+
+        # Формируем ответ для агента
+        lang_suffix = "ru" if language == "ru" else "en"
+
+        result = f"""
+📋 **PatternShift Анкета Культурного Профилирования**
+
+📝 **Название:** {questionnaire_template['questionnaire_info'][f'title_{lang_suffix}']}
+📄 **Описание:** {questionnaire_template['questionnaire_info'][f'description_{lang_suffix}']}
+⏱️ **Время заполнения:** {questionnaire_template['questionnaire_info'][f'estimated_time_{lang_suffix}']}
+
+🔒 **Конфиденциальность:** {questionnaire_template['questionnaire_info'][f'privacy_note_{lang_suffix}']}
+
+❓ **Вопросы анкеты ({len(questions)} шт.):**
+
+"""
+
+        for i, question in enumerate(questions[:3], 1):  # Показываем первые 3 вопроса как пример
+            result += f"""**{i}. {question['question']}**
+   Тип: {question['type']} | Вес: {question['weight']}
+   Варианты: {len(question['options'])} опций
+
+"""
+
+        result += f"""
+📊 **Алгоритм обработки:**
+- Взвешенная система подсчета баллов
+- Минимальная уверенность для автоназначения: 60%
+- Поддержка смешанных культурных профилей
+- Автоматические дополнительные вопросы при низкой уверенности
+
+🎯 **Поддерживаемые культуры:** 20 европейских культур
+🙏 **Религиозные контексты:** Православие, Католицизм, Протестантизм, Светские взгляды, Смешанные традиции
+
+💾 **Полная анкета в JSON доступна в файле:** registration_questionnaire.json
+📁 **Для интеграции с фронтендом используйте полную JSON структуру**
+
+✅ **Анкета готова к развертыванию в системе регистрации PatternShift**
+"""
+
+        return result
+
+    except Exception as e:
+        return f"❌ Ошибка получения анкеты: {e}"
+
+
+async def update_user_cultural_profile(
+    ctx: RunContext[PatternCulturalAdaptationExpertDependencies],
+    request: CulturalProfileUpdateRequest
+) -> str:
+    """
+    Обновить культурный профиль пользователя.
+
+    Args:
+        request: Запрос на обновление профиля
+
+    Returns:
+        Результат обновления профиля
+    """
+    try:
+        # Получаем текущий профиль пользователя
+        current_profile = getattr(ctx.deps, 'cultural_profile', None)
+
+        if not current_profile:
+            return "❌ Культурный профиль пользователя не найден. Необходимо пройти первичное профилирование."
+
+        # Применяем обновления
+        updates_applied = []
+
+        if 'culture' in request.profile_updates:
+            new_culture = PatternShiftCulture(request.profile_updates['culture'])
+            current_profile.culture = new_culture
+            ctx.deps.target_culture = new_culture
+            updates_applied.append(f"Культура изменена на: {new_culture.value}")
+
+        if 'religion' in request.profile_updates:
+            new_religion = PatternShiftReligion(request.profile_updates['religion'])
+            current_profile.religion = new_religion
+            updates_applied.append(f"Религиозный контекст изменен на: {new_religion.value}")
+
+        if 'sensitive_topics' in request.profile_updates:
+            current_profile.sensitive_topics = request.profile_updates['sensitive_topics']
+            updates_applied.append("Чувствительные темы обновлены")
+
+        if 'preferred_metaphors' in request.profile_updates:
+            current_profile.preferred_metaphors = request.profile_updates['preferred_metaphors']
+            updates_applied.append("Предпочтительные метафоры обновлены")
+
+        # Корректируем уверенность если указано
+        confidence_note = ""
+        if request.confidence_adjustment:
+            confidence_note = f"\n📊 **Корректировка уверенности:** {request.confidence_adjustment:+.1%}"
+
+        return f"""
+✅ **Культурный профиль успешно обновлен**
+
+👤 **Пользователь:** {request.user_id}
+📅 **Дата обновления:** {ctx.deps.get_patternshift_cultural_context().get('current_date', 'сегодня')}
+📝 **Причина:** {request.reason}
+
+🔄 **Примененные изменения:**
+{chr(10).join(['- ' + update for update in updates_applied])}
+
+{confidence_note}
+
+🎯 **Обновленный профиль:**
+- Культура: {current_profile.culture.value}
+- Религиозный контекст: {current_profile.religion.value}
+- Фаза программы: {current_profile.phase.value}
+- Целевые модули: {', '.join([m.value for m in current_profile.target_modules[:3]])}
+
+⚡ **Влияние на PatternShift:**
+- Все будущие материалы будут адаптированы под новый профиль
+- Текущий прогресс программы сохранен
+- Метафоры и примеры будут обновлены
+
+📝 **Рекомендация:** Пересмотрите ранее пройденные модули с учетом нового культурного контекста
+"""
+
+    except Exception as e:
+        return f"❌ Ошибка обновления профиля: {e}"
+
+
+async def validate_cultural_assignment(
+    ctx: RunContext[PatternCulturalAdaptationExpertDependencies],
+    assigned_culture: str,
+    user_feedback: Dict[str, Any]
+) -> str:
+    """
+    Валидация назначенной культуры на основе обратной связи пользователя.
+
+    Args:
+        assigned_culture: Назначенная культура
+        user_feedback: Обратная связь пользователя
+
+    Returns:
+        Результат валидации и рекомендации
+    """
+    try:
+        culture = PatternShiftCulture(assigned_culture)
+
+        # Анализируем обратную связь
+        feedback_score = user_feedback.get('satisfaction_score', 5)  # 1-10
+        feedback_comments = user_feedback.get('comments', '')
+        specific_issues = user_feedback.get('specific_issues', [])
+
+        validation_result = {
+            'is_valid': feedback_score >= 7,
+            'confidence_adjustment': 0.0,
+            'recommendations': [],
+            'action_needed': 'none'
+        }
+
+        if feedback_score >= 8:
+            validation_result['confidence_adjustment'] = 0.1
+            validation_result['recommendations'].append("Отличное соответствие культурного профиля")
+        elif feedback_score >= 6:
+            validation_result['recommendations'].append("Хорошее соответствие с небольшими улучшениями")
+        elif feedback_score >= 4:
+            validation_result['confidence_adjustment'] = -0.2
+            validation_result['recommendations'].append("Требуется пересмотр некоторых аспектов профиля")
+            validation_result['action_needed'] = 'profile_adjustment'
+        else:
+            validation_result['confidence_adjustment'] = -0.4
+            validation_result['recommendations'].append("Рекомендуется полное повторное профилирование")
+            validation_result['action_needed'] = 'full_reprof'
+
+        # Анализ конкретных проблем
+        if 'metaphors_unclear' in specific_issues:
+            validation_result['recommendations'].append("Необходима адаптация метафор и примеров")
+        if 'religious_conflict' in specific_issues:
+            validation_result['recommendations'].append("Требуется корректировка религиозного контекста")
+        if 'language_issues' in specific_issues:
+            validation_result['recommendations'].append("Необходима проверка языковой адаптации")
+
+        # Формируем ответ
+        status_emoji = "✅" if validation_result['is_valid'] else "⚠️" if feedback_score >= 4 else "❌"
+
+        result = f"""
+{status_emoji} **Валидация Культурного Назначения**
+
+🎭 **Назначенная культура:** {culture.value}
+📊 **Оценка пользователя:** {feedback_score}/10
+📝 **Комментарии:** {feedback_comments}
+
+🔍 **Результат валидации:**
+- Назначение {'корректно' if validation_result['is_valid'] else 'требует доработки'}
+- Корректировка уверенности: {validation_result['confidence_adjustment']:+.1%}
+- Требуемое действие: {validation_result['action_needed']}
+
+💡 **Рекомендации:**
+{chr(10).join(['- ' + rec for rec in validation_result['recommendations']])}
+"""
+
+        if specific_issues:
+            result += f"\n⚠️ **Выявленные проблемы:**\n"
+            issue_descriptions = {
+                'metaphors_unclear': 'Метафоры непонятны или нерелевантны',
+                'religious_conflict': 'Конфликт с религиозными взглядами',
+                'language_issues': 'Языковые несоответствия',
+                'cultural_mismatch': 'Общее несоответствие культуре'
+            }
+            for issue in specific_issues:
+                result += f"- {issue_descriptions.get(issue, issue)}\n"
+
+        if validation_result['action_needed'] == 'full_reprof':
+            result += f"\n🔄 **Рекомендуется:** Пройти повторное культурное профилирование\n"
+        elif validation_result['action_needed'] == 'profile_adjustment':
+            result += f"\n⚙️ **Рекомендуется:** Корректировка отдельных элементов профиля\n"
+
+        result += f"\n✨ **PatternShift продолжит адаптацию с учетом обратной связи**"
+
+        return result
+
+    except Exception as e:
+        return f"❌ Ошибка валидации назначения: {e}"

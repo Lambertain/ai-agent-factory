@@ -1,8 +1,8 @@
 """
 Зависимости для Pattern Cultural Adaptation Expert Agent.
 
-Этот модуль определяет зависимости, необходимые для агента культурной адаптации
-психологических интервенций.
+PatternShift-специфичный агент для культурной адаптации
+психологических техник и программ трансформации.
 """
 
 from dataclasses import dataclass, field
@@ -10,274 +10,468 @@ from typing import List, Dict, Any, Optional
 from enum import Enum
 
 
-class CultureType(Enum):
-    """Типы культур для адаптации."""
+class PatternShiftCulture(Enum):
+    """Культуры, поддерживаемые в PatternShift."""
     UKRAINIAN = "ukrainian"
     POLISH = "polish"
     ENGLISH = "english"
     GERMAN = "german"
-    SPANISH = "spanish"
     FRENCH = "french"
-    UNIVERSAL = "universal"
+    ITALIAN = "italian"
+    SPANISH = "spanish"
+    RUSSIAN = "russian"
+    CZECH = "czech"
+    SLOVAK = "slovak"
+    HUNGARIAN = "hungarian"
+    ROMANIAN = "romanian"
+    BULGARIAN = "bulgarian"
+    CROATIAN = "croatian"
+    SERBIAN = "serbian"
+    SLOVENIAN = "slovenian"
+    LITHUANIAN = "lithuanian"
+    LATVIAN = "latvian"
+    ESTONIAN = "estonian"
 
 
-class ReligiousContext(Enum):
-    """Религиозные контексты."""
-    ORTHODOX = "orthodox"
-    CATHOLIC = "catholic"
-    PROTESTANT = "protestant"
-    ISLAMIC = "islamic"
-    BUDDHIST = "buddhist"
-    SECULAR = "secular"
-    MIXED = "mixed"
+class PatternShiftReligion(Enum):
+    """Религиозные контексты PatternShift."""
+    ORTHODOX = "orthodox"        # Православная традиция (украинская, русская, болгарская, сербская)
+    CATHOLIC = "catholic"        # Католическая традиция (польская, немецкая, французская, итальянская, испанская, хорватская, словенская, словацкая, венгерская, литовская, чешская)
+    PROTESTANT = "protestant"    # Протестантская традиция (германские страны, балтийские)
+    SECULAR = "secular"          # Светский контекст (англоязычные, скандинавские)
+    MIXED = "mixed"              # Смешанный религиозный контекст
 
 
-class CommunicationStyle(Enum):
-    """Стили коммуникации."""
-    HIGH_CONTEXT = "high_context"
-    LOW_CONTEXT = "low_context"
-    DIRECT = "direct"
-    INDIRECT = "indirect"
-    FORMAL = "formal"
-    INFORMAL = "informal"
+class PatternShiftPhase(Enum):
+    """Фазы программы PatternShift."""
+    BEGINNING = "beginning"      # Начальная фаза (дни 1-7)
+    DEVELOPMENT = "development"  # Развитие (дни 8-14)
+    INTEGRATION = "integration"  # Интеграция (дни 15-21)
 
 
-class ValueSystem(Enum):
-    """Системы ценностей."""
-    INDIVIDUALISTIC = "individualistic"
-    COLLECTIVISTIC = "collectivistic"
-    TRADITIONAL = "traditional"
-    MODERN = "modern"
+class ModuleType(Enum):
+    """Типы модулей PatternShift."""
+    TECHNIQUE = "technique"      # НЛП техники
+    EXERCISE = "exercise"        # Трансформационные упражнения
+    HYPNOSIS = "hypnosis"        # Эриксоновский гипноз
+    FEEDBACK = "feedback"        # Системы обратной связи
+    EDUCATION = "education"      # Образовательные модули
     MIXED_VALUES = "mixed_values"
 
 
 @dataclass
-class CulturalProfile:
-    """Профиль культурной адаптации."""
-    culture_type: CultureType
-    religious_context: ReligiousContext
-    communication_style: CommunicationStyle
-    value_system: ValueSystem
+class PatternShiftCulturalProfile:
+    """Профиль культурной адаптации для PatternShift."""
+    culture: PatternShiftCulture
+    religion: PatternShiftReligion
+    phase: PatternShiftPhase
+    target_modules: List[ModuleType] = field(default_factory=list)
+
+    # Культурно-специфичные элементы
     sensitive_topics: List[str] = field(default_factory=list)
     preferred_metaphors: List[str] = field(default_factory=list)
     cultural_heroes: List[str] = field(default_factory=list)
     historical_context: Dict[str, Any] = field(default_factory=dict)
-    language_specifics: Dict[str, Any] = field(default_factory=dict)
+
+    # PatternShift архитектура
+    program_duration: int = 21  # дней
+    cultural_adaptation_level: str = "deep"  # shallow, moderate, deep
 
 
 @dataclass
-class AdaptationSettings:
-    """Настройки адаптации контента."""
-    adaptation_depth: str = "moderate"  # shallow, moderate, deep
-    preserve_core_message: bool = True
-    cultural_validation: bool = True
-    local_expert_review: bool = False
-    adaptation_methodology: str = "evidence_based"
+class PatternShiftAdaptationSettings:
+    """Настройки адаптации контента для PatternShift."""
+    # PatternShift специфика
+    patternshift_version: str = "3.0"
+    content_pipeline: str = "program->phase->day->session->activity->module"
 
-    # Уровни адаптации
-    metaphor_adaptation: bool = True
-    example_localization: bool = True
-    communication_style_adjustment: bool = True
-    value_alignment: bool = True
-    religious_sensitivity: bool = True
+    # Основные настройки
+    adaptation_depth: str = "deep"  # PatternShift использует глубокую адаптацию
+    preserve_therapeutic_efficacy: bool = True
+    cultural_safety_validation: bool = True
+
+    # PatternShift компоненты
+    nlp_techniques_adaptation: bool = True
+    ericksonian_patterns_adaptation: bool = True
+    vak_modalities_adaptation: bool = True
+    microhabits_localization: bool = True
+    metaphor_cultural_alignment: bool = True
 
 
 @dataclass
 class PatternCulturalAdaptationExpertDependencies:
     """
-    Зависимости для агента культурной адаптации психологических интервенций.
+    Зависимости для Pattern Cultural Adaptation Expert Agent.
 
-    Обеспечивает гибкую настройку под различные культурные контексты
-    и требования проектов.
+    PatternShift-специфичный агент для культурной адаптации
+    психологических программ трансформации.
     """
 
     # Основные настройки
     api_key: str
     agent_name: str = "pattern_cultural_adaptation_expert"
 
-    # Настройки проекта
-    project_path: str = ""
-    domain_type: str = "psychology"  # psychology, education, healthcare
-    project_type: str = "content_adaptation"  # content_adaptation, localization, research
-    framework: str = "cross_cultural_psychology"
-
-    # RAG конфигурация
-    knowledge_tags: List[str] = field(default_factory=lambda: [
-        "cultural_adaptation", "cross_cultural_psychology", "agent_knowledge", "pydantic_ai"
+    # PatternShift интеграция
+    patternshift_architecture_files: List[str] = field(default_factory=lambda: [
+        "D:\\Automation\\Development\\projects\\patternshift\\docs\\content-agents-system-prompts.md",
+        "D:\\Automation\\Development\\projects\\patternshift\\docs\\final-kontent-architecture-complete.md"
     ])
-    knowledge_domain: str = "cultural_psychology"
+
+    # RAG конфигурация для PatternShift
+    knowledge_tags: List[str] = field(default_factory=lambda: [
+        "pattern-cultural-adaptation-expert", "agent-knowledge", "pydantic-ai", "patternshift"
+    ])
+    knowledge_domain: str = "patternshift-cultural-adaptation"
     archon_project_id: str = "c75ef8e3-6f4d-4da2-9e81-8d38d04a341a"
 
-    # Культурные настройки
-    target_culture: CultureType = CultureType.UNIVERSAL
-    cultural_profile: Optional[CulturalProfile] = None
-    adaptation_settings: AdaptationSettings = field(default_factory=AdaptationSettings)
+    # PatternShift культурная конфигурация
+    target_culture: PatternShiftCulture = PatternShiftCulture.UKRAINIAN
+    cultural_profile: Optional[PatternShiftCulturalProfile] = None
+    adaptation_settings: PatternShiftAdaptationSettings = field(default_factory=PatternShiftAdaptationSettings)
 
-    # Поддерживаемые культуры
-    supported_cultures: List[CultureType] = field(default_factory=lambda: [
-        CultureType.UKRAINIAN,
-        CultureType.POLISH,
-        CultureType.ENGLISH,
-        CultureType.GERMAN
+    # PatternShift поддерживаемые культуры (расширенный список)
+    supported_cultures: List[PatternShiftCulture] = field(default_factory=lambda: [
+        PatternShiftCulture.UKRAINIAN,
+        PatternShiftCulture.POLISH,
+        PatternShiftCulture.ENGLISH,
+        PatternShiftCulture.GERMAN,
+        PatternShiftCulture.FRENCH,
+        PatternShiftCulture.ITALIAN,
+        PatternShiftCulture.SPANISH,
+        PatternShiftCulture.RUSSIAN,
+        PatternShiftCulture.CZECH,
+        PatternShiftCulture.SLOVAK,
+        PatternShiftCulture.HUNGARIAN,
+        PatternShiftCulture.ROMANIAN,
+        PatternShiftCulture.BULGARIAN,
+        PatternShiftCulture.CROATIAN,
+        PatternShiftCulture.SERBIAN,
+        PatternShiftCulture.SLOVENIAN,
+        PatternShiftCulture.LITHUANIAN,
+        PatternShiftCulture.LATVIAN,
+        PatternShiftCulture.ESTONIAN
     ])
 
-    # Настройки качества
-    quality_threshold: float = 0.8
-    expert_validation: bool = False
-    a_b_testing_enabled: bool = False
+    # Inter-agent communication
+    enable_pattern_agent_delegation: bool = True
+    pattern_agents_registry: Dict[str, str] = field(default_factory=lambda: {
+        "nlp_technique_master": "Pattern NLP Technique Master Agent",
+        "test_architect": "Pattern Test Architect Agent",
+        "vak_adaptation_specialist": "Pattern VAK Adaptation Specialist Agent",
+        "ericksonian_hypnosis": "Pattern Ericksonian Hypnosis Scriptwriter Agent"
+    })
 
-    # Ограничения безопасности
-    cultural_safety_checks: bool = True
-    avoid_stereotypes: bool = True
+    # PatternShift безопасность
+    cultural_safety_validation: bool = True
+    therapeutic_efficacy_preservation: bool = True
     religious_sensitivity_mode: bool = True
-
-    # Метрики и отслеживание
-    track_adaptation_metrics: bool = True
-    cultural_acceptance_tracking: bool = True
-    effectiveness_monitoring: bool = True
 
     def __post_init__(self):
         """Инициализация зависимостей после создания."""
         # Создание культурного профиля по умолчанию если не указан
         if self.cultural_profile is None:
-            self.cultural_profile = self._create_default_profile()
+            self.cultural_profile = self._create_default_patternshift_profile()
 
         # Валидация настроек
-        self._validate_settings()
+        self._validate_patternshift_settings()
 
-    def _create_default_profile(self) -> CulturalProfile:
-        """Создает профиль культуры по умолчанию."""
+    def _create_default_patternshift_profile(self) -> PatternShiftCulturalProfile:
+        """Создает профиль культуры PatternShift по умолчанию."""
         default_profiles = {
-            CultureType.UKRAINIAN: CulturalProfile(
-                culture_type=CultureType.UKRAINIAN,
-                religious_context=ReligiousContext.ORTHODOX,
-                communication_style=CommunicationStyle.HIGH_CONTEXT,
-                value_system=ValueSystem.COLLECTIVISTIC,
-                sensitive_topics=["война", "оккупация", "национальная идентичность"],
-                preferred_metaphors=["поле", "дуб", "река", "домашний очаг"],
+            # Славянские православные культуры
+            PatternShiftCulture.UKRAINIAN: PatternShiftCulturalProfile(
+                culture=PatternShiftCulture.UKRAINIAN,
+                religion=PatternShiftReligion.ORTHODOX,
+                phase=PatternShiftPhase.BEGINNING,
+                target_modules=[ModuleType.TECHNIQUE, ModuleType.EXERCISE, ModuleType.HYPNOSIS],
+                sensitive_topics=["война", "оккупация", "национальная идентичность", "травма"],
+                preferred_metaphors=["поле", "дуб", "река", "домашний очаг", "мост через реку"],
                 cultural_heroes=["Тарас Шевченко", "Леся Украинка", "Иван Франко"],
-                historical_context={"current_conflict": True, "independence": "1991"},
-                language_specifics={"formality": "moderate", "emotion_expression": "expressive"}
+                historical_context={"current_conflict": True, "independence": "1991", "collective_trauma": True, "cultural_resilience": True}
             ),
-            CultureType.POLISH: CulturalProfile(
-                culture_type=CultureType.POLISH,
-                religious_context=ReligiousContext.CATHOLIC,
-                communication_style=CommunicationStyle.DIRECT,
-                value_system=ValueSystem.TRADITIONAL,
-                sensitive_topics=["католическая мораль", "национальная гордость"],
-                preferred_metaphors=["католические образы", "исторические события"],
+            PatternShiftCulture.RUSSIAN: PatternShiftCulturalProfile(
+                culture=PatternShiftCulture.RUSSIAN,
+                religion=PatternShiftReligion.ORTHODOX,
+                phase=PatternShiftPhase.BEGINNING,
+                target_modules=[ModuleType.TECHNIQUE, ModuleType.EXERCISE, ModuleType.HYPNOSIS],
+                sensitive_topics=["политика", "история СССР", "национальная идея", "духовность"],
+                preferred_metaphors=["берёза", "медведь", "широкая душа", "матушка Россия", "дорога-дороженька"],
+                cultural_heroes=["Пушкин", "Достоевский", "Гагарин"],
+                historical_context={"imperial_heritage": True, "soviet_legacy": True, "orthodox_revival": True}
+            ),
+            PatternShiftCulture.BULGARIAN: PatternShiftCulturalProfile(
+                culture=PatternShiftCulture.BULGARIAN,
+                religion=PatternShiftReligion.ORTHODOX,
+                phase=PatternShiftPhase.BEGINNING,
+                target_modules=[ModuleType.TECHNIQUE, ModuleType.EXERCISE, ModuleType.HYPNOSIS],
+                sensitive_topics=["османское иго", "национальное возрождение", "балканские войны"],
+                preferred_metaphors=["роза", "горы", "древняя мудрость", "золотое наследие"],
+                cultural_heroes=["Васил Левски", "Христо Ботев", "Кирилл и Мефодий"],
+                historical_context={"ancient_heritage": True, "ottoman_period": True, "eu_membership": "2007"}
+            ),
+            PatternShiftCulture.SERBIAN: PatternShiftCulturalProfile(
+                culture=PatternShiftCulture.SERBIAN,
+                religion=PatternShiftReligion.ORTHODOX,
+                phase=PatternShiftPhase.BEGINNING,
+                target_modules=[ModuleType.TECHNIQUE, ModuleType.EXERCISE, ModuleType.HYPNOSIS],
+                sensitive_topics=["косово", "югославские войны", "национальная гордость"],
+                preferred_metaphors=["орёл", "крест", "косово поле", "славянское братство"],
+                cultural_heroes=["Свети Сава", "Никола Тесла", "Милош Обилич"],
+                historical_context={"kosovo_battle": True, "yugoslavia_legacy": True, "orthodox_identity": True}
+            ),
+
+            # Католические культуры
+            PatternShiftCulture.POLISH: PatternShiftCulturalProfile(
+                culture=PatternShiftCulture.POLISH,
+                religion=PatternShiftReligion.CATHOLIC,
+                phase=PatternShiftPhase.BEGINNING,
+                target_modules=[ModuleType.TECHNIQUE, ModuleType.EXERCISE, ModuleType.HYPNOSIS],
+                sensitive_topics=["католическая мораль", "национальная гордость", "солидарность"],
+                preferred_metaphors=["католические образы", "историческая гордость", "семейные традиции"],
                 cultural_heroes=["Иоанн Павел II", "Лех Валенса", "Мария Склодовская-Кюри"],
-                historical_context={"solidarity_movement": True, "eu_membership": "2004"},
-                language_specifics={"formality": "high", "emotion_expression": "moderate"}
+                historical_context={"solidarity_movement": True, "eu_membership": "2004", "cultural_pride": True}
             ),
-            CultureType.ENGLISH: CulturalProfile(
-                culture_type=CultureType.ENGLISH,
-                religious_context=ReligiousContext.SECULAR,
-                communication_style=CommunicationStyle.LOW_CONTEXT,
-                value_system=ValueSystem.INDIVIDUALISTIC,
-                sensitive_topics=["политика", "расовые отношения"],
-                preferred_metaphors=["светские", "универсальные"],
+            PatternShiftCulture.GERMAN: PatternShiftCulturalProfile(
+                culture=PatternShiftCulture.GERMAN,
+                religion=PatternShiftReligion.MIXED,  # Католики + Протестанты
+                phase=PatternShiftPhase.BEGINNING,
+                target_modules=[ModuleType.TECHNIQUE, ModuleType.EXERCISE, ModuleType.EDUCATION],
+                sensitive_topics=["история 20 века", "нацизм", "миграция", "национализм"],
+                preferred_metaphors=["механизм", "порядок", "дисциплина", "качество", "точность"],
+                cultural_heroes=["Гёте", "Бетховен", "Эйнштейн"],
+                historical_context={"reunification": "1990", "eu_founder": True, "responsibility_culture": True}
+            ),
+            PatternShiftCulture.FRENCH: PatternShiftCulturalProfile(
+                culture=PatternShiftCulture.FRENCH,
+                religion=PatternShiftReligion.CATHOLIC,
+                phase=PatternShiftPhase.BEGINNING,
+                target_modules=[ModuleType.TECHNIQUE, ModuleType.EXERCISE, ModuleType.EDUCATION],
+                sensitive_topics=["революция", "секуляризм", "иммиграция", "национальная идентичность"],
+                preferred_metaphors=["элегантность", "искусство", "философия", "свобода", "равенство"],
+                cultural_heroes=["Наполеон", "Вольтер", "Мария Кюри"],
+                historical_context={"republic_values": True, "cultural_pride": True, "secular_tradition": True}
+            ),
+            PatternShiftCulture.ITALIAN: PatternShiftCulturalProfile(
+                culture=PatternShiftCulture.ITALIAN,
+                religion=PatternShiftReligion.CATHOLIC,
+                phase=PatternShiftPhase.BEGINNING,
+                target_modules=[ModuleType.TECHNIQUE, ModuleType.EXERCISE, ModuleType.HYPNOSIS],
+                sensitive_topics=["семья", "традиции", "региональные различия", "мафия"],
+                preferred_metaphors=["семейный очаг", "римское наследие", "ренессанс", "красота", "страсть"],
+                cultural_heroes=["Данте", "Леонардо да Винчи", "Микеланджело"],
+                historical_context={"roman_heritage": True, "renaissance": True, "family_values": True}
+            ),
+            PatternShiftCulture.SPANISH: PatternShiftCulturalProfile(
+                culture=PatternShiftCulture.SPANISH,
+                religion=PatternShiftReligion.CATHOLIC,
+                phase=PatternShiftPhase.BEGINNING,
+                target_modules=[ModuleType.TECHNIQUE, ModuleType.EXERCISE, ModuleType.HYPNOSIS],
+                sensitive_topics=["франкизм", "региональная автономия", "католические ценности"],
+                preferred_metaphors=["солнце", "фиеста", "семья", "честь", "страсть"],
+                cultural_heroes=["Сервантес", "Гауди", "Пикассо"],
+                historical_context={"reconquista": True, "colonial_empire": True, "democracy_transition": "1975"}
+            ),
+            PatternShiftCulture.CROATIAN: PatternShiftCulturalProfile(
+                culture=PatternShiftCulture.CROATIAN,
+                religion=PatternShiftReligion.CATHOLIC,
+                phase=PatternShiftPhase.BEGINNING,
+                target_modules=[ModuleType.TECHNIQUE, ModuleType.EXERCISE, ModuleType.HYPNOSIS],
+                sensitive_topics=["югославские войны", "независимость", "национальная идентичность"],
+                preferred_metaphors=["адриатическое море", "шахматная доска", "католический крест"],
+                cultural_heroes=["Франьо Туджман", "Никола Тесла", "Мирослав Крлежа"],
+                historical_context={"independence": "1991", "eu_membership": "2013", "yugoslav_legacy": True}
+            ),
+            PatternShiftCulture.SLOVENIAN: PatternShiftCulturalProfile(
+                culture=PatternShiftCulture.SLOVENIAN,
+                religion=PatternShiftReligion.CATHOLIC,
+                phase=PatternShiftPhase.BEGINNING,
+                target_modules=[ModuleType.TECHNIQUE, ModuleType.EXERCISE, ModuleType.EDUCATION],
+                sensitive_topics=["национальная идентичность", "языковая политика", "европейская интеграция"],
+                preferred_metaphors=["альпы", "пчела", "липовое дерево", "зелёная природа"],
+                cultural_heroes=["Франце Прешерн", "Йоже Плечник", "Примож Трубар"],
+                historical_context={"alpine_culture": True, "eu_membership": "2004", "small_nation_pride": True}
+            ),
+            PatternShiftCulture.SLOVAK: PatternShiftCulturalProfile(
+                culture=PatternShiftCulture.SLOVAK,
+                religion=PatternShiftReligion.CATHOLIC,
+                phase=PatternShiftPhase.BEGINNING,
+                target_modules=[ModuleType.TECHNIQUE, ModuleType.EXERCISE, ModuleType.EDUCATION],
+                sensitive_topics=["венгерское господство", "чехословацкий период", "национальная идентичность"],
+                preferred_metaphors=["высокие татры", "народные традиции", "деревенская жизнь"],
+                cultural_heroes=["Людовит Штур", "Милан Растислав Штефаник", "Александр Дубчек"],
+                historical_context={"independence": "1993", "eu_membership": "2004", "slavic_heritage": True}
+            ),
+            PatternShiftCulture.CZECH: PatternShiftCulturalProfile(
+                culture=PatternShiftCulture.CZECH,
+                religion=PatternShiftReligion.CATHOLIC,
+                phase=PatternShiftPhase.BEGINNING,
+                target_modules=[ModuleType.TECHNIQUE, ModuleType.EXERCISE, ModuleType.EDUCATION],
+                sensitive_topics=["коммунизм", "бархатная революция", "атеизм", "немецкое влияние"],
+                preferred_metaphors=["пивная культура", "золотые руки", "чешский юмор", "пражская красота"],
+                cultural_heroes=["Вацлав Гавел", "Томаш Масарик", "Ян Гус"],
+                historical_context={"velvet_revolution": "1989", "eu_membership": "2004", "secular_society": True}
+            ),
+            PatternShiftCulture.HUNGARIAN: PatternShiftCulturalProfile(
+                culture=PatternShiftCulture.HUNGARIAN,
+                religion=PatternShiftReligion.CATHOLIC,
+                phase=PatternShiftPhase.BEGINNING,
+                target_modules=[ModuleType.TECHNIQUE, ModuleType.EXERCISE, ModuleType.HYPNOSIS],
+                sensitive_topics=["трианонский договор", "национальные меньшинства", "венгерская уникальность"],
+                preferred_metaphors=["пушта", "венгерская душа", "мадьярская гордость", "дунай"],
+                cultural_heroes=["Стефан I", "Лист Ференц", "Имре Надь"],
+                historical_context={"unique_language": True, "trianon_trauma": True, "eu_membership": "2004"}
+            ),
+            PatternShiftCulture.LITHUANIAN: PatternShiftCulturalProfile(
+                culture=PatternShiftCulture.LITHUANIAN,
+                religion=PatternShiftReligion.CATHOLIC,
+                phase=PatternShiftPhase.BEGINNING,
+                target_modules=[ModuleType.TECHNIQUE, ModuleType.EXERCISE, ModuleType.EDUCATION],
+                sensitive_topics=["советская оккупация", "депортации", "независимость"],
+                preferred_metaphors=["дуб", "янтарь", "балтийское море", "жемайтские холмы"],
+                cultural_heroes=["Витаутас Великий", "Винцас Кудирка", "Йонас Базилявичус"],
+                historical_context={"grand_duchy": True, "soviet_occupation": "1940-1990", "eu_membership": "2004"}
+            ),
+
+            # Протестантские и смешанные культуры
+            PatternShiftCulture.LATVIAN: PatternShiftCulturalProfile(
+                culture=PatternShiftCulture.LATVIAN,
+                religion=PatternShiftReligion.MIXED,  # Лютеране + Католики
+                phase=PatternShiftPhase.BEGINNING,
+                target_modules=[ModuleType.TECHNIQUE, ModuleType.EXERCISE, ModuleType.EDUCATION],
+                sensitive_topics=["советская оккупация", "русское меньшинство", "языковая политика"],
+                preferred_metaphors=["сосна", "янтарь", "балтийские волны", "песенный праздник"],
+                cultural_heroes=["Райнис", "Карлис Улманис", "Вайра Вике-Фрейберга"],
+                historical_context={"singing_revolution": True, "soviet_occupation": "1940-1991", "eu_membership": "2004"}
+            ),
+            PatternShiftCulture.ESTONIAN: PatternShiftCulturalProfile(
+                culture=PatternShiftCulture.ESTONIAN,
+                religion=PatternShiftReligion.PROTESTANT,
+                phase=PatternShiftPhase.BEGINNING,
+                target_modules=[ModuleType.TECHNIQUE, ModuleType.EXERCISE, ModuleType.EDUCATION],
+                sensitive_topics=["советская оккупация", "цифровые технологии", "финно-угорская идентичность"],
+                preferred_metaphors=["цифровое общество", "лесные традиции", "балтийская независимость"],
+                cultural_heroes=["Юри Лотман", "Леннарт Мери", "Константин Пятс"],
+                historical_context={"digital_society": True, "finno_ugric": True, "eu_membership": "2004"}
+            ),
+
+            # Балканские смешанные культуры
+            PatternShiftCulture.ROMANIAN: PatternShiftCulturalProfile(
+                culture=PatternShiftCulture.ROMANIAN,
+                religion=PatternShiftReligion.ORTHODOX,
+                phase=PatternShiftPhase.BEGINNING,
+                target_modules=[ModuleType.TECHNIQUE, ModuleType.EXERCISE, ModuleType.HYPNOSIS],
+                sensitive_topics=["чаушеску", "цыгане", "коррупция", "европейская интеграция"],
+                preferred_metaphors=["карпаты", "дунай", "латинская душа", "православный крест"],
+                cultural_heroes=["Михай Эминеску", "Георге Энеску", "Нико Костеа"],
+                historical_context={"latin_heritage": True, "communist_legacy": True, "eu_membership": "2007"}
+            ),
+
+            # Светские культуры
+            PatternShiftCulture.ENGLISH: PatternShiftCulturalProfile(
+                culture=PatternShiftCulture.ENGLISH,
+                religion=PatternShiftReligion.SECULAR,
+                phase=PatternShiftPhase.BEGINNING,
+                target_modules=[ModuleType.TECHNIQUE, ModuleType.EXERCISE, ModuleType.EDUCATION],
+                sensitive_topics=["политика", "расовые отношения", "религия"],
+                preferred_metaphors=["светские метафоры", "индивидуальный рост", "бизнес аналогии"],
                 cultural_heroes=["Martin Luther King", "Shakespeare", "Einstein"],
-                historical_context={"diversity": True, "globalization": True},
-                language_specifics={"formality": "low", "emotion_expression": "controlled"}
+                historical_context={"diversity": True, "globalization": True, "individualism": True}
             )
         }
 
-        return default_profiles.get(self.target_culture, CulturalProfile(
-            culture_type=self.target_culture,
-            religious_context=ReligiousContext.SECULAR,
-            communication_style=CommunicationStyle.DIRECT,
-            value_system=ValueSystem.MIXED_VALUES
+        return default_profiles.get(self.target_culture, PatternShiftCulturalProfile(
+            culture=self.target_culture,
+            religion=PatternShiftReligion.SECULAR,
+            phase=PatternShiftPhase.BEGINNING,
+            target_modules=[ModuleType.MIXED_VALUES]
         ))
 
-    def _validate_settings(self):
-        """Валидация настроек зависимостей."""
-        if self.quality_threshold < 0.0 or self.quality_threshold > 1.0:
-            raise ValueError("quality_threshold должен быть между 0.0 и 1.0")
-
+    def _validate_patternshift_settings(self):
+        """Валидация настроек PatternShift зависимостей."""
         if self.target_culture not in self.supported_cultures:
-            raise ValueError(f"Культура {self.target_culture} не поддерживается")
+            raise ValueError(f"PatternShift культура {self.target_culture} не поддерживается")
 
-    def get_cultural_context(self) -> Dict[str, Any]:
-        """Получить контекст культуры для адаптации."""
+        if not self.patternshift_architecture_files:
+            raise ValueError("Отсутствуют файлы архитектуры PatternShift")
+
+    def get_patternshift_cultural_context(self) -> Dict[str, Any]:
+        """Получить контекст PatternShift культуры для адаптации."""
         if not self.cultural_profile:
             return {}
 
         return {
-            "culture": self.cultural_profile.culture_type.value,
-            "religious_context": self.cultural_profile.religious_context.value,
-            "communication_style": self.cultural_profile.communication_style.value,
-            "value_system": self.cultural_profile.value_system.value,
+            "culture": self.cultural_profile.culture.value,
+            "religion": self.cultural_profile.religion.value,
+            "phase": self.cultural_profile.phase.value,
+            "target_modules": [m.value for m in self.cultural_profile.target_modules],
             "sensitive_topics": self.cultural_profile.sensitive_topics,
             "preferred_metaphors": self.cultural_profile.preferred_metaphors,
             "cultural_heroes": self.cultural_profile.cultural_heroes,
-            "adaptation_settings": {
+            "historical_context": self.cultural_profile.historical_context,
+            "patternshift_settings": {
+                "version": self.adaptation_settings.patternshift_version,
+                "pipeline": self.adaptation_settings.content_pipeline,
                 "depth": self.adaptation_settings.adaptation_depth,
-                "preserve_core": self.adaptation_settings.preserve_core_message,
-                "validation": self.adaptation_settings.cultural_validation
+                "preserve_efficacy": self.adaptation_settings.preserve_therapeutic_efficacy,
+                "safety_validation": self.adaptation_settings.cultural_safety_validation
             }
         }
 
-    def update_target_culture(self, culture: CultureType):
-        """Обновить целевую культуру и профиль."""
+    def update_patternshift_culture(self, culture: PatternShiftCulture):
+        """Обновить целевую PatternShift культуру и профиль."""
         self.target_culture = culture
-        self.cultural_profile = self._create_default_profile()
+        self.cultural_profile = self._create_default_patternshift_profile()
 
-    def is_culture_supported(self, culture: CultureType) -> bool:
-        """Проверить, поддерживается ли культура."""
+    def is_patternshift_culture_supported(self, culture: PatternShiftCulture) -> bool:
+        """Проверить, поддерживается ли PatternShift культура."""
         return culture in self.supported_cultures
 
+    def delegate_to_pattern_agent(self, agent_type: str, task_description: str) -> str:
+        """Делегировать задачу другому Pattern агенту через Archon."""
+        if not self.enable_pattern_agent_delegation:
+            return "Делегирование Pattern агентам отключено"
 
-def create_cultural_adaptation_dependencies(
+        if agent_type not in self.pattern_agents_registry:
+            return f"Pattern агент {agent_type} не найден в реестре"
+
+        return f"Делегирование задачи '{task_description}' агенту {self.pattern_agents_registry[agent_type]}"
+
+
+def create_pattern_cultural_adaptation_dependencies(
     api_key: str,
-    target_culture: CultureType = CultureType.UNIVERSAL,
-    project_path: str = "",
-    domain_type: str = "psychology",
+    target_culture: PatternShiftCulture = PatternShiftCulture.UKRAINIAN,
     **kwargs
 ) -> PatternCulturalAdaptationExpertDependencies:
     """
-    Создать зависимости для агента культурной адаптации.
+    Создать зависимости для Pattern Cultural Adaptation Expert.
 
     Args:
         api_key: Ключ API для LLM
-        target_culture: Целевая культура для адаптации
-        project_path: Путь к проекту
-        domain_type: Тип домена (psychology, education, healthcare)
+        target_culture: Целевая PatternShift культура
         **kwargs: Дополнительные параметры
 
     Returns:
-        Настроенные зависимости агента
+        Настроенные зависимости PatternShift агента
     """
     return PatternCulturalAdaptationExpertDependencies(
         api_key=api_key,
         target_culture=target_culture,
-        project_path=project_path,
-        domain_type=domain_type,
         **kwargs
     )
 
 
-# Предустановленные конфигурации для разных культур
-UKRAINIAN_CONFIG = {
-    "target_culture": CultureType.UKRAINIAN,
-    "domain_type": "psychology",
-    "knowledge_tags": ["ukrainian_culture", "orthodox_context", "post_soviet", "cultural_adaptation"]
+# PatternShift конфигурации для культур
+PATTERNSHIFT_UKRAINIAN_CONFIG = {
+    "target_culture": PatternShiftCulture.UKRAINIAN,
+    "knowledge_tags": ["pattern-cultural-adaptation-expert", "ukrainian-context", "orthodox", "patternshift"]
 }
 
-POLISH_CONFIG = {
-    "target_culture": CultureType.POLISH,
-    "domain_type": "psychology",
-    "knowledge_tags": ["polish_culture", "catholic_context", "solidarity", "cultural_adaptation"]
+PATTERNSHIFT_POLISH_CONFIG = {
+    "target_culture": PatternShiftCulture.POLISH,
+    "knowledge_tags": ["pattern-cultural-adaptation-expert", "polish-context", "catholic", "patternshift"]
 }
 
-ENGLISH_CONFIG = {
-    "target_culture": CultureType.ENGLISH,
-    "domain_type": "psychology",
-    "knowledge_tags": ["western_culture", "secular_context", "individualistic", "cultural_adaptation"]
-}
-
-UNIVERSAL_CONFIG = {
-    "target_culture": CultureType.UNIVERSAL,
-    "domain_type": "psychology",
-    "knowledge_tags": ["universal_principles", "cross_cultural", "inclusive", "cultural_adaptation"]
+PATTERNSHIFT_ENGLISH_CONFIG = {
+    "target_culture": PatternShiftCulture.ENGLISH,
+    "knowledge_tags": ["pattern-cultural-adaptation-expert", "english-context", "secular", "patternshift"]
 }

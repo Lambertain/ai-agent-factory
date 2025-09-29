@@ -13,8 +13,13 @@ from pydantic_ai.models.openai import OpenAIModel
 
 from .dependencies import (
     PatternCulturalAdaptationExpertDependencies,
-    CultureType,
-    create_cultural_adaptation_dependencies
+    PatternShiftCulture,
+    PatternShiftReligion,
+    PatternShiftPhase,
+    ModuleType,
+    PATTERNSHIFT_UKRAINIAN_CONFIG,
+    PATTERNSHIFT_POLISH_CONFIG,
+    PATTERNSHIFT_ENGLISH_CONFIG
 )
 from .settings import load_settings, get_settings
 from .prompts import get_system_prompt
@@ -25,10 +30,19 @@ from .tools import (
     validate_cultural_appropriateness,
     adapt_metaphors_culturally,
     generate_cultural_examples,
+    delegate_to_pattern_agent,
+    # Новые инструменты культурного профилирования
+    process_user_registration,
+    get_registration_questionnaire,
+    update_user_cultural_profile,
+    validate_cultural_assignment,
+    # Модели данных
     CulturalAnalysisRequest,
     AdaptationRequest,
     CulturalValidationRequest,
-    MetaphorAdaptationRequest
+    MetaphorAdaptationRequest,
+    UserRegistrationData,
+    CulturalProfileUpdateRequest
 )
 
 
@@ -57,55 +71,66 @@ agent.tool(adapt_content_culturally)
 agent.tool(validate_cultural_appropriateness)
 agent.tool(adapt_metaphors_culturally)
 agent.tool(generate_cultural_examples)
+agent.tool(delegate_to_pattern_agent)
+
+# Новые инструменты культурного профилирования
+agent.tool(process_user_registration)
+agent.tool(get_registration_questionnaire)
+agent.tool(update_user_cultural_profile)
+agent.tool(validate_cultural_assignment)
 
 
 @agent.tool
-async def set_target_culture(
+async def set_target_patternshift_culture(
     ctx: RunContext[PatternCulturalAdaptationExpertDependencies],
     culture: str,
+    phase: str = "beginning",
     update_profile: bool = True
 ) -> str:
     """
-    Установить целевую культуру для адаптации.
+    Установить целевую культуру PatternShift для адаптации.
 
     Args:
-        culture: Код культуры (ukrainian, polish, english, german, universal)
+        culture: Код культуры PatternShift (ukrainian, polish, english)
+        phase: Фаза программы (beginning, development, integration)
         update_profile: Обновить культурный профиль
 
     Returns:
         Подтверждение изменения
     """
     try:
-        culture_type = CultureType(culture.lower())
+        culture_type = PatternShiftCulture(culture.lower())
+        phase_type = PatternShiftPhase(phase.lower())
 
-        if not ctx.deps.is_culture_supported(culture_type):
-            return f"❌ Культура '{culture}' не поддерживается. Доступные: {[c.value for c in ctx.deps.supported_cultures]}"
+        if culture_type not in ctx.deps.supported_cultures:
+            return f"❌ Культура '{culture}' не поддерживается в PatternShift. Доступные: {[c.value for c in ctx.deps.supported_cultures]}"
 
-        # Обновляем целевую культуру
-        if update_profile:
-            ctx.deps.update_target_culture(culture_type)
-
-        cultural_context = ctx.deps.get_cultural_context()
+        # Обновляем целевую культуру и фазу
+        ctx.deps.target_culture = culture_type
+        if update_profile and ctx.deps.cultural_profile:
+            ctx.deps.cultural_profile.culture = culture_type
+            ctx.deps.cultural_profile.phase = phase_type
 
         return f"""
-✅ **Целевая культура установлена: {culture_type.value}**
+✅ **PatternShift культура установлена: {culture_type.value}**
+📅 **Фаза программы: {phase_type.value}**
 
-📋 **Культурный профиль:**
-- Религиозный контекст: {cultural_context.get('religious_context', 'не определен')}
-- Стиль коммуникации: {cultural_context.get('communication_style', 'не определен')}
-- Система ценностей: {cultural_context.get('value_system', 'не определена')}
+📋 **PatternShift профиль:**
+- Религиозный контекст: {ctx.deps.cultural_profile.religion.value if ctx.deps.cultural_profile else 'не определен'}
+- Программа: 21-дневная трансформация
+- Архитектура: Program→Phase→Day→Session→Activity→Module
 
 ⚠️ **Чувствительные темы:**
-{chr(10).join(['- ' + topic for topic in cultural_context.get('sensitive_topics', [])])}
+{chr(10).join(['- ' + topic for topic in ctx.deps.cultural_profile.sensitive_topics]) if ctx.deps.cultural_profile else '- не определены'}
 
-🎯 **Предпочтительные метафоры:**
-{chr(10).join(['- ' + metaphor for metaphor in cultural_context.get('preferred_metaphors', [])])}
+🎯 **Культурные метафоры:**
+{chr(10).join(['- ' + metaphor for metaphor in ctx.deps.cultural_profile.preferred_metaphors]) if ctx.deps.cultural_profile else '- не определены'}
 
-✨ **Готов к культурной адаптации контента для {culture_type.value} аудитории!**
+✨ **Готов к культурной адаптации PatternShift модулей для {culture_type.value} аудитории!**
 """
 
     except ValueError as e:
-        return f"❌ Неверный код культуры: {culture}. Доступные: ukrainian, polish, english, german, universal"
+        return f"❌ Неверный код культуры или фазы: {culture}/{phase}. Доступные культуры: ukrainian, polish, english. Фазы: beginning, development, integration"
     except Exception as e:
         return f"❌ Ошибка установки культуры: {e}"
 
@@ -129,7 +154,7 @@ async def get_adaptation_recommendations(
         Детальные рекомендации по адаптации
     """
     try:
-        cultural_context = ctx.deps.get_cultural_context()
+        cultural_context = ctx.deps.get_patternshift_cultural_context()
         target_culture = ctx.deps.target_culture
 
         recommendations = {
@@ -141,21 +166,21 @@ async def get_adaptation_recommendations(
         }
 
         # Рекомендации по метафорам
-        if target_culture == CultureType.UKRAINIAN:
+        if target_culture == PatternShiftCulture.UKRAINIAN:
             recommendations["metaphor_guidelines"].extend([
                 "Используйте природные метафоры: поле, дуб, река",
                 "Включайте образы дома и семейного очага",
                 "Применяйте метафоры пути и дороги домой",
                 "Используйте образы стойкости и выносливости"
             ])
-        elif target_culture == CultureType.POLISH:
+        elif target_culture == PatternShiftCulture.POLISH:
             recommendations["metaphor_guidelines"].extend([
                 "Используйте католические образы и символы",
                 "Включайте семейные и традиционные метафоры",
                 "Применяйте исторические аналогии",
                 "Используйте образы солидарности и единства"
             ])
-        elif target_culture == CultureType.ENGLISH:
+        elif target_culture == PatternShiftCulture.ENGLISH:
             recommendations["metaphor_guidelines"].extend([
                 "Используйте светские, универсальные метафоры",
                 "Включайте образы индивидуального роста",
@@ -316,25 +341,22 @@ async def run_pattern_cultural_adaptation_expert(
     try:
         # Загрузка настроек
         if api_key:
-            deps = create_cultural_adaptation_dependencies(
+            deps = create_pattern_cultural_adaptation_dependencies(
                 api_key=api_key,
-                target_culture=CultureType(target_culture),
+                target_culture=PatternShiftCulture(target_culture),
                 **kwargs
             )
         else:
             settings = get_settings()
-            deps = create_cultural_adaptation_dependencies(
+            deps = create_pattern_cultural_adaptation_dependencies(
                 api_key=settings.llm_api_key,
-                target_culture=CultureType(target_culture),
+                target_culture=PatternShiftCulture(target_culture),
                 **kwargs
             )
 
         # Обновление системного промпта под культуру
-        culture_type = CultureType(target_culture)
-        system_prompt = get_system_prompt(
-            target_culture=culture_type,
-            domain_type=deps.domain_type
-        )
+        culture_type = PatternShiftCulture(target_culture)
+        system_prompt = get_system_prompt()
 
         # Создание агента с обновленным промптом
         cultural_agent = Agent(
@@ -350,9 +372,10 @@ async def run_pattern_cultural_adaptation_expert(
         cultural_agent.tool(validate_cultural_appropriateness)
         cultural_agent.tool(adapt_metaphors_culturally)
         cultural_agent.tool(generate_cultural_examples)
-        cultural_agent.tool(set_target_culture)
+        cultural_agent.tool(set_target_patternshift_culture)
         cultural_agent.tool(get_adaptation_recommendations)
         cultural_agent.tool(comprehensive_cultural_analysis)
+        cultural_agent.tool(delegate_to_pattern_agent)
 
         # Запуск агента
         result = await cultural_agent.run(user_message, deps=deps)
