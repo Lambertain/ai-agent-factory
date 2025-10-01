@@ -208,8 +208,8 @@ class PydanticAIIntegration:
             if self._should_create_git_commit(result):
                 git_manager = GitManager()
 
-                # Создаем автоматический коммит
-                success, commit_message = await git_manager.auto_commit_task_completion(
+                # Создаем автоматический коммит (синхронный метод)
+                success, commit_message = git_manager.auto_commit_task_completion(
                     task_description=user_message,
                     files_changed=None  # Автоопределение
                 )
@@ -400,19 +400,16 @@ async def create_mandatory_git_commit(task_description: str, agent_type: str) ->
 
         git_manager = GitManager()
 
-        # Создаем коммит с стандартизированным сообщением
-        commit_message = f"✅ Завершена задача ({agent_type}): {task_description[:50]}..."
-
-        success, result = await git_manager.auto_commit_task_completion(
-            task_description=task_description,
-            commit_message=commit_message,
+        # Создаем коммит с полным описанием задачи
+        success, result = git_manager.auto_commit_task_completion(
+            task_description=f"[{agent_type}] {task_description}",
             files_changed=None  # Автоопределение
         )
 
         if success:
-            return f"✅ Git коммит создан успешно: {commit_message}"
+            return f"✅ Git коммит создан: {result}"
         else:
-            return f"❌ Ошибка создания Git коммита: {result}"
+            return f"❌ Ошибка Git коммита: {result}"
 
     except Exception as e:
         return f"❌ Ошибка системы Git коммитов: {e}"
