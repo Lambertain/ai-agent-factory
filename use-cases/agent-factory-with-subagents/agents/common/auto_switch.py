@@ -26,7 +26,7 @@ class ProjectManagerSwitcher:
     async def check_and_switch(
         self,
         user_input: str,
-        current_agent_name: str = "Unknown Agent",
+        current_agent_name: str = "Неизвестный агент",
         threshold: float = 0.7
     ) -> Dict[str, Any]:
         """
@@ -257,7 +257,7 @@ class ProjectManagerSwitcher:
 
 async def auto_switch_to_project_manager(
     user_input: str,
-    current_agent_name: str = "Unknown Agent",
+    current_agent_name: str = "Неизвестный агент",
     archon_project_id: str = "c75ef8e3-6f4d-4da2-9e81-8d38d04a341a",
     threshold: float = 0.7
 ) -> Dict[str, Any]:

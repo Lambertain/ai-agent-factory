@@ -444,7 +444,7 @@ async def update_archon_task_status(task_id: str, status: str, notes: str = "") 
         if result.get("success"):
             return f"✅ Статус задачи в Archon обновлен: {status}"
         else:
-            return f"❌ Ошибка обновления статуса в Archon: {result.get('message', 'Unknown error')}"
+            return f"❌ Ошибка обновления статуса в Archon: {result.get('message', 'Неизвестная ошибка')}"
 
     except Exception as e:
         return f"❌ Ошибка системы Archon: {e}"
