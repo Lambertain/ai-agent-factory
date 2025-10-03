@@ -10,32 +10,45 @@ from ..common import check_pm_switch
 from .providers import get_prisma_model_by_task
 from .dependencies import PrismaDatabaseDependencies
 from .prompts import SYSTEM_PROMPT
+from ..common.pydantic_ai_decorators import (
+    create_universal_pydantic_agent,
+    with_integrations,
+    register_agent
+)
 from .tools import (
     analyze_schema_performance,
     optimize_queries,
     create_migration_plan,
-    analyze_slow_queries,
-    search_agent_knowledge
+    analyze_slow_queries
 )
 
 
 # Инициализация настроек
 settings = load_settings()
 
-# Создание агента с мультиагентными паттернами
-prisma_agent = Agent(
-    model=get_prisma_model_by_task("architecture"),  # Используем архитектурную модель по умолчанию
+# Create universal prisma database agent with decorators
+prisma_agent = create_universal_pydantic_agent(
+    model=get_prisma_model_by_task("architecture"),
     deps_type=PrismaDatabaseDependencies,
     system_prompt=SYSTEM_PROMPT,
+    agent_type="prisma_database",
+    knowledge_tags=["prisma", "database", "agent-knowledge", "pydantic-ai"],
+    knowledge_domain="prisma.io",
+    with_collective_tools=True,
+    with_knowledge_tool=True,
     retries=2
 )
 
-# Регистрация инструментов
+# Register agent in global registry
+register_agent("prisma_database", prisma_agent, agent_type="prisma_database")
+
+# Register prisma-specific tools
 prisma_agent.tool(analyze_schema_performance)
 prisma_agent.tool(optimize_queries)
 prisma_agent.tool(create_migration_plan)
 prisma_agent.tool(analyze_slow_queries)
-prisma_agent.tool(search_agent_knowledge)
+
+# Collective work tools and knowledge search now added automatically via decorators
 
 
 @prisma_agent.result_validator

@@ -10,6 +10,7 @@ class PrismaDatabaseDependencies:
     """Зависимости для Prisma Database Agent с интеграцией RAG."""
 
     # Основные настройки
+    agent_name: str = "prisma_database"  # For RAG protection
     context: str = "Universal Prisma database analysis"
     project_path: str = ""
     analysis_mode: str = "full"
