@@ -28,6 +28,7 @@ class MCPConfigurationDeps:
     """
 
     # Основные настройки
+    agent_name: str = "mcp_configuration"  # For RAG protection
     domain_type: DomainType = DomainType.GENERAL
     project_type: ProjectType = ProjectType.WEB_APPLICATION
 

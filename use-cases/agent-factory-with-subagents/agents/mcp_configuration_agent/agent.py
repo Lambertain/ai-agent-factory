@@ -31,17 +31,17 @@ from datetime import datetime
 from pydantic_ai import Agent, RunContext
 from .dependencies import MCPConfigurationDeps
 from .providers import get_llm_model
+from ..common.pydantic_ai_decorators import (
+    create_universal_pydantic_agent,
+    with_integrations,
+    register_agent
+)
 from .tools import (
     install_mcp_server,
     configure_claude_desktop,
     validate_server_config,
     get_recommended_servers_for_domain,
-    create_server_from_template,
-    break_down_to_microtasks,
-    report_microtask_progress,
-    reflect_and_improve,
-    check_delegation_need,
-    search_mcp_knowledge
+    create_server_from_template
 )
 from .prompts import get_mcp_system_prompt
 
@@ -53,12 +53,20 @@ from MCP_SERVERS_FINAL_CONFIG import WORKING_MCP_SERVERS, get_mcp_config_for_age
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Создаем Pydantic AI агента (прямая архитектура)
-mcp_agent = Agent(
-    get_llm_model(),
+# Создаем Pydantic AI агента с универсальными интеграциями
+mcp_agent = create_universal_pydantic_agent(
+    model=get_llm_model(),
     deps_type=MCPConfigurationDeps,
-    system_prompt=get_mcp_system_prompt()
+    system_prompt=get_mcp_system_prompt(),
+    agent_type="mcp_configuration",
+    knowledge_tags=["mcp", "configuration", "agent-knowledge", "pydantic-ai"],
+    knowledge_domain="mcp.configuration.com",
+    with_collective_tools=True,
+    with_knowledge_tool=True
 )
+
+# Регистрация агента в глобальном реестре
+register_agent("mcp_configuration", mcp_agent, agent_type="mcp_configuration")
 
 # Регистрируем MCP инструменты
 mcp_agent.tool(install_mcp_server)
@@ -66,13 +74,8 @@ mcp_agent.tool(configure_claude_desktop)
 mcp_agent.tool(validate_server_config)
 mcp_agent.tool(get_recommended_servers_for_domain)
 mcp_agent.tool(create_server_from_template)
-mcp_agent.tool(search_mcp_knowledge)
 
-# Регистрируем обязательные инструменты коллективной работы
-mcp_agent.tool(break_down_to_microtasks)
-mcp_agent.tool(report_microtask_progress)
-mcp_agent.tool(reflect_and_improve)
-mcp_agent.tool(check_delegation_need)
+# Collective work tools and knowledge search now added automatically via decorators
 
 
 @dataclass
