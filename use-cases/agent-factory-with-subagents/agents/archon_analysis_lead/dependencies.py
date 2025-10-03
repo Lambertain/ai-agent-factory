@@ -35,6 +35,7 @@ class AnalysisLeadDependencies:
 
     # Основные настройки
     project_id: str = "default"
+    agent_name: str = "archon_analysis_lead"
     analysis_method: AnalysisMethod = AnalysisMethod.STRUCTURED
 
     # Archon интеграция

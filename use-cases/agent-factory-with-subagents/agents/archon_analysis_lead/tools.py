@@ -220,47 +220,4 @@ async def create_analysis_report(
     return report
 
 
-async def search_analysis_knowledge(
-    ctx: RunContext[AnalysisLeadDependencies],
-    query: str,
-    match_count: int = 5
-) -> str:
-    """
-    Поиск в базе знаний агента по анализу и планированию.
-
-    Args:
-        query: Поисковый запрос
-        match_count: Количество результатов
-
-    Returns:
-        Найденная информация из базы знаний
-    """
-    try:
-        # Используем теги для фильтрации по знаниям Analysis Lead
-        search_tags = ctx.deps.knowledge_tags
-
-        # Здесь должен быть вызов к Archon RAG
-        # result = await mcp_archon_rag_search_knowledge_base(...)
-
-        knowledge = f"""
-База знаний Analysis Lead:
-
-Поиск по запросу: {query}
-Теги: {', '.join(search_tags)}
-
-НАЙДЕННЫЕ МАТЕРИАЛЫ:
-1. Методы анализа требований
-2. Техники декомпозиции задач
-3. Шаблоны планирования проектов
-4. Best practices исследования решений
-
-РЕКОМЕНДУЕМЫЕ ДЕЙСТВИЯ:
-- Применить структурный анализ
-- Использовать декомпозицию по приоритетам
-- Провести исследование аналогов
-"""
-
-        return knowledge
-
-    except Exception as e:
-        return f"Ошибка поиска в базе знаний: {e}. Используйте альтернативные методы анализа."
+# search_analysis_knowledge теперь добавляется автоматически через декоратор with_knowledge_search
