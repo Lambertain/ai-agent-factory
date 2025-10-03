@@ -13,6 +13,7 @@ class RAGAgentDependencies:
     """Universal dependencies for RAG Agent supporting various knowledge systems."""
 
     # Core dependencies
+    agent_name: str = "rag_agent"  # For RAG protection
     db_pool: Optional[asyncpg.Pool] = None
     openai_client: Optional[openai.AsyncOpenAI] = None
     settings: Optional[Any] = None
