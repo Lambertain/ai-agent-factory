@@ -12,10 +12,14 @@ from pydantic_ai import Agent, RunContext
 
 from .dependencies import QueueWorkerDependencies, QueueType, WorkerType, UseCase, DeploymentType
 from ..common import check_pm_switch
+from ..common.pydantic_ai_decorators import (
+    create_universal_pydantic_agent,
+    with_integrations,
+    register_agent
+)
 from .prompts import get_system_prompt
 from .settings import get_llm_model
 from .tools import (
-    search_queue_knowledge,
     create_task_queue,
     submit_task,
     get_task_status,
@@ -26,68 +30,30 @@ from .tools import (
 
 logger = logging.getLogger(__name__)
 
-# Initialize queue/worker management agent with adaptive prompts
-def create_queue_worker_agent(deps: QueueWorkerDependencies) -> Agent[QueueWorkerDependencies, str]:
-    """
-    Create universal queue/worker management agent with system-specific expertise.
+# Create universal queue worker agent with decorators
+queue_worker_agent = create_universal_pydantic_agent(
+    model=get_llm_model(),
+    deps_type=QueueWorkerDependencies,
+    system_prompt=lambda deps: get_system_prompt(deps),
+    agent_type="queue_worker",
+    knowledge_tags=["queue", "worker", "agent-knowledge", "pydantic-ai"],
+    knowledge_domain="queue-worker.universal.com",
+    with_collective_tools=True,
+    with_knowledge_tool=True
+)
 
-    Args:
-        deps: Queue/worker agent dependencies with system and use case configuration
+# Register agent in global registry
+register_agent("queue_worker", queue_worker_agent, agent_type="queue_worker")
 
-    Returns:
-        Configured Pydantic AI agent for queue/worker management
-    """
+# Register queue-specific tools
+queue_worker_agent.tool(create_task_queue)
+queue_worker_agent.tool(submit_task)
+queue_worker_agent.tool(get_task_status)
+queue_worker_agent.tool(get_queue_statistics)
+queue_worker_agent.tool(manage_workers)
+queue_worker_agent.tool(validate_queue_configuration)
 
-    # Get adaptive system prompt based on configuration
-    system_prompt = get_system_prompt(deps)
-
-    # Create agent with LLM model and dependencies
-    agent = Agent(
-        model=get_llm_model(),
-        deps_type=QueueWorkerDependencies,
-        system_prompt=system_prompt
-    )
-
-    # Register queue/worker management tools
-    agent.tool(search_queue_knowledge)
-    agent.tool(create_task_queue)
-    agent.tool(submit_task)
-    agent.tool(get_task_status)
-    agent.tool(get_queue_statistics)
-    agent.tool(manage_workers)
-    agent.tool(validate_queue_configuration)
-
-    return agent
-
-
-# Global agent instance (will be configured based on environment)
-queue_worker_agent: Optional[Agent[QueueWorkerDependencies, str]] = None
-
-
-def get_queue_worker_agent(deps: Optional[QueueWorkerDependencies] = None) -> Agent[QueueWorkerDependencies, str]:
-    """
-    Get or create queue/worker management agent instance.
-
-    Args:
-        deps: Optional queue/worker dependencies (uses default if not provided)
-
-    Returns:
-        Configured queue/worker management agent
-    """
-    global queue_worker_agent
-
-    if queue_worker_agent is None or deps is not None:
-        if deps is None:
-            # Create default dependencies
-            deps = QueueWorkerDependencies(
-                api_key="your_api_key_here",
-                project_path="",
-                project_name="Queue Worker Management Project"
-            )
-
-        queue_worker_agent = create_queue_worker_agent(deps)
-
-    return queue_worker_agent
+# Collective work tools and knowledge search now added automatically via decorators
 
 
 async def run_queue_worker_agent(
@@ -107,10 +73,15 @@ async def run_queue_worker_agent(
         Agent response with queue/worker management guidance
     """
     try:
-        agent = get_queue_worker_agent(deps)
+        if deps is None:
+            deps = QueueWorkerDependencies(
+                api_key="demo",
+                project_path="",
+                project_name="Queue Worker Management Project"
+            )
 
         # Run agent with user input
-        result = await agent.run(user_input, deps=deps or QueueWorkerDependencies(api_key="demo"))
+        result = await queue_worker_agent.run(user_input, deps=deps)
 
         logger.info(f"Queue/worker management request completed: {user_input[:100]}...")
         return result.data
@@ -141,10 +112,8 @@ async def create_queue_system(
         Queue creation result
     """
     try:
-        agent = get_queue_worker_agent(deps)
-
         # Create queue through agent tools
-        with agent.override(deps=deps):
+        with queue_worker_agent.override(deps=deps):
             queue_result = await create_task_queue(
                 ctx=RunContext(deps=deps, retry=0),
                 queue_name=queue_name,
@@ -192,10 +161,8 @@ async def submit_background_task(
         Task submission result
     """
     try:
-        agent = get_queue_worker_agent(deps)
-
         # Submit task through agent tools
-        with agent.override(deps=deps):
+        with queue_worker_agent.override(deps=deps):
             task_result = await submit_task(
                 ctx=RunContext(deps=deps, retry=0),
                 task_name=task_name,
@@ -234,10 +201,8 @@ async def check_task_progress(
         Task status information
     """
     try:
-        agent = get_queue_worker_agent(deps)
-
         # Check task status through agent tools
-        with agent.override(deps=deps):
+        with queue_worker_agent.override(deps=deps):
             status_result = await get_task_status(
                 ctx=RunContext(deps=deps, retry=0),
                 task_id=task_id
@@ -271,10 +236,8 @@ async def get_system_statistics(
         System statistics and metrics
     """
     try:
-        agent = get_queue_worker_agent(deps)
-
         # Get statistics through agent tools
-        with agent.override(deps=deps):
+        with queue_worker_agent.override(deps=deps):
             stats_result = await get_queue_statistics(
                 ctx=RunContext(deps=deps, retry=0),
                 queue_name=queue_name
@@ -309,10 +272,8 @@ async def scale_workers(
         Worker scaling result
     """
     try:
-        agent = get_queue_worker_agent(deps)
-
         # Scale workers through agent tools
-        with agent.override(deps=deps):
+        with queue_worker_agent.override(deps=deps):
             scaling_result = await manage_workers(
                 ctx=RunContext(deps=deps, retry=0),
                 action="scale",
@@ -345,10 +306,8 @@ async def get_configuration_analysis(
         Configuration analysis and recommendations
     """
     try:
-        agent = get_queue_worker_agent(deps)
-
         # Validate configuration through agent tools
-        with agent.override(deps=deps):
+        with queue_worker_agent.override(deps=deps):
             analysis_result = await validate_queue_configuration(
                 ctx=RunContext(deps=deps, retry=0)
             )
@@ -368,15 +327,15 @@ async def get_configuration_analysis(
 
 # Convenience functions for different use cases
 
-async def create_api_processing_agent(
+def create_api_processing_deps(
     api_key: str,
     queue_type: QueueType = QueueType.REDIS,
     worker_type: WorkerType = WorkerType.CELERY,
     project_path: str = "",
     **kwargs
-) -> Agent[QueueWorkerDependencies, str]:
-    """Create queue/worker agent optimized for API processing."""
-    deps = QueueWorkerDependencies(
+) -> QueueWorkerDependencies:
+    """Create dependencies optimized for API processing."""
+    return QueueWorkerDependencies(
         api_key=api_key,
         project_path=project_path,
         queue_type=queue_type,
@@ -389,18 +348,16 @@ async def create_api_processing_agent(
         **kwargs
     )
 
-    return create_queue_worker_agent(deps)
 
-
-async def create_data_pipeline_agent(
+def create_data_pipeline_deps(
     api_key: str,
     queue_type: QueueType = QueueType.RABBITMQ,
     worker_type: WorkerType = WorkerType.CELERY,
     project_path: str = "",
     **kwargs
-) -> Agent[QueueWorkerDependencies, str]:
-    """Create queue/worker agent optimized for data pipelines."""
-    deps = QueueWorkerDependencies(
+) -> QueueWorkerDependencies:
+    """Create dependencies optimized for data pipelines."""
+    return QueueWorkerDependencies(
         api_key=api_key,
         project_path=project_path,
         queue_type=queue_type,
@@ -414,18 +371,16 @@ async def create_data_pipeline_agent(
         **kwargs
     )
 
-    return create_queue_worker_agent(deps)
 
-
-async def create_email_service_agent(
+def create_email_service_deps(
     api_key: str,
     queue_type: QueueType = QueueType.REDIS,
     worker_type: WorkerType = WorkerType.RQ,
     project_path: str = "",
     **kwargs
-) -> Agent[QueueWorkerDependencies, str]:
-    """Create queue/worker agent optimized for email sending."""
-    deps = QueueWorkerDependencies(
+) -> QueueWorkerDependencies:
+    """Create dependencies optimized for email sending."""
+    return QueueWorkerDependencies(
         api_key=api_key,
         project_path=project_path,
         queue_type=queue_type,
@@ -439,18 +394,16 @@ async def create_email_service_agent(
         **kwargs
     )
 
-    return create_queue_worker_agent(deps)
 
-
-async def create_file_processing_agent(
+def create_file_processing_deps(
     api_key: str,
     queue_type: QueueType = QueueType.AWS_SQS,
     worker_type: WorkerType = WorkerType.CELERY,
     project_path: str = "",
     **kwargs
-) -> Agent[QueueWorkerDependencies, str]:
-    """Create queue/worker agent optimized for file processing."""
-    deps = QueueWorkerDependencies(
+) -> QueueWorkerDependencies:
+    """Create dependencies optimized for file processing."""
+    return QueueWorkerDependencies(
         api_key=api_key,
         project_path=project_path,
         queue_type=queue_type,
@@ -464,18 +417,16 @@ async def create_file_processing_agent(
         **kwargs
     )
 
-    return create_queue_worker_agent(deps)
 
-
-async def create_ml_inference_agent(
+def create_ml_inference_deps(
     api_key: str,
     queue_type: QueueType = QueueType.REDIS,
     worker_type: WorkerType = WorkerType.CELERY,
     project_path: str = "",
     **kwargs
-) -> Agent[QueueWorkerDependencies, str]:
-    """Create queue/worker agent optimized for ML inference."""
-    deps = QueueWorkerDependencies(
+) -> QueueWorkerDependencies:
+    """Create dependencies optimized for ML inference."""
+    return QueueWorkerDependencies(
         api_key=api_key,
         project_path=project_path,
         queue_type=queue_type,
@@ -490,18 +441,16 @@ async def create_ml_inference_agent(
         **kwargs
     )
 
-    return create_queue_worker_agent(deps)
 
-
-async def create_serverless_agent(
+def create_serverless_deps(
     api_key: str,
     queue_type: QueueType = QueueType.AWS_SQS,
     deployment_type: DeploymentType = DeploymentType.LAMBDA,
     project_path: str = "",
     **kwargs
-) -> Agent[QueueWorkerDependencies, str]:
-    """Create queue/worker agent optimized for serverless deployment."""
-    deps = QueueWorkerDependencies(
+) -> QueueWorkerDependencies:
+    """Create dependencies optimized for serverless deployment."""
+    return QueueWorkerDependencies(
         api_key=api_key,
         project_path=project_path,
         queue_type=queue_type,
@@ -515,8 +464,6 @@ async def create_serverless_agent(
         cloud_provider="aws",
         **kwargs
     )
-
-    return create_queue_worker_agent(deps)
 
 
 # Main execution function
@@ -533,9 +480,6 @@ async def main():
         worker_type=WorkerType.CELERY,
         use_case=UseCase.API_PROCESSING
     )
-
-    # Test queue/worker agent
-    agent = get_queue_worker_agent(deps)
 
     # Test queries
     test_queries = [

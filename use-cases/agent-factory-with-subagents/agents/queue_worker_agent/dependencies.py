@@ -86,6 +86,7 @@ class QueueWorkerDependencies:
 
     # Core settings
     api_key: str
+    agent_name: str = "queue_worker"  # For RAG protection
     project_path: str = ""
     project_name: str = ""
 
