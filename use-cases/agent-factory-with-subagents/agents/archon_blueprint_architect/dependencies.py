@@ -36,6 +36,7 @@ class BlueprintArchitectDependencies:
 
     # Основные настройки
     project_id: str = "default"
+    agent_name: str = "archon_blueprint_architect"
     architectural_pattern: ArchitecturalPattern = ArchitecturalPattern.LAYERED
     scalability_level: ScalabilityLevel = ScalabilityLevel.MEDIUM
 

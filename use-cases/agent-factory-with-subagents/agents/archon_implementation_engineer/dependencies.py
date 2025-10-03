@@ -60,6 +60,7 @@ class ImplementationEngineerDependencies:
 
     # Основные настройки
     project_id: str = "default"
+    agent_name: str = "archon_implementation_engineer"
     primary_language: ProgrammingLanguage = ProgrammingLanguage.PYTHON
     framework: DevelopmentFramework = DevelopmentFramework.FASTAPI
 
