@@ -15,6 +15,7 @@ class PaymentAgentDependencies:
 
     # Core payment settings
     api_key: str
+    agent_name: str = "payment_integration"  # For RAG protection
     project_path: str = ""
     project_name: str = ""
 

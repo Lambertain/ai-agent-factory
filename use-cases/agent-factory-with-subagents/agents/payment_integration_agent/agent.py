@@ -14,8 +14,12 @@ from .dependencies import PaymentAgentDependencies
 from ..common import check_pm_switch
 from .prompts import get_system_prompt
 from .settings import get_llm_model
+from ..common.pydantic_ai_decorators import (
+    create_universal_pydantic_agent,
+    with_integrations,
+    register_agent
+)
 from .tools import (
-    search_payment_knowledge,
     create_payment,
     verify_webhook_signature,
     process_refund,
@@ -24,65 +28,41 @@ from .tools import (
 
 logger = logging.getLogger(__name__)
 
-# Initialize payment integration agent with adaptive prompts
-def create_payment_integration_agent(deps: PaymentAgentDependencies) -> Agent[PaymentAgentDependencies, str]:
-    """
-    Create universal payment integration agent with provider-specific expertise.
+# Create universal payment integration agent with decorators
+payment_integration_agent = create_universal_pydantic_agent(
+    model=get_llm_model(),
+    deps_type=PaymentAgentDependencies,
+    system_prompt=lambda deps: get_system_prompt(deps),
+    agent_type="payment_integration",
+    knowledge_tags=["payment", "integration", "agent-knowledge", "pydantic-ai"],
+    knowledge_domain="payment.integration.com",
+    with_collective_tools=True,
+    with_knowledge_tool=True
+)
 
-    Args:
-        deps: Payment agent dependencies with provider and business model configuration
+# Register agent in global registry
+register_agent("payment_integration", payment_integration_agent, agent_type="payment_integration")
 
-    Returns:
-        Configured Pydantic AI agent for payment integration
-    """
+# Register payment integration tools
+payment_integration_agent.tool(create_payment)
+payment_integration_agent.tool(verify_webhook_signature)
+payment_integration_agent.tool(process_refund)
+payment_integration_agent.tool(validate_payment_configuration)
 
-    # Get adaptive system prompt based on configuration
-    system_prompt = get_system_prompt(deps)
-
-    # Create agent with LLM model and dependencies
-    agent = Agent(
-        model=get_llm_model(),
-        deps_type=PaymentAgentDependencies,
-        system_prompt=system_prompt
-    )
-
-    # Register payment integration tools
-    agent.tool(search_payment_knowledge)
-    agent.tool(create_payment)
-    agent.tool(verify_webhook_signature)
-    agent.tool(process_refund)
-    agent.tool(validate_payment_configuration)
-
-    return agent
-
-
-# Global agent instance (will be configured based on environment)
-payment_integration_agent: Optional[Agent[PaymentAgentDependencies, str]] = None
+# Collective work tools and knowledge search now added automatically via decorators
 
 
 def get_payment_integration_agent(deps: Optional[PaymentAgentDependencies] = None) -> Agent[PaymentAgentDependencies, str]:
     """
-    Get or create payment integration agent instance.
+    Get payment integration agent instance.
 
     Args:
-        deps: Optional payment dependencies (uses default if not provided)
+        deps: Optional payment dependencies (not used, kept for compatibility)
 
     Returns:
         Configured payment integration agent
     """
-    global payment_integration_agent
-
-    if payment_integration_agent is None or deps is not None:
-        if deps is None:
-            # Create default dependencies
-            deps = PaymentAgentDependencies(
-                api_key="your_api_key_here",
-                project_path="",
-                project_name="Payment Integration Project"
-            )
-
-        payment_integration_agent = create_payment_integration_agent(deps)
-
+    # Return global agent instance created with decorators
     return payment_integration_agent
 
 
@@ -103,10 +83,11 @@ async def run_payment_integration_agent(
         Agent response with payment integration guidance
     """
     try:
-        agent = get_payment_integration_agent(deps)
+        # Use global agent instance with provided deps
+        if deps is None:
+            deps = PaymentAgentDependencies(api_key="demo")
 
-        # Run agent with user input
-        result = await agent.run(user_input, deps=deps or PaymentAgentDependencies(api_key="demo"))
+        result = await payment_integration_agent.run(user_input, deps=deps)
 
         logger.info(f"Payment integration request completed: {user_input[:100]}...")
         return result.data
@@ -290,14 +271,14 @@ async def get_payment_configuration_analysis(
 
 # Convenience functions for different business models
 
-async def create_ecommerce_payment_agent(
+def create_ecommerce_payment_deps(
     api_key: str,
     payment_provider: str = "stripe",
     project_path: str = "",
     **kwargs
-) -> Agent[PaymentAgentDependencies, str]:
-    """Create payment agent optimized for e-commerce."""
-    deps = PaymentAgentDependencies(
+) -> PaymentAgentDependencies:
+    """Create payment dependencies optimized for e-commerce."""
+    return PaymentAgentDependencies(
         api_key=api_key,
         project_path=project_path,
         payment_provider=payment_provider,
@@ -308,17 +289,15 @@ async def create_ecommerce_payment_agent(
         **kwargs
     )
 
-    return create_payment_integration_agent(deps)
 
-
-async def create_saas_payment_agent(
+def create_saas_payment_deps(
     api_key: str,
     payment_provider: str = "stripe",
     project_path: str = "",
     **kwargs
-) -> Agent[PaymentAgentDependencies, str]:
-    """Create payment agent optimized for SaaS."""
-    deps = PaymentAgentDependencies(
+) -> PaymentAgentDependencies:
+    """Create payment dependencies optimized for SaaS."""
+    return PaymentAgentDependencies(
         api_key=api_key,
         project_path=project_path,
         payment_provider=payment_provider,
@@ -331,17 +310,15 @@ async def create_saas_payment_agent(
         **kwargs
     )
 
-    return create_payment_integration_agent(deps)
 
-
-async def create_marketplace_payment_agent(
+def create_marketplace_payment_deps(
     api_key: str,
     payment_provider: str = "stripe",
     project_path: str = "",
     **kwargs
-) -> Agent[PaymentAgentDependencies, str]:
-    """Create payment agent optimized for marketplaces."""
-    deps = PaymentAgentDependencies(
+) -> PaymentAgentDependencies:
+    """Create payment dependencies optimized for marketplaces."""
+    return PaymentAgentDependencies(
         api_key=api_key,
         project_path=project_path,
         payment_provider=payment_provider,
@@ -354,17 +331,15 @@ async def create_marketplace_payment_agent(
         **kwargs
     )
 
-    return create_payment_integration_agent(deps)
 
-
-async def create_donation_payment_agent(
+def create_donation_payment_deps(
     api_key: str,
     payment_provider: str = "stripe",
     project_path: str = "",
     **kwargs
-) -> Agent[PaymentAgentDependencies, str]:
-    """Create payment agent optimized for donations."""
-    deps = PaymentAgentDependencies(
+) -> PaymentAgentDependencies:
+    """Create payment dependencies optimized for donations."""
+    return PaymentAgentDependencies(
         api_key=api_key,
         project_path=project_path,
         payment_provider=payment_provider,
@@ -375,8 +350,6 @@ async def create_donation_payment_agent(
         fraud_detection="basic",
         **kwargs
     )
-
-    return create_payment_integration_agent(deps)
 
 
 # Main execution function
@@ -393,9 +366,7 @@ async def main():
         business_model="ecommerce"
     )
 
-    # Test payment agent
-    agent = get_payment_integration_agent(deps)
-
+    # Test payment agent (using global instance)
     # Test queries
     test_queries = [
         "Как интегрировать Stripe для e-commerce платежей?",
