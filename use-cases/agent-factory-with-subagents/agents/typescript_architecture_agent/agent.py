@@ -3,29 +3,42 @@
 from pydantic_ai import Agent
 from .dependencies import TypeScriptArchitectureDependencies
 from ..common import check_pm_switch
+from ..common.pydantic_ai_decorators import (
+    create_universal_pydantic_agent,
+    with_integrations,
+    register_agent
+)
 from .tools import (
     analyze_type_complexity,
     refactor_types,
     generate_type_guards,
-    optimize_typescript_config,
-    search_agent_knowledge
+    optimize_typescript_config
 )
 from .prompts import SYSTEM_PROMPT
 from .providers import get_llm_model
 
-# Create the TypeScript Architecture Agent
-typescript_agent = Agent(
+# Create universal TypeScript architecture agent with decorators
+typescript_agent = create_universal_pydantic_agent(
     model=get_llm_model(),
     deps_type=TypeScriptArchitectureDependencies,
     system_prompt=SYSTEM_PROMPT,
-    tools=[
-        analyze_type_complexity,
-        refactor_types,
-        generate_type_guards,
-        optimize_typescript_config,
-        search_agent_knowledge
-    ]
+    agent_type="typescript_architecture",
+    knowledge_tags=["typescript", "architecture", "agent-knowledge", "pydantic-ai"],
+    knowledge_domain="typescriptlang.org",
+    with_collective_tools=True,
+    with_knowledge_tool=True
 )
+
+# Register agent in global registry
+register_agent("typescript_architecture", typescript_agent, agent_type="typescript_architecture")
+
+# Register TypeScript-specific tools
+typescript_agent.tool(analyze_type_complexity)
+typescript_agent.tool(refactor_types)
+typescript_agent.tool(generate_type_guards)
+typescript_agent.tool(optimize_typescript_config)
+
+# Collective work tools and knowledge search now added automatically via decorators
 
 async def run_typescript_analysis(
     context: str,

@@ -10,6 +10,7 @@ class TypeScriptArchitectureDependencies:
     """Зависимости для TypeScript Architecture Agent с поддержкой RAG."""
 
     # Основные настройки
+    agent_name: str = "typescript_architecture"  # For RAG protection
     context: str = ""
     project_path: str = ""
     project_name: str = ""
