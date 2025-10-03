@@ -8,14 +8,18 @@ PWA & Cross-Platform Mobile Agent - универсальный агент для
 import asyncio
 from dataclasses import dataclass
 from pydantic_ai import Agent, RunContext
-from .tools import (
 from ..common import check_pm_switch
+from ..common.pydantic_ai_decorators import (
+    create_universal_pydantic_agent,
+    with_integrations,
+    register_agent
+)
+from .tools import (
     generate_pwa_manifest,
     create_service_worker,
     optimize_mobile_ux,
     analyze_mobile_performance,
     setup_offline_sync,
-    search_agent_knowledge,
     # Modern Web APIs
     implement_file_system_access_api,
     implement_badging_api,
@@ -35,36 +39,45 @@ from .prompts import SYSTEM_PROMPT
 from .providers import get_llm_model
 
 
-# Создаем агента
-agent = Agent(
-    get_llm_model(),
+# Create universal PWA mobile agent with decorators
+agent = create_universal_pydantic_agent(
+    model=get_llm_model(),
     deps_type=PWAMobileAgentDependencies,
-    system_prompt=SYSTEM_PROMPT
+    system_prompt=SYSTEM_PROMPT,
+    agent_type="pwa_mobile",
+    knowledge_tags=["pwa", "mobile", "agent-knowledge", "pydantic-ai"],
+    knowledge_domain="pwa.mobile.com",
+    with_collective_tools=True,
+    with_knowledge_tool=True
 )
 
-# Регистрируем основные инструменты
+# Register agent in global registry
+register_agent("pwa_mobile", agent, agent_type="pwa_mobile")
+
+# Register PWA-specific tools
 agent.tool(generate_pwa_manifest)
 agent.tool(create_service_worker)
 agent.tool(optimize_mobile_ux)
 agent.tool(analyze_mobile_performance)
 agent.tool(setup_offline_sync)
-agent.tool(search_agent_knowledge)
 
-# Регистрируем Modern Web APIs инструменты
+# Register Modern Web APIs tools
 agent.tool(implement_file_system_access_api)
 agent.tool(implement_badging_api)
 agent.tool(implement_wake_lock_api)
 agent.tool(implement_idle_detection_api)
 agent.tool(implement_web_locks_api)
 
-# Регистрируем Performance Monitoring инструменты
+# Register Performance Monitoring tools
 agent.tool(implement_web_vitals_monitoring)
 agent.tool(implement_adaptive_caching_strategies)
 
-# Регистрируем Security Enhancement инструменты
+# Register Security Enhancement tools
 agent.tool(implement_csp_generation)
 agent.tool(implement_secure_storage)
 agent.tool(implement_privacy_compliance)
+
+# Collective work tools and knowledge search now added automatically via decorators
 
 
 async def run_pwa_mobile_analysis(

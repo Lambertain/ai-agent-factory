@@ -14,6 +14,7 @@ class PWAMobileAgentDependencies:
     """Зависимости PWA Mobile Agent с поддержкой различных типов проектов."""
 
     # Основные настройки
+    agent_name: str = "pwa_mobile"  # For RAG protection
     project_path: str = ""
 
     # Универсальная конфигурация PWA
