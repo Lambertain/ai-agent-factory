@@ -4,6 +4,7 @@
 
 import asyncio
 import json
+from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Any
 from pathlib import Path
 import aiofiles
@@ -281,16 +282,24 @@ class ContentQualityChecker:
         }
 
 
+@dataclass
 class PatternTestArchitectDependencies:
     """Основной класс зависимостей для Pattern Test Architect Agent"""
 
-    def __init__(self):
-        self.psychometric_db = PsychometricDatabase()
-        self.viral_patterns_db = ViralPatternsDatabase()
-        self.programs_registry = TransformationProgramsRegistry()
-        self.validation_service = TestValidationService()
-        self.metrics_analyzer = TestMetricsAnalyzer()
-        self.quality_checker = ContentQualityChecker()
+    api_key: str
+    patternshift_project_path: str = ""
+
+    # Базы данных и сервисы
+    psychometric_db: PsychometricDatabase = field(default_factory=PsychometricDatabase)
+    viral_patterns_db: ViralPatternsDatabase = field(default_factory=ViralPatternsDatabase)
+    programs_registry: TransformationProgramsRegistry = field(default_factory=TransformationProgramsRegistry)
+    validation_service: TestValidationService = field(default_factory=TestValidationService)
+    metrics_analyzer: TestMetricsAnalyzer = field(default_factory=TestMetricsAnalyzer)
+    quality_checker: ContentQualityChecker = field(default_factory=ContentQualityChecker)
+
+    def __post_init__(self):
+        """Инициализация после создания dataclass"""
+        pass
 
     async def initialize(self):
         """Инициализация всех зависимостей"""

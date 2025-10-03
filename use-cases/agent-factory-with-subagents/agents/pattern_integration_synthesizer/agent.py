@@ -18,22 +18,41 @@ from .tools import (
     search_agent_knowledge
 )
 
+# Импорт universal decorators
+try:
+    from ..common.pydantic_ai_decorators import create_universal_pydantic_agent
+    HAS_DECORATORS = True
+except ImportError:
+    HAS_DECORATORS = False
+    print("Warning: Universal decorators not available")
+
 
 # Создание агента с зависимостями
-agent = Agent(
-    model=get_llm_model(),
-    deps_type=PatternIntegrationSynthesizerDependencies,
-    system_prompt=get_system_prompt()
-)
+if HAS_DECORATORS:
+    agent = create_universal_pydantic_agent(
+        model=get_llm_model(),
+        deps_type=PatternIntegrationSynthesizerDependencies,
+        system_prompt=get_system_prompt(),
+        agent_type="pattern_integration_synthesizer",
+        knowledge_tags=["pattern-integration-synthesizer", "orchestration", "synergy", "agent-knowledge", "patternshift"],
+        with_collective_tools=True,
+        with_knowledge_tool=True
+    )
+else:
+    # Fallback - базовый агент
+    agent = Agent(
+        model=get_llm_model(),
+        deps_type=PatternIntegrationSynthesizerDependencies,
+        system_prompt=get_system_prompt()
+    )
 
-
-# Регистрация инструментов
-agent.tool(orchestrate_module_sequence)
-agent.tool(manage_emotional_curve)
-agent.tool(identify_resistance_points)
-agent.tool(ensure_module_synergy)
-agent.tool(analyze_program_coherence)
-agent.tool(search_agent_knowledge)
+    # Регистрация инструментов
+    agent.tool(orchestrate_module_sequence)
+    agent.tool(manage_emotional_curve)
+    agent.tool(identify_resistance_points)
+    agent.tool(ensure_module_synergy)
+    agent.tool(analyze_program_coherence)
+    agent.tool(search_agent_knowledge)
 
 
 async def run_pattern_integration_synthesizer(
