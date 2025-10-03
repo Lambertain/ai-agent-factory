@@ -48,6 +48,7 @@ class CommunityManagementDependencies:
 
     # Core configuration
     api_key: str
+    agent_name: str = "community_management"  # For RAG protection
     community_name: str = "My Community"
     community_type: CommunityType = CommunityType.SOCIAL
     platforms: List[CommunityPlatform] = field(default_factory=lambda: [CommunityPlatform.DISCORD])

@@ -10,7 +10,11 @@ from typing import Dict, Any, List, Optional
 from datetime import datetime
 
 from .dependencies import CommunityManagementDependencies, CommunityType
-from ..common import check_pm_switch
+from ..common.pydantic_ai_decorators import (
+    create_universal_pydantic_agent,
+    with_integrations,
+    register_agent
+)
 from .prompts import get_system_prompt
 from .tools import (
     moderate_content,
@@ -36,45 +40,31 @@ class CommunityAction(BaseModel):
     timestamp: str = Field(default_factory=lambda: datetime.now().isoformat())
 
 
-# Initialize the agent
-def create_agent(deps: CommunityManagementDependencies) -> Agent:
-    """
-    Create a community management agent with custom configuration.
-
-    Args:
-        deps: Community management dependencies
-
-    Returns:
-        Configured agent instance
-    """
-    return Agent(
-        get_llm_model(),
-        deps_type=CommunityManagementDependencies,
-        result_type=CommunityAction,
-        system_prompt=get_system_prompt(deps),
-        tools=[
-            moderate_content,
-            identify_influencers,
-            analyze_sentiment,
-            detect_trending_topics,
-            optimize_engagement,
-            track_community_health,
-            automate_welcome,
-            manage_viral_campaign
-        ]
-    )
-
-
-# Default agent instance
-settings = load_settings()
-default_deps = CommunityManagementDependencies(
-    api_key=settings.llm_api_key,
-    community_name="AI Agent Factory Community",
-    community_type=CommunityType.PROFESSIONAL,
-    expected_members=10000
+# Create agent with universal decorator system
+agent = create_universal_pydantic_agent(
+    model=get_llm_model(),
+    deps_type=CommunityManagementDependencies,
+    system_prompt=lambda deps: get_system_prompt(deps),
+    agent_type="community_management",
+    knowledge_tags=["community-management", "agent-knowledge", "pydantic-ai"],
+    knowledge_domain="community.management.com",
+    with_collective_tools=True,
+    with_knowledge_tool=True,
+    result_type=CommunityAction  # Keep existing result type
 )
 
-agent = create_agent(default_deps)
+# Register agent tools
+agent.tool(moderate_content)
+agent.tool(identify_influencers)
+agent.tool(analyze_sentiment)
+agent.tool(detect_trending_topics)
+agent.tool(optimize_engagement)
+agent.tool(track_community_health)
+agent.tool(automate_welcome)
+agent.tool(manage_viral_campaign)
+
+# Register agent in global registry
+register_agent("community_management", agent, agent_type="community_management")
 
 
 # Main agent functions
@@ -337,6 +327,8 @@ async def setup_viral_mechanics(
 async def example_usage():
     """Example of how to use the Community Management Agent."""
     # Create custom dependencies
+    from .dependencies import CommunityPlatform
+
     deps = CommunityManagementDependencies(
         api_key="your-api-key",
         community_name="Tech Innovators Hub",
@@ -349,12 +341,10 @@ async def example_usage():
         viral_mechanics_enabled=True
     )
 
-    # Create agent with custom config
-    custom_agent = create_agent(deps)
-
-    # Run community management
-    result = await custom_agent.run(
-        "Analyze my community and suggest growth strategies"
+    # Run community management using global agent
+    result = await agent.run(
+        "Analyze my community and suggest growth strategies",
+        deps=deps
     )
 
     print(f"Action: {result.data.action_type}")
