@@ -94,6 +94,7 @@ class PerformanceOptimizationDependencies:
 
     # Основные настройки
     api_key: str
+    agent_name: str = "performance_optimization"  # For RAG protection
     project_path: str = ""
 
     # Универсальные типы проектов

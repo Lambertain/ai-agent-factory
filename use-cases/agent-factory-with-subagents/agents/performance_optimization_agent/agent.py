@@ -20,11 +20,15 @@ from pydantic_ai.models.openai import OpenAIModel
 from .dependencies import PerformanceOptimizationDependencies, load_performance_settings
 from ..common import check_pm_switch
 from .prompts import get_system_prompt
+from ..common.pydantic_ai_decorators import (
+    create_universal_pydantic_agent,
+    with_integrations,
+    register_agent
+)
 from .tools import (
     analyze_performance,
     optimize_performance,
     monitor_performance,
-    search_performance_knowledge,
     generate_performance_report,
     # Context7 MCP Integration
     resolve_library_id_context7,
@@ -46,16 +50,25 @@ def get_llm_model():
     return OpenAIModel(settings.llm_model, provider=provider)
 
 
-# Создание агента с динамическим системным промптом
-performance_agent = Agent(
+# Create universal performance optimization agent with decorators
+performance_agent = create_universal_pydantic_agent(
     model=get_llm_model(),
     deps_type=PerformanceOptimizationDependencies,
-    system_prompt=lambda ctx: get_system_prompt(ctx.deps),
+    system_prompt=lambda deps: get_system_prompt(deps),
+    agent_type="performance_optimization",
+    knowledge_tags=["performance", "optimization", "agent-knowledge", "pydantic-ai"],
+    knowledge_domain="performance.optimization.com",
+    with_collective_tools=True,
+    with_knowledge_tool=True,
     retries=2
 )
 
+# Register agent in global registry
+register_agent("performance_optimization", performance_agent, agent_type="performance_optimization")
 
-# Регистрация инструментов
+# Collective work tools and knowledge search now added automatically via decorators
+
+# Register performance-specific tools
 @performance_agent.tool
 async def analyze_project_performance(
     ctx: RunContext[PerformanceOptimizationDependencies],
@@ -114,23 +127,7 @@ async def monitor_real_time_performance(
     return await monitor_performance(ctx, duration_seconds, metrics)
 
 
-@performance_agent.tool
-async def search_optimization_knowledge(
-    ctx: RunContext[PerformanceOptimizationDependencies],
-    query: str,
-    match_count: int = 5
-) -> str:
-    """
-    Найти релевантную информацию в базе знаний по оптимизации производительности.
-
-    Args:
-        query: Поисковый запрос (например, "React bundle optimization")
-        match_count: Количество результатов для возврата
-
-    Returns:
-        Найденная информация и рекомендации из базы знаний
-    """
-    return await search_performance_knowledge(ctx, query, match_count)
+# search_optimization_knowledge removed - now via with_knowledge_tool automatically
 
 
 @performance_agent.tool
