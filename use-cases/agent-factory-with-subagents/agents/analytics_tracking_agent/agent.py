@@ -11,21 +11,20 @@ from typing import List, Optional, Dict, Any
 from pydantic_ai import Agent, RunContext
 from .dependencies import load_dependencies, AnalyticsTrackingDependencies
 from .providers import get_llm_model
+from ..common.pydantic_ai_decorators import (
+    create_universal_pydantic_agent,
+    with_integrations,
+    register_agent
+)
 from .tools import (
     setup_analytics_tracking,
     create_conversion_funnel,
     analyze_user_behavior,
-    search_analytics_knowledge,
-    delegate_task_to_agent,
     generate_analytics_report,
     optimize_tracking_performance,
     setup_privacy_compliance,
     create_custom_dashboard,
-    validate_tracking_implementation,
-    break_down_to_microtasks,
-    report_microtask_progress,
-    reflect_and_improve,
-    check_delegation_need
+    validate_tracking_implementation
 )
 from .prompts import get_system_prompt, get_tool_selection_prompt
 
@@ -33,30 +32,33 @@ from .prompts import get_system_prompt, get_tool_selection_prompt
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Создаем Pydantic AI агента (прямая архитектура)
-analytics_agent = Agent(
-    get_llm_model(),
+# Создаем Pydantic AI агента с универсальными интеграциями
+analytics_agent = create_universal_pydantic_agent(
+    model=get_llm_model(),
     deps_type=AnalyticsTrackingDependencies,
-    system_prompt=get_system_prompt()
+    system_prompt=get_system_prompt(),
+    agent_type="analytics_tracking",
+    knowledge_tags=["analytics", "tracking", "agent-knowledge", "pydantic-ai"],
+    knowledge_domain="analytics.tracking.com",
+    with_collective_tools=True,
+    with_knowledge_tool=True
 )
+
+# Регистрация агента в глобальном реестре
+register_agent("analytics_tracking", analytics_agent, agent_type="analytics_tracking")
 
 # Регистрируем analytics инструменты
 analytics_agent.tool(setup_analytics_tracking)
 analytics_agent.tool(create_conversion_funnel)
 analytics_agent.tool(analyze_user_behavior)
-analytics_agent.tool(search_analytics_knowledge)
-analytics_agent.tool(delegate_task_to_agent)
 analytics_agent.tool(generate_analytics_report)
 analytics_agent.tool(optimize_tracking_performance)
 analytics_agent.tool(setup_privacy_compliance)
 analytics_agent.tool(create_custom_dashboard)
 analytics_agent.tool(validate_tracking_implementation)
 
-# Регистрируем обязательные инструменты коллективной работы
-analytics_agent.tool(break_down_to_microtasks)
-analytics_agent.tool(report_microtask_progress)
-analytics_agent.tool(reflect_and_improve)
-analytics_agent.tool(check_delegation_need)
+# Collective work tools and knowledge search are now added automatically via decorators
+# (with_collective_tools=True, with_knowledge_tool=True)
 
 async def run_analytics_audit(
     target_type: str,

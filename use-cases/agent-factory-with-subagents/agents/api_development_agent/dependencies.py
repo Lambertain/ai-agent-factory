@@ -15,6 +15,7 @@ class APIAgentDependencies:
 
     # Core API settings
     api_key: str
+    agent_name: str = "api_development"  # For RAG protection
     project_path: str = ""
     project_name: str = ""
 

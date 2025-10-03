@@ -39,6 +39,7 @@ class AnalyticsTrackingDependencies:
 
     # Основные настройки
     settings: Settings
+    agent_name: str = "analytics_tracking"  # For RAG protection
     project_path: str = ""
 
     # Универсальная конфигурация

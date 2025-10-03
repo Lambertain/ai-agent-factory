@@ -7,10 +7,13 @@ Supports Express.js, NestJS, FastAPI, Django REST, ASP.NET Core, and Spring Boot
 
 from pydantic_ai import Agent, RunContext
 from .dependencies import APIAgentDependencies
-from ..common import check_pm_switch
+from ..common.pydantic_ai_decorators import (
+    create_universal_pydantic_agent,
+    with_integrations,
+    register_agent
+)
 from .prompts import get_system_prompt
 from .tools import (
-    search_agent_knowledge,
     generate_api_endpoint,
     generate_api_middleware,
     generate_api_documentation,
@@ -21,36 +24,25 @@ from .tools import (
 from .settings import get_llm_model
 
 
-# Create the universal API development agent
-api_development_agent = Agent(
-    get_llm_model(),
+# Create the universal API development agent with integrated decorators
+api_development_agent = create_universal_pydantic_agent(
+    model=get_llm_model(),
     deps_type=APIAgentDependencies,
     system_prompt=get_system_prompt,
-    retries=2
+    agent_type="api_development",
+    knowledge_tags=["api-development", "agent-knowledge", "pydantic-ai"],
+    knowledge_domain="api.development.com",
+    with_collective_tools=True,
+    with_knowledge_tool=True
 )
 
+# Register agent in global registry
+register_agent("api_development", api_development_agent, agent_type="api_development")
+
+
+# search_knowledge_base tool is now added automatically via with_knowledge_tool decorator
 
 # Register agent tools
-@api_development_agent.tool
-async def search_knowledge_base(
-    ctx: RunContext[APIAgentDependencies],
-    query: str,
-    match_count: int = 5
-) -> str:
-    """
-    Search API development knowledge base for relevant information.
-
-    Use this tool to find patterns, examples, and best practices for API development.
-    Search covers framework-specific patterns, security practices, and domain-specific considerations.
-
-    Args:
-        query: Search query (e.g., "express authentication", "fastapi validation", "nestjs guards")
-        match_count: Number of results to return (default: 5)
-
-    Returns:
-        Relevant knowledge and code examples
-    """
-    return await search_agent_knowledge(ctx, query, match_count)
 
 
 @api_development_agent.tool
