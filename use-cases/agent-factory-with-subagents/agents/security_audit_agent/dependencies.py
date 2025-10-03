@@ -15,6 +15,7 @@ class SecurityAuditDependencies:
     """Universal dependencies for Security Audit Agent supporting various project types."""
 
     # Core dependencies
+    agent_name: str = "security_audit"  # For RAG protection
     settings: Optional[SecurityAuditSettings] = None
 
     # Universal project configuration

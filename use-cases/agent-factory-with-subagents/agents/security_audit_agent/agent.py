@@ -6,45 +6,46 @@ import asyncio
 import time
 from datetime import datetime
 
-from providers import get_llm_model
-from dependencies import SecurityAuditDependencies
-from prompts import get_security_system_prompt, get_dynamic_security_prompt
-from tools import (
+from .providers import get_llm_model
+from .dependencies import SecurityAuditDependencies
+from .prompts import get_security_system_prompt, get_dynamic_security_prompt
+from .tools import (
     scan_code_security,
     analyze_code_vulnerabilities,
     check_dependency_vulnerabilities,
     generate_security_report,
-    break_down_to_microtasks,
-    report_microtask_progress,
-    delegate_task_to_agent,
-    reflect_and_improve,
-    check_delegation_need,
-    search_agent_knowledge,
     SecurityFinding,
     VulnerabilityReport
 )
-
-
-# Initialize the security audit agent with universal prompt
-security_agent = Agent(
-    get_llm_model(),
-    deps_type=SecurityAuditDependencies,
-    system_prompt=get_security_system_prompt()  # Использует универсальный промпт
+from ..common.pydantic_ai_decorators import (
+    create_universal_pydantic_agent,
+    with_integrations,
+    register_agent
 )
 
-# Register security tools
+
+# Create universal security audit agent with decorators
+security_agent = create_universal_pydantic_agent(
+    model=get_llm_model(),
+    deps_type=SecurityAuditDependencies,
+    system_prompt=get_security_system_prompt(),
+    agent_type="security_audit",
+    knowledge_tags=["security", "audit", "agent-knowledge", "pydantic-ai"],
+    knowledge_domain="security.audit.com",
+    with_collective_tools=True,
+    with_knowledge_tool=True
+)
+
+# Register agent in global registry
+register_agent("security_audit", security_agent, agent_type="security_audit")
+
+# Register security-specific tools
 security_agent.tool(scan_code_security)
 security_agent.tool(analyze_code_vulnerabilities)
 security_agent.tool(check_dependency_vulnerabilities)
 security_agent.tool(generate_security_report)
 
-# Register mandatory collective work tools
-security_agent.tool(break_down_to_microtasks)
-security_agent.tool(report_microtask_progress)
-security_agent.tool(delegate_task_to_agent)
-security_agent.tool(reflect_and_improve)
-security_agent.tool(check_delegation_need)
-security_agent.tool(search_agent_knowledge)
+# Collective work tools and knowledge search now added automatically via decorators
 
 
 async def run_security_audit(
