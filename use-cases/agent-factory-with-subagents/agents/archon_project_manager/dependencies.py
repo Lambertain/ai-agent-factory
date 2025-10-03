@@ -54,6 +54,7 @@ class ProjectManagerDependencies:
 
     # Основные настройки
     project_id: str = "default"
+    agent_name: str = "archon_project_manager"
     management_style: ManagementStyle = ManagementStyle.AGILE
     current_phase: ProjectPhase = ProjectPhase.PLANNING
 

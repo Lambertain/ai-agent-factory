@@ -53,29 +53,23 @@ def get_llm_model(settings=None):
     return OpenAIModel(settings.llm_model, provider=provider)
 
 
-# Создание агента
-if DECORATORS_AVAILABLE:
-    # С универсальными декораторами
-    agent = create_universal_pydantic_agent(
-        model=get_llm_model(),
-        deps_type=QualityGuardianDependencies,
-        system_prompt=get_system_prompt("general"),
-        agent_type="quality_guardian",
-        knowledge_tags=["quality-assurance", "code-review", "agent-knowledge"],
-        knowledge_domain=None,
-        with_collective_tools=True,
-        with_knowledge_tool=True
-    )
+# Создание агента с универсальными интеграциями
+quality_guardian_agent = create_universal_pydantic_agent(
+    model=get_llm_model(),
+    deps_type=QualityGuardianDependencies,
+    system_prompt=get_system_prompt("general"),
+    agent_type="archon_quality_guardian",
+    knowledge_tags=["quality-assurance", "code-review", "testing", "agent-knowledge"],
+    knowledge_domain="quality.archon.local",
+    with_collective_tools=True,
+    with_knowledge_tool=True
+)
 
-    # Регистрация в глобальном реестре
-    register_agent("quality_guardian", agent, agent_type="quality_guardian")
-else:
-    # Без декораторов - базовая версия
-    agent = Agent(
-        model=get_llm_model(),
-        deps_type=QualityGuardianDependencies,
-        system_prompt=get_system_prompt("general")
-    )
+# Регистрация агента в глобальном реестре
+register_agent("archon_quality_guardian", quality_guardian_agent, agent_type="archon_quality_guardian")
+
+# Алиас для обратной совместимости
+agent = quality_guardian_agent
 
 
 # ======================
@@ -328,42 +322,45 @@ async def get_project_quality_metrics(
 # Точка входа агента
 # ======================
 
+@with_integrations(agent_type="archon_quality_guardian")
 async def run_quality_guardian(
     user_message: str,
     project_path: str,
     language: str = "python",
-    project_type: str = "general"
+    project_type: str = "general",
+    project_id: str = None
 ) -> str:
     """
     Запуск агента Quality Guardian.
+
+    АВТОМАТИЧЕСКИЕ ИНТЕГРАЦИИ:
+    - Переключение на Project Manager для приоритизации
+    - Контроль компетенций и делегирование задач
+    - Планирование микрозадач
+    - Автоматические Git коммиты
+    - Русская локализация сообщений
+    - Расширенная система рефлексии
 
     Args:
         user_message: Сообщение пользователя
         project_path: Путь к проекту
         language: Язык программирования
         project_type: Тип проекта
+        project_id: ID проекта в Archon
 
     Returns:
-        Ответ агента
+        Ответ агента с применёнными интеграциями
     """
     deps = QualityGuardianDependencies(
         project_path=project_path,
         language=language,
-        project_type=project_type
+        project_type=project_type,
+        agent_name="archon_quality_guardian",
+        archon_project_id=project_id or "c75ef8e3-6f4d-4da2-9e81-8d38d04a341a"
     )
 
-    if DECORATORS_AVAILABLE:
-        # С интеграциями
-        @with_integrations(agent_type="quality_guardian")
-        async def run_with_integrations():
-            result = await agent.run(user_message, deps=deps)
-            return result.data
-
-        return await run_with_integrations()
-    else:
-        # Без интеграций
-        result = await agent.run(user_message, deps=deps)
-        return result.data
+    result = await quality_guardian_agent.run(user_message, deps=deps)
+    return result.data
 
 
 if __name__ == "__main__":
