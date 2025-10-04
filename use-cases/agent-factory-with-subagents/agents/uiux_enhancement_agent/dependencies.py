@@ -30,6 +30,7 @@ class UIUXEnhancementDependencies(UniversalAgentDependencies):
     """
 
     # UI/UX Agent specific settings (inherits core settings from base class)
+    agent_name: str = "uiux_enhancement"  # For RAG protection
     session_id: Optional[str] = None
 
     # Override base class defaults for UI/UX agent

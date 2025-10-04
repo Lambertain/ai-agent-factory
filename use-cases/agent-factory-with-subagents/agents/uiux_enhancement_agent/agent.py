@@ -16,6 +16,11 @@ from pydantic_ai.models.openai import OpenAIModel
 
 from .dependencies import UIUXEnhancementDependencies
 from ..common import check_pm_switch
+from ..common.pydantic_ai_decorators import (
+    create_universal_pydantic_agent,
+    with_integrations,
+    register_agent
+)
 from .providers import get_llm_model
 from .prompts import get_system_prompt
 from .tools import (
@@ -23,7 +28,6 @@ from .tools import (
     optimize_tailwind_classes,
     enhance_shadcn_component,
     analyze_ux_patterns,
-    search_uiux_knowledge,
     generate_component_variants,
     validate_design_system,
     design_interface_from_scratch,
@@ -39,42 +43,54 @@ from .tools import (
 )
 
 
-# Создаем агента с оптимизированной моделью и MCP интеграцией для UI/UX задач
-def create_uiux_agent(deps: UIUXEnhancementDependencies) -> Agent[UIUXEnhancementDependencies, str]:
-    """Создать UI/UX агента с MCP toolsets."""
-    # Получаем MCP toolsets для UI/UX агента
-    mcp_toolsets = deps.get_mcp_toolsets()
-
-    agent = Agent(
-        model=get_llm_model("uiux"),  # Использует специализированную модель
-        deps_type=UIUXEnhancementDependencies,
-        system_prompt=lambda ctx: get_system_prompt(ctx.deps),  # Адаптивный промпт
-        retries=2,
-        toolsets=mcp_toolsets if mcp_toolsets else []  # Добавляем MCP toolsets
-    )
-
-    return agent
-
-# Базовый агент без MCP (для обратной совместимости)
-uiux_agent = Agent(
-    model=get_llm_model("uiux"),  # Использует специализированную модель
+# Create universal UI/UX enhancement agent with decorators
+uiux_agent = create_universal_pydantic_agent(
+    model=get_llm_model("uiux"),
     deps_type=UIUXEnhancementDependencies,
-    system_prompt=lambda ctx: get_system_prompt(ctx.deps),  # Адаптивный промпт
+    system_prompt=lambda ctx: get_system_prompt(ctx.deps),
+    agent_type="uiux_enhancement",
+    knowledge_tags=["uiux", "design", "accessibility", "agent-knowledge", "pydantic-ai"],
+    knowledge_domain="ui.shadcn.com",
+    with_collective_tools=True,
+    with_knowledge_tool=True,
     retries=2
 )
 
-# Регистрируем инструменты агента
+# Register agent in global registry
+register_agent("uiux_enhancement", uiux_agent, agent_type="uiux_enhancement")
+
+# Register UI/UX-specific tools
 uiux_agent.tool(analyze_ui_accessibility)
 uiux_agent.tool(optimize_tailwind_classes)
 uiux_agent.tool(enhance_shadcn_component)
 uiux_agent.tool(analyze_ux_patterns)
-uiux_agent.tool(search_uiux_knowledge)
 uiux_agent.tool(generate_component_variants)
 uiux_agent.tool(validate_design_system)
 uiux_agent.tool(design_interface_from_scratch)
 uiux_agent.tool(create_design_system)
 uiux_agent.tool(create_wireframes)
 uiux_agent.tool(prototype_user_flow)
+
+# Register MCP integration tools
+uiux_agent.tool(use_shadcn_mcp_component)
+uiux_agent.tool(use_puppeteer_mcp_screenshot)
+uiux_agent.tool(use_context7_mcp_memory)
+uiux_agent.tool(mcp_ui_performance_analysis)
+uiux_agent.tool(mcp_accessibility_audit)
+
+# Collective work tools and knowledge search now added automatically via decorators
+
+
+# Factory function for MCP toolsets support
+def create_uiux_agent(deps: UIUXEnhancementDependencies) -> Agent[UIUXEnhancementDependencies, str]:
+    """Create UI/UX agent with MCP toolsets."""
+    mcp_toolsets = deps.get_mcp_toolsets()
+
+    if mcp_toolsets:
+        # Use override to add MCP toolsets
+        return uiux_agent.override(toolsets=mcp_toolsets)
+
+    return uiux_agent
 
 
 async def run_uiux_enhancement(
@@ -117,28 +133,8 @@ async def run_uiux_enhancement(
         knowledge_domain="ui.shadcn.com"
     )
 
-    # Создаем агента с MCP поддержкой
+    # Создаем агента с MCP поддержкой (инструменты уже зарегистрированы)
     agent_with_mcp = create_uiux_agent(deps)
-
-    # Регистрируем стандартные инструменты в агенте с MCP
-    agent_with_mcp.tool(analyze_ui_accessibility)
-    agent_with_mcp.tool(optimize_tailwind_classes)
-    agent_with_mcp.tool(enhance_shadcn_component)
-    agent_with_mcp.tool(analyze_ux_patterns)
-    agent_with_mcp.tool(search_uiux_knowledge)
-    agent_with_mcp.tool(generate_component_variants)
-    agent_with_mcp.tool(validate_design_system)
-    agent_with_mcp.tool(design_interface_from_scratch)
-    agent_with_mcp.tool(create_design_system)
-    agent_with_mcp.tool(create_wireframes)
-    agent_with_mcp.tool(prototype_user_flow)
-
-    # Регистрируем MCP инструменты
-    agent_with_mcp.tool(use_shadcn_mcp_component)
-    agent_with_mcp.tool(use_puppeteer_mcp_screenshot)
-    agent_with_mcp.tool(use_context7_mcp_memory)
-    agent_with_mcp.tool(mcp_ui_performance_analysis)
-    agent_with_mcp.tool(mcp_accessibility_audit)
 
     # Формируем контекст для агента
     context = f"""
