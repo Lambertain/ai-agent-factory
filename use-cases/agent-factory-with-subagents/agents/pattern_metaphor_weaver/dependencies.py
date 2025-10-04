@@ -74,6 +74,7 @@ class PatternMetaphorWeaverDependencies:
     """Зависимости для Pattern Metaphor Weaver Agent."""
 
     api_key: str
+    agent_name: str = "pattern_metaphor_weaver"  # For RAG protection
     patternshift_project_path: str = ""
     user_id: Optional[str] = None
     program_id: Optional[str] = None

@@ -331,6 +331,7 @@ class PatternSafetyProtocolDependencies:
 
     # Основные настройки
     api_key: str
+    agent_name: str = "pattern_safety_protocol"  # For RAG protection
     patternshift_project_path: str = ""
     user_id: Optional[str] = None
 

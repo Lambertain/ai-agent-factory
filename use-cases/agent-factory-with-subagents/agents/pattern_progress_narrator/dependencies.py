@@ -115,6 +115,7 @@ class PatternProgressNarratorDependencies:
 
     # Основные настройки
     api_key: str
+    agent_name: str = "pattern_progress_narrator"  # For RAG protection
     patternshift_project_path: str = ""
 
     # Контекст пользователя

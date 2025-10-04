@@ -269,6 +269,7 @@ class PatternTransitionCraftsmanDependencies:
     """Зависимости для Pattern Transition Craftsman Agent."""
 
     api_key: str
+    agent_name: str = "pattern_transition_craftsman"  # For RAG protection
     patternshift_project_path: str = ""
     user_id: Optional[str] = None
     program_id: Optional[str] = None

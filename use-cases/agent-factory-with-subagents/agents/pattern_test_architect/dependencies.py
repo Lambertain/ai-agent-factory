@@ -287,6 +287,7 @@ class PatternTestArchitectDependencies:
     """Основной класс зависимостей для Pattern Test Architect Agent"""
 
     api_key: str
+    agent_name: str = "pattern_test_architect"  # For RAG protection
     patternshift_project_path: str = ""
 
     # Базы данных и сервисы
