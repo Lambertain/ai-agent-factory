@@ -7,26 +7,32 @@ from .dependencies import DeploymentEngineerDependencies
 from .settings import load_settings
 from .tools import register_tools
 from .prompts import get_system_prompt
+from ..common.pydantic_ai_decorators import (
+    create_universal_pydantic_agent,
+    with_integrations,
+    register_agent
+)
 
 
-def create_deployment_engineer_agent():
-    """Создать агента Deployment Engineer."""
-    settings = load_settings()
+# Create universal deployment engineer agent with decorators
+deployment_engineer_agent = create_universal_pydantic_agent(
+    model=load_settings().llm_model,
+    deps_type=DeploymentEngineerDependencies,
+    system_prompt=get_system_prompt(),
+    agent_type="deployment_engineer",
+    knowledge_tags=["deployment", "devops", "ci-cd", "agent-knowledge", "pydantic-ai"],
+    knowledge_domain="devops.deployment.com",
+    with_collective_tools=True,
+    with_knowledge_tool=True
+)
 
-    agent = Agent(
-        model=settings.llm_model,
-        deps_type=DeploymentEngineerDependencies,
-        system_prompt=get_system_prompt()
-    )
+# Register agent in global registry
+register_agent("deployment_engineer", deployment_engineer_agent, agent_type="deployment_engineer")
 
-    # Регистрация инструментов
-    register_tools(agent)
+# Регистрация deployment-specific инструментов
+register_tools(deployment_engineer_agent)
 
-    return agent
-
-
-# Создание глобального экземпляра агента
-deployment_engineer_agent = create_deployment_engineer_agent()
+# Collective work tools and knowledge search now added automatically via decorators
 
 
 async def run_deployment_engineer_task(
