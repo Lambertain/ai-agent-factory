@@ -54,7 +54,6 @@ class AnalyticsTrackingDependencies:
     # Межагентное взаимодействие
     archon_project_id: str = "c75ef8e3-6f4d-4da2-9e81-8d38d04a341a"
     enable_task_delegation: bool = True
-    agent_name: str = "analytics_tracking_agent"
 
     # RAG конфигурация
     knowledge_tags: List[str] = field(default_factory=lambda: [
