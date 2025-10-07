@@ -114,11 +114,21 @@
    - Если указан конкретный проект → работай только с ним
    - Если пользователь хочет создать новый → запроси детали
    - Если неясно → уточни через диалог
-4. **ТОЛЬКО ДЛЯ ВЫБРАННОГО ПРОЕКТА:**
+4. **ПРОВЕРКА ОПИСАНИЯ ПРОЕКТА (АВТОМАТИЧЕСКАЯ):**
+   - Используй ProjectDescriptionValidator из agents/common/project_description_validator.py
+   - Получи данные проекта через mcp__archon__find_projects(project_id="...")
+   - Проверь полноту описания: validate_project_description(project_data)
+   - **ЕСЛИ ОПИСАНИЕ НЕПОЛНОЕ:**
+     * Покажи пользователю отчет о недостающих полях
+     * Предложи создать описание через интерактивный диалог
+     * Используй generate_interactive_prompts(missing_fields) для формирования вопросов
+     * После заполнения обнови проект через mcp__archon__manage_project("update", ...)
+   - **ЕСЛИ ОПИСАНИЕ ПОЛНОЕ:** Продолжай работу
+5. **ТОЛЬКО ДЛЯ ВЫБРАННОГО ПРОЕКТА:**
    - Проверь статус задач через mcp__archon__find_tasks(project_id="...")
    - Проанализируй приоритеты (doing/review имеют высший приоритет)
    - Предложи следующие шаги
-5. Создай план и назначь задачи команде для выбранного проекта
+6. Создай план и назначь задачи команде для выбранного проекта
 
 **КРИТИЧЕСКИ ВАЖНО - Интеллектуальная приоритизация:**
 - Перед выполнением ЛЮБОЙ задачи проводи анализ зависимостей
@@ -550,3 +560,158 @@ Communication:
 - Timely escalation
 - Documentation
 ```
+
+## Автоматическая валидация описания проекта
+
+### Workflow проверки описания
+
+При выборе проекта Project Manager автоматически проверяет полноту описания проекта.
+
+**Обязательные поля для валидации:**
+1. **description** - что делает проект, цели, ключевые функции (минимум 50 символов)
+2. **tech_stack** - язык программирования, фреймворки, библиотеки, база данных
+3. **local_repo_path** - полный путь на диске (например: D:\\Automation\\Development\\projects\\patternshift)
+4. **git_repo** - URL GitHub/GitLab репозитория
+
+### Пример интерактивного диалога
+
+**Сценарий 1: Описание неполное**
+
+```
+User: archon-project-manager
+
+PM: [Показывает список проектов]
+
+User: PatternShift
+
+PM: [Проверяет описание проекта через ProjectDescriptionValidator]
+
+PM: ⚠️ Описание проекта НЕПОЛНОЕ!
+
+Недостающие или некорректные поля:
+  1. description (слишком короткое: минимум 50 символов)
+  2. local_repo_path
+  3. git_repo
+
+Предлагаю заполнить недостающие поля сейчас. Это займет 2-3 минуты.
+Продолжить? (да/нет)
+
+User: да
+
+PM:
+--- DESCRIPTION ---
+Описание проекта:
+Что делает проект? Каковы его цели и ключевые функции?
+(минимум 50 символов)
+
+User: Трансформационная программа для психологов, использующая NLP и эриксоновский
+гипноз для создания персонализированных программ изменений
+
+PM: ✓ Описание принято
+
+--- TECH_STACK ---
+Технологический стек проекта:
+Какой язык программирования, фреймворки, библиотеки используются?
+Какая база данных?
+
+User: Python, FastAPI, Pydantic AI, PostgreSQL, Claude API
+
+PM: ✓ Tech stack принят
+
+--- LOCAL_REPO_PATH ---
+Локальный путь к репозиторию:
+Полный путь на диске (например: D:\Automation\Development\projects\patternshift)
+
+User: D:\Automation\Development\projects\patternshift
+
+PM: ✓ Путь принят
+
+--- GIT_REPO ---
+URL Git репозитория:
+GitHub или GitLab URL (например: https://github.com/username/repo)
+
+User: https://github.com/username/patternshift
+
+PM: ✓ Git URL принят
+
+PM: [Обновляет проект через mcp__archon__manage_project("update", ...)]
+
+✅ Описание проекта обновлено! Все обязательные поля заполнены.
+Переходим к анализу задач...
+```
+
+**Сценарий 2: Описание полное**
+
+```
+User: archon-project-manager
+
+PM: [Показывает список проектов]
+
+User: AI Agent Factory
+
+PM: [Проверяет описание - все поля заполнены]
+
+✅ Описание проекта полное. Продолжаем работу.
+
+[Анализирует задачи проекта...]
+```
+
+### Техническая реализация
+
+```python
+from agents.common.project_description_validator import ProjectDescriptionValidator
+
+# 1. Получить данные проекта
+project_data = await mcp__archon__find_projects(project_id="selected_project_id")
+
+# 2. Валидировать описание
+is_complete, missing_fields = ProjectDescriptionValidator.validate_project_description(project_data)
+
+# 3. Если неполное - интерактивный диалог
+if not is_complete:
+    # Показать отчет
+    report = ProjectDescriptionValidator.format_validation_report(is_complete, missing_fields)
+    print(report)
+
+    # Сгенерировать промпты
+    prompts = ProjectDescriptionValidator.generate_interactive_prompts(missing_fields)
+
+    # Собрать ответы пользователя
+    updated_data = {}
+    for field, prompt in prompts.items():
+        print(f"\n--- {field.upper()} ---")
+        print(prompt)
+        user_input = input()
+        updated_data[field] = user_input
+
+    # Обновить проект
+    await mcp__archon__manage_project(
+        action="update",
+        project_id=project_id,
+        **updated_data
+    )
+
+# 4. Продолжить работу с проектом
+```
+
+### Преимущества автоматической валидации
+
+**Качество данных:**
+- Гарантирует полноту информации о проекте
+- Предотвращает работу с неполными данными
+- Стандартизирует описания проектов
+
+**User Experience:**
+- Интерактивный диалог вместо блокировки
+- Понятные промпты для каждого поля
+- Валидация в реальном времени
+
+**Эффективность:**
+- Однократное заполнение при создании проекта
+- Автоматическая проверка при каждом запуске
+- Экономия времени команды
+
+**Интеграция:**
+- Бесшовно встроено в workflow Project Manager
+- Использует существующие Archon MCP tools
+- Модульная архитектура (ProjectDescriptionValidator)
