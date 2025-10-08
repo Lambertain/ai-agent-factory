@@ -194,6 +194,145 @@ async def select_next_highest_priority_task() -> dict:
 └─ Переключитися в роль → Створити мікрозадачі → Почати виконання
 ```
 
+---
+
+## 🧠 ЗБЕРЕЖЕННЯ КОНТЕКСТУ ПРОЕКТУ ЧЕРЕЗ СЕСІЇ
+
+**🚨 КРИТИЧНА ПРОБЛЕМА:** Після "Context left until auto-compact: 0%" агенти втрачають контекст проекту та project_id.
+
+**РІШЕННЯ: Постійне нагадування про проект у кожній відповіді**
+
+### ОБОВ'ЯЗКОВИЙ HEADER У КОЖНІЙ ВІДПОВІДІ:
+
+```markdown
+📌 PROJECT CONTEXT: [Project Title] (ID: [project_id])
+🎭 ROLE: [Current Role]
+```
+
+**ПРИКЛАД:**
+
+```markdown
+📌 PROJECT CONTEXT: AI Agent Factory (ID: c75ef8e3-6f4d-4da2-9e81-8d38d04a341a)
+🎭 ROLE: Archon Implementation Engineer
+
+✅ Завершено: Створення Payment Integration Agent
+...
+```
+
+### АЛГОРИТМ ЗБЕРЕЖЕННЯ КОНТЕКСТУ:
+
+```python
+async def preserve_project_context(task_id: str) -> Dict:
+    """Зберегти контекст проекту на всю сесію."""
+
+    # 1. Отримати project_id з задачі
+    task = await mcp__archon__find_tasks(task_id=task_id)
+    project_id = task["project_id"]
+
+    # 2. Отримати повну інформацію про проект
+    project = await mcp__archon__find_projects(project_id=project_id)
+
+    # 3. Зберегти у КОЖНІЙ відповіді
+    context_header = f"""
+📌 PROJECT CONTEXT: {project['title']} (ID: {project_id})
+🎭 ROLE: {current_role}
+"""
+
+    # 4. Включати project_id у ВСІ виклики Archon
+    # ПРАВИЛЬНО:
+    tasks = await mcp__archon__find_tasks(
+        project_id=project_id,  # ✅ Явна фільтрація
+        filter_by="status",
+        filter_value="todo"
+    )
+
+    # НЕПРАВИЛЬНО:
+    tasks = await mcp__archon__find_tasks(  # ❌ Буде шукати у всіх проектах
+        filter_by="status",
+        filter_value="todo"
+    )
+
+    return {
+        "project_id": project_id,
+        "project_title": project["title"],
+        "context_header": context_header
+    }
+```
+
+### ОБОВ'ЯЗКОВІ ПРАВИЛА ДЛЯ ПРОДЖЕКТ-МЕНЕДЖЕРА:
+
+**ПІСЛЯ AUTO-COMPACT проджект-менеджер ПОВИНЕН:**
+
+```python
+async def recover_project_context_after_compact():
+    """Відновити контекст проекту після auto-compact."""
+
+    # 🚨 ЯКЩО немає project_id в пам'яті:
+
+    # КРОК 1: Знайти останню doing задачу
+    doing_tasks = await mcp__archon__find_tasks(
+        filter_by="status",
+        filter_value="doing"
+    )
+
+    if doing_tasks:
+        # Взяти project_id з doing задачі
+        project_id = doing_tasks[0]["project_id"]
+    else:
+        # КРОК 2: Знайти останню review задачу
+        review_tasks = await mcp__archon__find_tasks(
+            filter_by="status",
+            filter_value="review"
+        )
+        if review_tasks:
+            project_id = review_tasks[0]["project_id"]
+        else:
+            # КРОК 3: Запитати користувача
+            print("⚠️ Втрачено контекст проекту після auto-compact")
+            print("📋 Будь ласка, вкажіть project_id або назву проекту")
+            return None
+
+    # КРОК 4: Відновити повний контекст
+    project = await mcp__archon__find_projects(project_id=project_id)
+
+    # КРОК 5: Вивести користувачу
+    print(f"🔄 Відновлено контекст проекту: {project['title']}")
+    print(f"📌 PROJECT CONTEXT: {project['title']} (ID: {project_id})")
+
+    return project_id
+```
+
+### ШАБЛОН ВІДПОВІДІ З КОНТЕКСТОМ:
+
+```markdown
+📌 PROJECT CONTEXT: AI Agent Factory (ID: c75ef8e3-6f4d-4da2-9e81-8d38d04a341a)
+🎭 ROLE: Archon Quality Guardian
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Задача завершена: [назва задачі]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Результати роботи]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔄 Переключення на проджект-менеджера для пошуку наступної задачі...
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+### КРИТИЧНІ ПРАВИЛА:
+
+**✅ ЗАВЖДИ:**
+- Включати project_id у header кожної відповіді
+- Фільтрувати задачі по project_id у всіх викликах Archon
+- Відновлювати контекст з doing/review задач після auto-compact
+- Виводити повну назву проекту та ID
+
+**❌ НІКОЛИ:**
+- Не шукати задачі без project_id після отримання контексту
+- Не забувати про project_id у наступних відповідях
+- Не аналізувати задачі з інших проектів
+- Не продовжувати без project_id після auto-compact (запитати користувача)
+
 ## 📢 КОМУНІКАЦІЙНІ ПАТТЕРНИ
 
 **❌ НЕПРАВИЛЬНО:**
