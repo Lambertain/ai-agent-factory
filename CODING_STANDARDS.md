@@ -300,19 +300,154 @@ python common/script_encoding_validator.py . --fix
 4. \u2705 Швидша розробка (менше помилок з кодуванням)
 5. \u2705 Професійний вигляд коду
 
-## 11. Підтримка
+## 11. Налаштування середовища для Windows
+
+### Проблема з кодуванням в Windows консолі
+
+Windows консоль за замовчуванням використовує кодування cp1251 (кирилиця) замість UTF-8, що призводить до помилок при виведенні Unicode символів.
+
+### Рішення: Глобальна змінна PYTHONIOENCODING
+
+**Встановлення змінної середовища:**
+
+```powershell
+# Windows PowerShell (з правами адміністратора)
+setx PYTHONIOENCODING "utf-8"
+
+# Або додати вручну через System Properties:
+# Control Panel → System → Advanced System Settings
+# → Environment Variables → New (User variable)
+# Variable name: PYTHONIOENCODING
+# Variable value: utf-8
+```
+
+**ВАЖЛИВО:** Після встановлення змінної потрібно:
+1. Закрити всі відкриті термінали (PowerShell, CMD, Git Bash)
+2. Відкрити новий термінал
+3. Перевірити що змінна встановлена: `echo $env:PYTHONIOENCODING` (PowerShell)
+
+### Перевірка налаштування:
+
+```python
+# -*- coding: utf-8 -*-
+"""Тест налаштування кодування."""
+
+import sys
+import os
+
+print("[INFO] Перевірка налаштування кодування:")
+print(f"  stdin:  {sys.stdin.encoding}")
+print(f"  stdout: {sys.stdout.encoding}")
+print(f"  stderr: {sys.stderr.encoding}")
+print(f"  PYTHONIOENCODING: {os.environ.get('PYTHONIOENCODING', 'Not set')}")
+
+# Тест Unicode виводу
+print("\n[TEST] Тестування Unicode символів:")
+print("[OK] Українська: Привіт, світе!")
+print("[OK] Русский: Привет, мир!")
+print("[OK] Спецсимволи: [OK] [ERROR] [WARNING]")
+```
+
+**Очікуваний результат після налаштування:**
+```
+[INFO] Перевірка налаштування кодування:
+  stdin:  utf-8
+  stdout: utf-8
+  stderr: utf-8
+  PYTHONIOENCODING: utf-8
+
+[TEST] Тестування Unicode символів:
+[OK] Українська: Привіт, світе!
+[OK] Русский: Привет, мир!
+[OK] Спецсимволы: [OK] [ERROR] [WARNING]
+```
+
+### Альтернативні рішення:
+
+**Варіант 1: У коді скрипта (не рекомендовано)**
+```python
+import sys
+import io
+
+# Переконфігурувати stdout/stderr для UTF-8
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
+```
+
+**Варіант 2: При запуску скрипта**
+```bash
+# PowerShell
+$env:PYTHONIOENCODING="utf-8"; python my_script.py
+
+# CMD
+set PYTHONIOENCODING=utf-8 && python my_script.py
+```
+
+**Варіант 3: В IDE (налаштування термінала)**
+
+VSCode:
+```json
+// settings.json
+{
+    "terminal.integrated.env.windows": {
+        "PYTHONIOENCODING": "utf-8"
+    }
+}
+```
+
+PyCharm:
+```
+Settings → Tools → Terminal → Environment variables
+Додати: PYTHONIOENCODING=utf-8
+```
+
+Visual Studio:
+```
+Tools → Options → Python → Environment
+Додати змінну: PYTHONIOENCODING=utf-8
+```
+
+### Автоматична діагностика середовища:
+
+Використовуй скрипт для автоматичної перевірки налаштування:
+
+```bash
+python common/check_environment.py
+```
+
+Скрипт перевіряє:
+- Python кодування (stdin, stdout, stderr)
+- Наявність PYTHONIOENCODING
+- Роботу з Unicode символами
+- Налаштування Git hooks
+- Платформа-специфічні налаштування (Windows codepage)
+
+### Виправлення типових помилок:
+
+**Помилка:** `UnicodeEncodeError: 'charmap' codec can't encode character`
+
+**Причина:** Python використовує cp1251 замість UTF-8
+
+**Рішення:**
+1. Встанови PYTHONIOENCODING=utf-8 (дивись вище)
+2. Перезапусти термінал
+3. Перевір налаштування: `python common/check_environment.py`
+
+## 12. Підтримка
 
 При виникненні проблем:
 
 1. Запусти валідатор: `python common/script_encoding_validator.py .`
-2. Перевір вивід на наявність конкретних проблем
-3. Виправ проблеми згідно цього гайду
-4. Повтори валідацію
+2. Перевір налаштування PYTHONIOENCODING (дивись розділ 11)
+3. Перевір вивід на наявність конкретних проблем
+4. Виправ проблеми згідно цього гайду
+5. Повтори валідацію
 
 Для питань та покращень створюй issue в проекті.
 
 ---
 
-**Версія:** 1.0.0
+**Версія:** 1.1.0
 **Дата:** 2025-10-09
 **Автор:** Archon Implementation Engineer
+**Оновлено:** Додано розділ про PYTHONIOENCODING для Windows
