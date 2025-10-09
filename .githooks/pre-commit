@@ -1,0 +1,42 @@
+#!/bin/bash
+# Pre-commit hook для валідації кодування Python скриптів
+#
+# Інсталяція:
+# cp .githooks/pre-commit .git/hooks/pre-commit
+# chmod +x .git/hooks/pre-commit
+#
+# Або налаштуйте Git для використання .githooks:
+# git config core.hooksPath .githooks
+
+echo "[CHECK] Перевірка кодування Python файлів..."
+
+# Запускаємо валідатор для всього проекту
+python common/script_encoding_validator.py .
+
+# Перевіряємо код виходу
+if [ $? -ne 0 ]; then
+    echo ""
+    echo "=================================================================="
+    echo "[ERROR] Коміт заблоковано через проблеми з кодуванням"
+    echo "=================================================================="
+    echo ""
+    echo "Знайдено файли з проблемами кодування або емодзі в коді."
+    echo ""
+    echo "[HELP] Виправте проблеми одним з наступних способів:"
+    echo ""
+    echo "1. Автоматичне виправлення (рекомендовано):"
+    echo "   python common/script_encoding_validator.py . --fix"
+    echo ""
+    echo "2. Попередній перегляд змін перед застосуванням:"
+    echo "   python common/script_encoding_validator.py . --fix --dry-run"
+    echo ""
+    echo "3. Ручне виправлення згідно CODING_STANDARDS.md"
+    echo ""
+    echo "Після виправлення повторіть git commit."
+    echo "=================================================================="
+    exit 1
+fi
+
+echo "[OK] Всі Python файли мають валідне кодування"
+echo ""
+exit 0
