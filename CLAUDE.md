@@ -57,3 +57,41 @@
 - **Never hallucinate libraries or functions** – only use known, verified Python packages.
 - **Always confirm file paths and module names** exist before referencing them in code or tests.
 - **Never delete or overwrite existing code** unless explicitly instructed to or if part of a task from `TASK.md`.
+
+### 📧 Contact Information for Projects
+- **Always use real contacts** from `common/contacts_registry.py` when creating README files or documentation.
+- **Never use placeholder contacts** like "your@email.com" or "YourName" in production code.
+- **Use appropriate contact profile**:
+  - `lazy_income_public` - For Lazy Income AI projects (default)
+  - `client_public` - For client projects in public repositories
+  - `client_private` - For client projects in private repositories
+
+**Usage Example:**
+```python
+from common.contacts_registry import get_contacts
+
+# Get contacts for your project
+contacts = get_contacts("lazy_income_public")
+readme_section = contacts.to_readme_section()
+
+# Add to README.md
+with open("README.md", "a") as f:
+    f.write("\n\n")
+    f.write(readme_section)
+```
+
+**For Client Projects:**
+```python
+from common.contacts_registry import update_client_profile
+
+# Update client profile with real data
+client_contacts = update_client_profile(
+    profile_type="client_public",
+    github_username="ClientCompany",
+    company_name="Client Company Inc.",
+    website="https://clientcompany.com"
+)
+
+readme_section = client_contacts.to_readme_section()
+# Will include "Developed by Nikita Solovey | Lazy Income AI"
+```
