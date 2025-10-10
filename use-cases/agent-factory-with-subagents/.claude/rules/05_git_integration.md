@@ -60,25 +60,152 @@ EOF
 )"
 ```
 
-## 🔄 ПРАВИЛО PUSH ДО РЕПОЗИТОРІЮ
+## 🚨 ОБОВ'ЯЗКОВИЙ PUSH ДЛЯ PRODUCTION ПРОЕКТІВ
 
-**Кожні 5 коммітів - push в віддалений репозиторій**
+**Production проекти ЗАВЖДИ вимагають синхронізації з remote репозиторієм!**
 
-### Підрахунок коммітів з останнього push:
+### КРИТИЧНЕ ПРАВИЛО: НЕ ЗАБУВАЙ PUSH
 
-```bash
-# Перевірити кількість коммітів попереду origin
-git rev-list --count origin/main..HEAD
+**Проблема:** Агенти роблять зміни в production проектах локально і забувають запушити → код в репозиторії та production розходяться
+
+**Рішення:** ОБОВ'ЯЗКОВИЙ пункт в TodoWrite для production проектів
+
+### Визначення deployment_status:
+
+**Production проекти** (ОБОВ'ЯЗКОВИЙ push після КОЖНОГО комміту):
+- Description містить: "production", "prod", "deployed", "live"
+- ПРИКЛАД: "Production AI Agent Factory", "Deployed web app"
+
+**Staging проекти** (рекомендований push):
+- Description містить: "staging", "stage", "pre-production"
+- ПРИКЛАД: "Staging environment for testing"
+
+**Local проекти** (опціональний push):
+- Всі інші проекти
+- ПРИКЛАД: "Development playground"
+
+### ОБОВ'ЯЗКОВЕ ПРАВИЛО: Структура TodoWrite для production
+
+**Якщо проект production → ЗАВЖДИ додавай останній пункт:**
+
+```python
+from common.git_utils import check_production_status
+
+# Перевірити чи це production проект
+status = await check_production_status(project_info, local_repo_path)
+
+if status["is_production"]:
+    # ОБОВ'ЯЗКОВО додай останній пункт TodoWrite
+    todos = [
+        {"content": "Виконати основну задачу", "status": "pending"},
+        {"content": "Рефлексія та покращення", "status": "pending"},
+        {"content": "Git коммит з описом змін", "status": "pending"},
+        {"content": "ОБОВ'ЯЗКОВО: Git push для синхронізації production", "status": "pending"}
+    ]
 ```
 
-### Коли робити push:
+### Використання git_utils для нагадування:
 
-- ✅ Коли накопичилось 5+ коммітів
-- ✅ Після завершення великої фічі або рефакторингу
-- ✅ Перед початком нової великої задачі
-- ✅ В кінці робочого дня/сесії
+```python
+from common.git_utils import create_commit_with_check
 
-### Безпечний push:
+# Створити коммит з автоматичною перевіркою
+result = await create_commit_with_check(
+    project_info={"description": "Production AI Agent Factory"},
+    local_repo_path="/path/to/repo",
+    commit_message="feat: додана нова функціональність"
+)
+
+print(f"[OK] Commit: {result['commit_hash'][:8]}")
+print(f"[STATUS] Deployment: {result['deployment_status']}")
+
+# Якщо production і є непушнуті комміти → ПОКАЗАТИ НАГАДУВАННЯ
+if result["needs_push"]:
+    print(result["reminder_message"])
+    # ВИКОНАТИ PUSH:
+    subprocess.run(["git", "push", "origin", "main"], cwd=repo_path)
+```
+
+### Приклад workflow для production проекту:
+
+```python
+# 1. В початку задачі - перевірити статус проекту
+from common.git_utils import check_production_status
+import os
+
+project = await mcp__archon__find_projects(project_id=task["project_id"])
+status = await check_production_status(project, os.getcwd())
+
+print(f"[INFO] Deployment status: {status['status_message']}")
+
+# 2. Створити TodoWrite з обов'язковим push якщо production
+if status["is_production"]:
+    todos = [
+        {"content": "Виконати задачу", "status": "pending"},
+        {"content": "Рефлексія", "status": "pending"},
+        {"content": "Git commit", "status": "pending"},
+        {"content": "ОБОВ'ЯЗКОВО: Git push для production", "status": "pending"}
+    ]
+else:
+    todos = [
+        {"content": "Виконати задачу", "status": "pending"},
+        {"content": "Рефлексія", "status": "pending"},
+        {"content": "Git commit", "status": "pending"}
+    ]
+
+# 3. В кінці задачі - створити коммит і перевірити
+from common.git_utils import create_commit_with_check
+
+result = await create_commit_with_check(
+    project_info=project,
+    local_repo_path=os.getcwd(),
+    commit_message="feat: реалізовано нову функціональність"
+)
+
+# 4. Якщо production - ОБОВ'ЯЗКОВО push
+if result["needs_push"]:
+    print(result["reminder_message"])
+
+    # ВИКОНАТИ PUSH
+    import subprocess
+    push_result = subprocess.run(
+        ["git", "push", "origin", "main"],
+        cwd=os.getcwd(),
+        capture_output=True,
+        text=True
+    )
+
+    if push_result.returncode == 0:
+        print("[OK] Changes pushed to production!")
+    else:
+        print(f"[ERROR] Push failed: {push_result.stderr}")
+```
+
+### Функції git_utils для роботи з production:
+
+**1. `remind_to_push()` - нагадати про push**
+```python
+result = await remind_to_push(project_info, local_repo_path)
+# Повертає: should_remind, unpushed_count, reminder_message
+```
+
+**2. `check_production_status()` - перевірити статус**
+```python
+status = await check_production_status(project_info, local_repo_path)
+# Повертає: is_production, unpushed_count, needs_push
+```
+
+**3. `create_commit_with_check()` - коммит + перевірка**
+```python
+result = await create_commit_with_check(
+    project_info, local_repo_path, commit_message
+)
+# Повертає: commit_hash, needs_push, reminder_message
+```
+
+### Безпечний manual push (для non-production):
+
+Якщо потрібно вручну запушити зміни:
 
 ```bash
 # ЗАВЖДИ перевіряти статус перед push
@@ -90,16 +217,6 @@ git log origin/main..HEAD --oneline
 # Push з перевіркою
 git push origin main
 ```
-
-## 🚫 ВИКЛЮЧЕННЯ: Pattern агенти
-
-**Pattern агенти НЕ пушаться в git!**
-
-Pattern агенти (для проекту PatternShift):
-- Залишаються локальними для розробки
-- Не публікуються у віддалений репозиторій
-- Спеціалізовані під конкретний проект
-- Є виключенням з правила універсальності
 
 ## ⚠️ ВАЖЛИВІ ПРАВИЛА GIT:
 
