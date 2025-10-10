@@ -199,6 +199,7 @@ if typescript_error and not my_expertise:
 - [Переключення в роль](.claude/rules/01_role_switching.md)
 - [Workflow правила](.claude/rules/02_workflow_rules.md)
 - [Управління задачами](.claude/rules/03_task_management.md)
+- [🚨 Post-Task Checklist (ОБОВ'ЯЗКОВИЙ останній пункт TodoWrite)](.claude/rules/10_post_task_checklist.md)
 
 **Додаткові правила:**
 - [Стандарти якості](.claude/rules/04_quality_standards.md)
@@ -206,7 +207,8 @@ if typescript_error and not my_expertise:
 - [Стандарти кодування](.claude/rules/06_coding_standards.md)
 - [Специфіка агентів](.claude/rules/07_agent_specific.md)
 - [🚨 ЗАБОРОНА ярликів та токен-економії](.claude/rules/08_no_shortcuts.md)
-- [Протокол освіження](.claude/rules/refresh_protocol.md)
+- [🔄 Протокол освіження](.claude/rules/refresh_protocol.md)
+- [✅ Post-Task Checklist](.claude/rules/10_post_task_checklist.md)
 
 **Інструменти та утиліти:**
 - [🔤 UTF-8 Стандарти кодування](../../CODING_STANDARDS.md) - Заборона емодзі в Python коді
