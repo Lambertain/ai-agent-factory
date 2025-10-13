@@ -442,58 +442,52 @@ async def work_with_tasks(project_id: str):
 
 ### ЕТАП 3: ЗБЕРЕЖЕННЯ КОНТЕКСТУ ПРОЕКТУ
 
-**Після auto-compact контекст втрачається!**
+**🚨 КРИТИЧНА ПРОБЛЕМА:** Після auto-compact контекст втрачається!
 
-**РІШЕННЯ: Відновлення через doing/review задачі**
+**РІШЕННЯ:** Триступенева система збереження (Header + Filtering + Recovery)
+
+**📋 ПОВНИЙ МОДУЛЬ:** `.claude/rules/02a_project_context_management.md`
+
+**ОБОВ'ЯЗКОВА ФУНКЦІЯ ДЛЯ PROJECT MANAGER:**
 
 ```python
-async def recover_project_context_after_compact():
+async def project_manager_start_session():
     """
-    Відновити контекст проекту після auto-compact.
+    Початок сесії проджект-менеджера.
 
-    ВИКЛИКАЄТЬСЯ АВТОМАТИЧНО якщо:
-    - project_id відсутній у контексті
-    - Користувач пише "archon-project-manager" після auto-compact
+    🚨 ОБОВ'ЯЗКОВО викликати на початку КОЖНОЇ сесії!
+
+    Ця функція автоматично:
+    1. Відновлює project_id з doing/review задач якщо можливо
+    2. Або запитує користувача вибрати проект зі списку
+    3. Повертає project_id для подальшої роботи
     """
 
-    # КРОК 1: Спробувати знайти через doing задачі
-    doing_tasks = await mcp__archon__find_tasks(
-        filter_by="status",
-        filter_value="doing"
-    )
+    # 🚨 ОБОВ'ЯЗКОВО: Відновити контекст перед роботою
+    project_id = await recover_project_context_after_compact()
 
-    if doing_tasks:
-        # Якщо є незавершені задачі - використати їх project_id
-        project_id = doing_tasks[0]["project_id"]
-        project = await mcp__archon__find_projects(project_id=project_id)
+    if not project_id:
+        print("\n⏸️ СЕСІЯ ПРИЗУПИНЕНА до отримання project_id від користувача")
+        return None
 
-        print(f"🔄 Відновлено контекст з doing задачі:")
-        print(f"📌 Проект: {project['title']} (ID: {project_id})")
+    # Продовжити з відновленим контекстом
+    next_task = await select_next_highest_priority_task(project_id)
+    return next_task
+```
 
-        ProjectContext.get_instance().set_project_id(project_id)
-        return project_id
+**ДЕТАЛЬНА РЕАЛІЗАЦІЯ `recover_project_context_after_compact()`:**
 
-    # КРОК 2: Спробувати знайти через review задачі
-    review_tasks = await mcp__archon__find_tasks(
-        filter_by="status",
-        filter_value="review"
-    )
+Див. повну функцію в `.claude/rules/02a_project_context_management.md` (рядки 96-166)
 
-    if review_tasks:
-        project_id = review_tasks[0]["project_id"]
-        project = await mcp__archon__find_projects(project_id=project_id)
+**Три стратегії відновлення:**
+1. СТРАТЕГІЯ 1: З doing задач (незавершена робота)
+2. СТРАТЕГІЯ 2: З review задач (очікують перевірки)
+3. СТРАТЕГІЯ 3: Запитати користувача (якщо нічого не знайдено)
 
-        print(f"🔄 Відновлено контекст з review задачі:")
-        print(f"📌 Проект: {project['title']} (ID: {project_id})")
-
-        ProjectContext.get_instance().set_project_id(project_id)
-        return project_id
-
-    # КРОК 3: Якщо нічого не знайдено - запитати користувача
-    print("⚠️ Втрачено контекст проекту після auto-compact")
-    print("📋 Будь ласка, виберіть проект:")
-
-    return await determine_active_project()
+**ОБОВ'ЯЗКОВИЙ HEADER В КОЖНІЙ ВІДПОВІДІ:**
+```markdown
+📌 PROJECT CONTEXT: [Project Title] (ID: [project_id])
+🎭 ROLE: Archon Project Manager
 ```
 
 ### КРИТИЧНІ ПРАВИЛА:

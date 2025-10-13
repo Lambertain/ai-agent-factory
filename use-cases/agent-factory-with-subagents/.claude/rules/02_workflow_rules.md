@@ -118,18 +118,27 @@ elif task_blocked:
 ### Алгоритм проджект-менеджера:
 
 ```python
-async def select_next_highest_priority_task() -> dict:
+async def select_next_highest_priority_task(project_id: str) -> dict:
     """
     Вибрати задачу з найвищим пріоритетом серед УСІХ ролей.
     Викликається ТІЛЬКИ в ролі проджект-менеджера.
+
+    Args:
+        project_id: ID проекту (ОБОВ'ЯЗКОВИЙ параметр!)
+
+    🚨 КРИТИЧНО: ЗАВЖДИ передавати project_id для фільтрації задач!
     """
 
-    # КРОК 1: Перевірка doing/review задач (будь-яка роль)
+    # КРОК 1: Перевірка doing/review задач (будь-яка роль) у ПОТОЧНОМУ ПРОЕКТІ
     doing_tasks = await mcp__archon__find_tasks(
-        filter_by="status", filter_value="doing"
+        project_id=project_id,  # 🚨 ОБОВ'ЯЗКОВО!
+        filter_by="status",
+        filter_value="doing"
     )
     review_tasks = await mcp__archon__find_tasks(
-        filter_by="status", filter_value="review"
+        project_id=project_id,  # 🚨 ОБОВ'ЯЗКОВО!
+        filter_by="status",
+        filter_value="review"
     )
 
     # КРОК 2: Якщо є doing/review - обрати найвищий пріоритет
@@ -137,18 +146,23 @@ async def select_next_highest_priority_task() -> dict:
     if urgent_tasks:
         task = max(urgent_tasks, key=lambda t: t["task_order"])
         print(f"🔴 ПРІОРИТЕТ: {task['status'].upper()} задача")
+        print(f"📌 PROJECT: {project_id}")
         return task
 
     # КРОК 3: Якщо НІ doing/review - обрати todo з найвищим task_order
     todo_tasks = await mcp__archon__find_tasks(
-        filter_by="status", filter_value="todo"
+        project_id=project_id,  # 🚨 ОБОВ'ЯЗКОВО!
+        filter_by="status",
+        filter_value="todo"
     )
     if todo_tasks:
         task = max(todo_tasks, key=lambda t: t["task_order"])
         print(f"🟢 НОВА ЗАДАЧА з task_order: {task['task_order']}")
+        print(f"📌 PROJECT: {project_id}")
         return task
 
     print("📭 Немає задач для виконання")
+    print(f"📌 PROJECT: {project_id}")
     return None
 ```
 
@@ -538,138 +552,35 @@ await TodoWrite([
 
 **🚨 КРИТИЧНА ПРОБЛЕМА:** Після "Context left until auto-compact: 0%" агенти втрачають контекст проекту та project_id.
 
-**РІШЕННЯ: Постійне нагадування про проект у кожній відповіді**
+**РІШЕННЯ:** Триступенева система збереження контексту (Header + Filtering + Recovery)
 
-### ОБОВ'ЯЗКОВИЙ HEADER У КОЖНІЙ ВІДПОВІДІ:
+**📋 ПОВНИЙ МОДУЛЬ:** `.claude/rules/02a_project_context_management.md`
 
+### Короткий огляд:
+
+**РІВЕНЬ 1: Обов'язковий header у кожній відповіді**
 ```markdown
 📌 PROJECT CONTEXT: [Project Title] (ID: [project_id])
 🎭 ROLE: [Current Role]
 ```
 
-**ПРИКЛАД:**
-
-```markdown
-📌 PROJECT CONTEXT: AI Agent Factory (ID: c75ef8e3-6f4d-4da2-9e81-8d38d04a341a)
-🎭 ROLE: Archon Implementation Engineer
-
-✅ Завершено: Створення Payment Integration Agent
-...
-```
-
-### АЛГОРИТМ ЗБЕРЕЖЕННЯ КОНТЕКСТУ:
-
+**РІВЕНЬ 2: Обов'язкова фільтрація по project_id**
 ```python
-async def preserve_project_context(task_id: str) -> Dict:
-    """Зберегти контекст проекту на всю сесію."""
-
-    # 1. Отримати project_id з задачі
-    task = await mcp__archon__find_tasks(task_id=task_id)
-    project_id = task["project_id"]
-
-    # 2. Отримати повну інформацію про проект
-    project = await mcp__archon__find_projects(project_id=project_id)
-
-    # 3. Зберегти у КОЖНІЙ відповіді
-    context_header = f"""
-📌 PROJECT CONTEXT: {project['title']} (ID: {project_id})
-🎭 ROLE: {current_role}
-"""
-
-    # 4. Включати project_id у ВСІ виклики Archon
-    # ПРАВИЛЬНО:
-    tasks = await mcp__archon__find_tasks(
-        project_id=project_id,  # ✅ Явна фільтрація
-        filter_by="status",
-        filter_value="todo"
-    )
-
-    # НЕПРАВИЛЬНО:
-    tasks = await mcp__archon__find_tasks(  # ❌ Буде шукати у всіх проектах
-        filter_by="status",
-        filter_value="todo"
-    )
-
-    return {
-        "project_id": project_id,
-        "project_title": project["title"],
-        "context_header": context_header
-    }
+# ✅ ЗАВЖДИ передавати project_id
+tasks = await mcp__archon__find_tasks(
+    project_id=project_id,  # ОБОВ'ЯЗКОВО!
+    filter_by="status",
+    filter_value="todo"
+)
 ```
 
-### ОБОВ'ЯЗКОВІ ПРАВИЛА ДЛЯ ПРОДЖЕКТ-МЕНЕДЖЕРА:
-
-**ПІСЛЯ AUTO-COMPACT проджект-менеджер ПОВИНЕН:**
-
+**РІВЕНЬ 3: Автоматичне відновлення після auto-compact**
 ```python
-async def recover_project_context_after_compact():
-    """Відновити контекст проекту після auto-compact."""
-
-    # 🚨 ЯКЩО немає project_id в пам'яті:
-
-    # КРОК 1: Знайти останню doing задачу
-    doing_tasks = await mcp__archon__find_tasks(
-        filter_by="status",
-        filter_value="doing"
-    )
-
-    if doing_tasks:
-        # Взяти project_id з doing задачі
-        project_id = doing_tasks[0]["project_id"]
-    else:
-        # КРОК 2: Знайти останню review задачу
-        review_tasks = await mcp__archon__find_tasks(
-            filter_by="status",
-            filter_value="review"
-        )
-        if review_tasks:
-            project_id = review_tasks[0]["project_id"]
-        else:
-            # КРОК 3: Запитати користувача
-            print("⚠️ Втрачено контекст проекту після auto-compact")
-            print("📋 Будь ласка, вкажіть project_id або назву проекту")
-            return None
-
-    # КРОК 4: Відновити повний контекст
-    project = await mcp__archon__find_projects(project_id=project_id)
-
-    # КРОК 5: Вивести користувачу
-    print(f"🔄 Відновлено контекст проекту: {project['title']}")
-    print(f"📌 PROJECT CONTEXT: {project['title']} (ID: {project_id})")
-
-    return project_id
+# Проджект-менеджер ОБОВ'ЯЗКОВО викликає при старті сесії
+project_id = await recover_project_context_after_compact()
 ```
 
-### ШАБЛОН ВІДПОВІДІ З КОНТЕКСТОМ:
-
-```markdown
-📌 PROJECT CONTEXT: AI Agent Factory (ID: c75ef8e3-6f4d-4da2-9e81-8d38d04a341a)
-🎭 ROLE: Archon Quality Guardian
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Задача завершена: [назва задачі]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[Результати роботи]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔄 Переключення на проджект-менеджера для пошуку наступної задачі...
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-### КРИТИЧНІ ПРАВИЛА:
-
-**✅ ЗАВЖДИ:**
-- Включати project_id у header кожної відповіді
-- Фільтрувати задачі по project_id у всіх викликах Archon
-- Відновлювати контекст з doing/review задач після auto-compact
-- Виводити повну назву проекту та ID
-
-**❌ НІКОЛИ:**
-- Не шукати задачі без project_id після отримання контексту
-- Не забувати про project_id у наступних відповідях
-- Не аналізувати задачі з інших проектів
-- Не продовжувати без project_id після auto-compact (запитати користувача)
+**Детальні правила, функції та приклади:** див. `.claude/rules/02a_project_context_management.md`
 
 ## 📢 КОМУНІКАЦІЙНІ ПАТТЕРНИ
 
