@@ -346,8 +346,8 @@ def main():
     """Главная функция скрипта."""
     # Настройки
     PROJECT_ROOT = Path(__file__).parent
-    AGENTS_DIR = PROJECT_ROOT / "agent-factory" / "use-cases" / "agent-factory-with-subagents" / "agents"
-    DRY_RUN = False  # Изменить на False для реального рефакторинга
+    AGENTS_DIR = PROJECT_ROOT / "use-cases" / "agent-factory-with-subagents" / "agents"
+    DRY_RUN = True  # Изменить на False для реального рефакторинга
 
     print("=" * 70)
     print("AGENT KNOWLEDGE REFACTORING SCRIPT (MVP)")
