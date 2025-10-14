@@ -695,16 +695,7 @@ async def calculate_technical_debt(project_path: str) -> TechnicalDebtReport:
 
 ## 🔍 ДОМЕННЫЕ ЗНАНИЯ: [ОБЛАСТЬ]
 
-```python
-```python
-```python
-```python
-```python
-```python
-```python
-### 1. Автоматизация
-### 2. AI-Powered Review
-### 3. Metrics & Monitoring
+[Доменные знания для извлечения из оригинального файла]
 
 ---
 

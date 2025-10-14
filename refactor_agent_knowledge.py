@@ -34,16 +34,32 @@ SYSTEM_PROMPT_MARKERS = [
 ]
 
 
-def find_agent_knowledge_files(agents_dir: Path) -> list[Path]:
+def find_agent_knowledge_files(agents_dir: Path, group_filter: str = "all") -> list[Path]:
     """
-    Найти все knowledge файлы агентов.
+    Найти все knowledge файлы агентов с фильтрацией по группам.
 
     Args:
         agents_dir: Путь к директории agents
+        group_filter: Фильтр по группам агентов
+            - "all": все агенты (по умолчанию)
+            - "archon": только Archon агенты (5 шт)
+            - "specialized": только специализированные агенты (13 шт)
+            - "pattern": только Pattern агенты (18 шт)
 
     Returns:
         list[Path]: Список путей к knowledge файлам
     """
+    # Определить списки агентов по группам
+    ARCHON_AGENTS = [
+        "archon_analysis_lead",
+        "archon_blueprint_architect",
+        "archon_implementation_engineer",
+        "archon_quality_guardian",
+        "deployment_engineer"
+    ]
+
+    PATTERN_AGENTS_PREFIX = "pattern_"
+
     knowledge_files = []
 
     for agent_dir in agents_dir.iterdir():
@@ -54,11 +70,27 @@ def find_agent_knowledge_files(agents_dir: Path) -> list[Path]:
         if agent_dir.name == "_shared":
             continue
 
+        agent_name = agent_dir.name
+
+        # Применить фильтр по группам
+        if group_filter == "archon":
+            if agent_name not in ARCHON_AGENTS:
+                continue
+        elif group_filter == "pattern":
+            if not agent_name.startswith(PATTERN_AGENTS_PREFIX):
+                continue
+        elif group_filter == "specialized":
+            # Специализированные = не Archon и не Pattern
+            if agent_name in ARCHON_AGENTS or agent_name.startswith(PATTERN_AGENTS_PREFIX):
+                continue
+        # Для "all" обрабатываем все агенты
+
         # Найти knowledge файл в knowledge/ поддиректории
         knowledge_dir = agent_dir / "knowledge"
         if knowledge_dir.exists():
             for file in knowledge_dir.iterdir():
-                if file.suffix == ".md" and "knowledge" in file.stem:
+                # Пропустить backup файлы
+                if file.suffix == ".md" and "knowledge" in file.stem and "backup" not in file.stem:
                     knowledge_files.append(file)
 
     return sorted(knowledge_files)
@@ -171,28 +203,60 @@ def extract_domain_knowledge(content: str) -> str:
     """
     lines = content.split('\n')
     domain_lines = []
+    in_domain_section = False
     skip_common_rules = False
 
+    # Маркеры начала доменных знаний
+    domain_start_markers = [
+        "## Ключевые паттерны",
+        "## Специфичные для домена",
+        "## Архитектурные принципы",
+        "## Доменные знания",
+        "## Методологии анализа требований",
+        "## Архитектурный анализ",
+        "## Декомпозиция задач",
+        "## Паттерны анализа",
+        "## Принципы проектирования",
+        "## Методологии и подходы",
+        "## Технические детали",
+        "## Реализация",
+        "## Практические примеры"
+    ]
+
+    # Маркеры конца доменных знаний (начало footer)
+    domain_end_markers = [
+        "**Версия:**",
+        "**Дата рефакторинга:**",
+        "**Автор рефакторинга:**"
+    ]
+
     for line in lines:
-        # Пропускать секции общих правил
+        # Проверить начало секции общих правил (пропускать)
         for marker in COMMON_RULES_MARKERS:
             if marker.lower() in line.lower():
                 skip_common_rules = True
                 break
 
-        # Начало доменных знаний
+        # Проверить конец секции общих правил (начало системного промпта)
         for marker in SYSTEM_PROMPT_MARKERS:
             if marker.lower() in line.lower() and skip_common_rules:
                 skip_common_rules = False
                 break
 
-        # Добавлять только доменные знания
-        if not skip_common_rules and any(marker in line for marker in [
-            "## Ключевые паттерны",
-            "## Специфичные для домена",
-            "### 1.", "### 2.", "### 3.",
-            "```python", "```javascript", "```typescript"
-        ]):
+        # Проверить начало доменных знаний
+        for marker in domain_start_markers:
+            if marker in line:
+                in_domain_section = True
+                break
+
+        # Проверить конец доменных знаний (footer)
+        for marker in domain_end_markers:
+            if marker in line:
+                in_domain_section = False
+                break
+
+        # Добавлять ВСЕ строки в секции доменных знаний
+        if in_domain_section and not skip_common_rules:
             domain_lines.append(line)
 
     return '\n'.join(domain_lines) if domain_lines else "[Доменные знания для извлечения из оригинального файла]"
@@ -347,27 +411,45 @@ def main():
     # Настройки
     PROJECT_ROOT = Path(__file__).parent
     AGENTS_DIR = PROJECT_ROOT / "use-cases" / "agent-factory-with-subagents" / "agents"
-    DRY_RUN = False  # Изменить на False для реального рефакторинга
+
+    # ПОЭТАПНАЯ ОБРАБОТКА ПО ГРУППАМ
+    GROUP_FILTER = "archon"  # Изменить для других групп: "specialized", "pattern", "all"
+    DRY_RUN = False  # PRODUCTION MODE - реальный рефакторинг
 
     print("=" * 70)
-    print("AGENT KNOWLEDGE REFACTORING SCRIPT (MVP)")
+    print("AGENT KNOWLEDGE REFACTORING SCRIPT V2 (PHASED)")
     print("=" * 70)
     print(f"Директория агентов: {AGENTS_DIR}")
+    print(f"Группа обработки: {GROUP_FILTER.upper()}")
     print(f"Режим: {'DRY RUN (без изменений)' if DRY_RUN else 'PRODUCTION (с изменениями)'}")
     print("=" * 70)
 
-    # Найти все knowledge файлы
-    knowledge_files = find_agent_knowledge_files(AGENTS_DIR)
-    print(f"\n[INFO] Найдено {len(knowledge_files)} knowledge файлов")
+    # Показать описание групп
+    group_descriptions = {
+        "archon": "Archon агенты (5 шт) - Core team, универсальные агенты",
+        "specialized": "Специализированные агенты (13 шт) - Доменные эксперты",
+        "pattern": "Pattern агенты (18 шт) - PatternShift-специфичные, последовательный workflow",
+        "all": "ВСЕ агенты (37 шт) - Использовать только после успешной обработки всех групп"
+    }
+    print(f"\n[INFO] {group_descriptions.get(GROUP_FILTER, 'Неизвестная группа')}")
+
+    # Найти knowledge файлы для выбранной группы
+    knowledge_files = find_agent_knowledge_files(AGENTS_DIR, group_filter=GROUP_FILTER)
+    print(f"[INFO] Найдено {len(knowledge_files)} knowledge файлов для группы '{GROUP_FILTER}'")
 
     if not knowledge_files:
-        print("[ERROR] Knowledge файлы не найдены!")
+        print(f"[ERROR] Knowledge файлы для группы '{GROUP_FILTER}' не найдены!")
         return
+
+    # Показать список агентов
+    print(f"\n[AGENTS] Будут обработаны:")
+    for i, file_path in enumerate(knowledge_files, 1):
+        agent_name = extract_agent_name(file_path)
+        print(f"  {i}. {agent_name}")
 
     # Рефакторить каждый файл
     success_count = 0
     failed_count = 0
-    total_saved_lines = 0
 
     for file_path in knowledge_files:
         success, message = refactor_agent_knowledge(file_path, dry_run=DRY_RUN)
@@ -380,15 +462,27 @@ def main():
 
     # Итоговая статистика
     print("\n" + "=" * 70)
-    print("РЕЗУЛЬТАТЫ РЕФАКТОРИНГА")
+    print(f"РЕЗУЛЬТАТЫ РЕФАКТОРИНГА - ГРУППА '{GROUP_FILTER.upper()}'")
     print("=" * 70)
     print(f"Успешно: {success_count}/{len(knowledge_files)}")
     print(f"Ошибки: {failed_count}/{len(knowledge_files)}")
 
     if success_count > 0:
-        print(f"\n[SUCCESS] Модульная архитектура применена к {success_count} агентам!")
+        print(f"\n[SUCCESS] Модульная архитектура применена к {success_count} агентам группы '{GROUP_FILTER}'!")
         print(f"[INFO] Backup файлы созданы для всех изменённых агентов")
-        print(f"[INFO] Следующий шаг: git commit + push")
+
+        # Рекомендации по следующим шагам
+        next_steps = {
+            "archon": "specialized",
+            "specialized": "pattern",
+            "pattern": "all"
+        }
+        if GROUP_FILTER in next_steps:
+            print(f"\n[NEXT] Следующая группа: '{next_steps[GROUP_FILTER]}'")
+            print(f"[NEXT] Измените GROUP_FILTER = \"{next_steps[GROUP_FILTER]}\" и запустите снова")
+
+        if not DRY_RUN:
+            print(f"\n[GIT] Следующий шаг: git commit + push для группы '{GROUP_FILTER}'")
 
 
 if __name__ == "__main__":

@@ -1197,9 +1197,7 @@ groups:
 
 ## 🔍 ДОМЕННЫЕ ЗНАНИЯ: [ОБЛАСТЬ]
 
-### 1. Container Optimization
-### 2. CI/CD Pipeline
-### 3. Infrastructure as Code
+[Доменные знания для извлечения из оригинального файла]
 
 ---
 

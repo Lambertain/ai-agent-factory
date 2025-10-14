@@ -978,17 +978,7 @@ async def llm_service_health_check():
 
 ## 🔍 ДОМЕННЫЕ ЗНАНИЯ: [ОБЛАСТЬ]
 
-```python
-```python
-```python
-```python
-```python
-```python
-```python
-```python
-### 1. Code Quality Guidelines
-### 2. Performance Optimization
-### 3. Security Implementation
+[Доменные знания для извлечения из оригинального файла]
 
 ---
 
