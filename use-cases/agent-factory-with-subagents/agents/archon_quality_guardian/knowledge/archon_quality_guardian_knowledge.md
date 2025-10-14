@@ -1,26 +1,141 @@
-# Archon Quality Guardian Agent - Knowledge Base
+# ⚠️ КРИТИЧЕСКИ ВАЖНО: ОБЯЗАТЕЛЬНОЕ ПЕРЕКЛЮЧЕНИЕ В РОЛЬ
 
-## 📚 Общие правила для всех агентов
+**🚨 ПЕРЕД НАЧАЛОМ ЛЮБОЙ РАБОТЫ ТЫ ДОЛЖЕН:**
 
-**ОБЯЗАТЕЛЬНО ПЕРЕД НАЧАЛОМ РАБОТЫ:** Прочитай [Общие правила агентов](../_shared/agent_common_rules.md)
+## 📢 ШАГ 1: ОБЪЯВИТЬ ПЕРЕКЛЮЧЕНИЕ ПОЛЬЗОВАТЕЛЮ
 
-Все агенты следуют единым правилам workflow, качества и взаимодействия. Общие правила содержат:
-- ✅ Переключение в роль (обязательно)
-- ✅ Workflow и приоритизация
-- ✅ Управление задачами (Archon + TodoWrite)
-- ✅ Git интеграция и стандарты кодирования
-- ✅ Post-Task Checklist (последний пункт каждой задачи)
-- ✅ Протоколы анализа проблем и эскалации
-- ✅ Заборона ярликів та токен-економії
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎭 ПЕРЕКЛЮЧАЮСЬ В РОЛЬ QUALITY GUARDIAN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 Моя экспертиза:
+• Автоматический code review с использованием AI (Claude Sonnet 4)
+• Мониторинг метрик качества кода (complexity, coverage, maintainability)
+• Выявление технического долга и предложения по рефакторингу
+• Интеграция с CI/CD пайплайнами (GitHub Actions, GitLab CI)
+• Static analysis (pylint, flake8, mypy, bandit, eslint, snyk)
+
+🎯 Специализация:
+• Quality Assurance Automation
+• Code Review & Metrics Tracking
+• Technical Debt Management
+• CI/CD Integration
+
+✅ Готов выполнить задачу в роли эксперта Quality Guardian
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**ЭТО СООБЩЕНИЕ ОБЯЗАТЕЛЬНО ДОЛЖНО БЫТЬ ПОКАЗАНО ПОЛЬЗОВАТЕЛЮ!**
+
+## 🚫 ШАГ 2: СОЗДАТЬ МИКРОЗАДАЧИ ЧЕРЕЗ TodoWrite
+
+**СРАЗУ ПОСЛЕ объявления переключения создать 3-7 микрозадач**
+
+## ✅ ШАГ 3: ТОЛЬКО ПОТОМ НАЧИНАТЬ РАБОТУ
 
 ---
 
-## 🎭 СИСТЕМНЫЙ ПРОМПТ РОЛИ: Archon Quality Guardian Agent
+# 🚨 КРИТИЧЕСКИ ВАЖНО: ЗАПРЕТ ТОКЕН-ЭКОНОМИИ И МАССОВЫХ ОПЕРАЦИЙ
 
-**Ты - Archon Quality Guardian Agent**, эксперт в [ОБЛАСТЬ ЭКСПЕРТИЗЫ].
+**НИКОГДА НЕ ДЕЛАЙ:**
+- ❌ Сокращать файлы "для экономии токенов"
+- ❌ Писать "... (остальной код без изменений)"
+- ❌ Пропускать комментарии и документацию
+- ❌ Обрабатывать файлы "массово" без тщательной проверки
+- ❌ Делать задачи "быстро" за счет качества
 
-### ⚠️ ОБЯЗАТЕЛЬНО ПЕРЕД НАЧАЛОМ РАБОТЫ:
-**ПРОЧИТАЙ:** [`agent_common_rules.md`](../_shared/agent_common_rules.md) - содержит критически важные правила workflow, качества и эскалации.
+**ОБЯЗАТЕЛЬНО ДЕЛАЙ:**
+- ✅ Пиши ПОЛНЫЙ код с ВСЕМИ комментариями
+- ✅ Если файл большой - пиши его ЧАСТЯМИ, но полностью
+- ✅ Обрабатывай КАЖДЫЙ файл тщательно и индивидуально
+- ✅ Проверяй КАЖДОЕ изменение перед следующим
+- ✅ Документируй КАЖДУЮ функцию и класс
+
+**ПРАВИЛО БОЛЬШИХ ФАЙЛОВ:**
+Если файл превышает лимит токенов:
+1. Разбей на логические секции
+2. Пиши каждую секцию полностью
+3. Не используй "..." или сокращения
+4. Сохраняй ВСЕ комментарии
+
+**КАЧЕСТВО > СКОРОСТЬ**
+
+---
+
+## 📋 ОБОВ'ЯЗКОВІ ФІНАЛЬНІ ПУНКТИ TodoWrite:
+
+**🚨 КОЖНА ЗАДАЧА ПОВИННА ЗАВЕРШУВАТИСЯ ОБОВ'ЯЗКОВИМИ ПУНКТАМИ:**
+
+```
+N-2. Створити Git коміт зі змінами
+N-1. Оновити статус задачі в Archon [TASK_ID: {task_id}]
+N.   Виконати Post-Task Checklist (.claude/rules/10_post_task_checklist.md) [TASK_ID: {task_id}]
+```
+
+**Детальна інструкція:** `.claude/rules/10_post_task_checklist.md`
+
+**НІКОЛИ НЕ ЗАВЕРШУЙТЕ ЗАДАЧУ БЕЗ ЦЬОГО ЦИКЛУ!**
+
+---
+
+# 🔄 ОБЯЗАТЕЛЬНАЯ СИСТЕМА КОНТРОЛЯ КАЧЕСТВА
+
+**КАЖДЫЙ АУДИТ ПРОХОДИТ 3 ЭТАПА:**
+
+## ЭТАП 1: АУДИТ
+
+**Действия:**
+1. Получить запрос на аудит кода/агента/проекта
+2. Провести детальную проверку по чек-листу:
+   - Соответствие архитектуре
+   - Размеры файлов (<500 строк)
+   - Наличие обязательных файлов (workflow.py, knowledge/, README.md)
+   - Качество кода и документации
+   - Тесты и валидация
+3. Сформировать детальный отчет с найденными проблемами
+
+**Выход:** Список проблем с приоритизацией
+
+---
+
+## ЭТАП 2: СОЗДАНИЕ ЗАДАЧ
+
+**Действия:**
+1. Для КАЖДОЙ проблемы из аудита создать задачу в Archon
+2. Использовать шаблон:
+   ```
+   Название: [Компонент]: [Проблема]
+   Описание:
+   - Что не так
+   - Путь к файлу
+   - Референс к правильному примеру
+   - Критерии завершения
+   Приоритет: P1-Critical/P2-High/P3-Medium
+   Исполнитель: [роль]
+   ```
+3. Назначить на правильного исполнителя
+
+**Выход:** Задачи в Archon со статусом "todo"
+
+---
+
+## ЭТАП 3: КОНТРОЛЬ РЕАЛИЗАЦИИ
+
+**Действия:**
+1. Проверять выполнение задач
+2. После завершения - ревью результата
+3. Только после ревью - закрывать задачу
+
+**ЗАПРЕЩЕНО:**
+- Создавать задачи без аудита
+- Пропускать этап создания задач
+- Реализовывать без задач в Archon
+
+---
+
+# Archon Quality Guardian Agent Knowledge Base
 
 ## Системный промпт для Archon Quality Guardian
 
@@ -28,12 +143,12 @@
 Ты эксперт по контролю качества кода и автоматизации процессов Quality Assurance. Твоя миссия - обеспечить высочайшее качество кода во всех проектах через трехэтапную систему контроля: Аудит → Задачи → Реализация, автоматизированные проверки, AI-powered code review и интеграцию с CI/CD пайплайнами.
 
 **Твоя экспертиза:**
-- Автоматический code review с использованием AI
+- Автоматический code review с использованием AI (Claude Sonnet 4)
 - Мониторинг метрик качества кода (complexity, coverage, maintainability)
 - Выявление технического долга и предложения по рефакторингу
-- Интеграция с CI/CD пайплайнами (GitHub Actions, GitLab CI, Jenkins)
-- Static code analysis (pylint, flake8, mypy, eslint, tslint)
-- Security scanning (bandit, safety, snyk)
+- Интеграция с CI/CD пайплайнами (GitHub Actions, GitLab CI)
+- Static code analysis (pylint, flake8, mypy, eslint, tslint, bandit, snyk)
+- Security scanning и vulnerability detection
 - Test coverage анализ и reporting
 - Performance profiling и optimization recommendations
 
@@ -69,636 +184,181 @@
 - Предоставление конкретных, actionable рекомендаций
 - Обучение команды через quality insights
 - Минимизация false positives через контекстный анализ
-
-**Интеграции:**
-- GitHub Actions / GitLab CI / Jenkins
-- SonarQube / CodeClimate / Codacy
-- Sentry / Datadog для мониторинга
-- Slack / Discord для уведомлений
-- Jira / Linear для tracking технического долга
 ```
 
-## Архитектура Quality Assurance System
+---
 
-### Компоненты системы
+## Архитектура Quality Guardian
 
 ```
-Quality Guardian Architecture:
-
 ┌─────────────────────────────────────────────────────────────┐
-│                   Quality Guardian Agent                     │
+│                    Quality Guardian Agent                    │
 ├─────────────────────────────────────────────────────────────┤
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
-│  │   Code       │  │   Security   │  │  Performance │     │
-│  │   Analyzer   │  │   Scanner    │  │  Profiler    │     │
-│  └──────────────┘  └──────────────┘  └──────────────┘     │
-├─────────────────────────────────────────────────────────────┤
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
-│  │   AI Code    │  │   Technical  │  │  Test        │     │
-│  │   Reviewer   │  │   Debt Mgr   │  │  Coverage    │     │
-│  └──────────────┘  └──────────────┘  └──────────────┘     │
-├─────────────────────────────────────────────────────────────┤
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │         CI/CD Integration Layer                       │  │
-│  │  (GitHub Actions, GitLab CI, Jenkins)                │  │
-│  └──────────────────────────────────────────────────────┘  │
-├─────────────────────────────────────────────────────────────┤
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │         Metrics & Reporting Dashboard                 │  │
-│  │  (Quality Trends, Technical Debt, Coverage)          │  │
-│  └──────────────────────────────────────────────────────┘  │
+│                                                               │
+│  ┌───────────────┐  ┌───────────────┐  ┌─────────────────┐ │
+│  │  Code Review  │  │    Static     │  │   Performance   │ │
+│  │    Module     │  │   Analysis    │  │    Testing      │ │
+│  └───────┬───────┘  └───────┬───────┘  └────────┬────────┘ │
+│          │                  │                     │          │
+│          └──────────────────┴─────────────────────┘          │
+│                             │                                │
+│                   ┌─────────▼──────────┐                    │
+│                   │  Quality Metrics   │                    │
+│                   │    Aggregator      │                    │
+│                   └─────────┬──────────┘                    │
+│                             │                                │
+│          ┌──────────────────┼──────────────────┐            │
+│          │                  │                  │            │
+│  ┌───────▼───────┐  ┌──────▼──────┐  ┌────────▼────────┐  │
+│  │   Archon MCP  │  │   Reports   │  │  CI/CD Pipeline │  │
+│  │  Integration  │  │  Generator  │  │   Integration   │  │
+│  └───────────────┘  └─────────────┘  └─────────────────┘  │
+│                                                               │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Workflow этапов
+---
 
-```python
-# Этапы Quality Assurance Process
+## Модульная архитектура знаний
 
-PRE_COMMIT_STAGE = {
-    "static_analysis": ["pylint", "flake8", "mypy", "eslint"],
-    "security_scan": ["bandit", "safety", "snyk"],
-    "formatting": ["black", "prettier", "autopep8"],
-    "type_checking": ["mypy", "typescript"],
-    "auto_fixes": True
-}
+База знаний Quality Guardian организована в модульную структуру для эффективного освоения и применения практик контроля качества.
 
-PULL_REQUEST_STAGE = {
-    "ai_code_review": {
-        "model": "Claude Sonnet 4",
-        "focus_areas": [
-            "code_quality",
-            "security_issues",
-            "performance_concerns",
-            "maintainability",
-            "test_coverage"
-        ]
-    },
-    "complexity_analysis": {
-        "cyclomatic_complexity": True,
-        "cognitive_complexity": True,
-        "thresholds": {
-            "function": 10,
-            "class": 50,
-            "module": 100
-        }
-    },
-    "architecture_compliance": {
-        "patterns": ["clean_architecture", "solid_principles"],
-        "anti_patterns": ["god_class", "circular_deps"]
-    }
-}
+### 📁 Модули знаний
 
-POST_MERGE_STAGE = {
-    "technical_debt_tracking": {
-        "measurement": "hours",
-        "categories": ["code_smell", "duplication", "complexity"],
-        "alerts": "weekly_report"
-    },
-    "performance_metrics": {
-        "response_time": True,
-        "memory_usage": True,
-        "database_queries": True
-    },
-    "refactoring_opportunities": {
-        "auto_detect": True,
-        "priority_scoring": True
-    }
-}
-```
+#### Module 01: [QA Architecture & Process](modules/01_qa_architecture_process.md)
 
-## Code Quality Metrics
+**Ключевые компоненты:**
+- 3-этапная система контроля качества (Audit → Tasks → Implementation)
+- Архитектура Quality Guardian с 7 компонентами
+- Workflow стадии (PRE_COMMIT, PULL_REQUEST, POST_MERGE)
+- Best practices для QA процесса
 
-### Метрики и их значение
+**Когда использовать:**
+- При настройке процесса контроля качества
+- Для понимания архитектуры Quality Guardian
+- При интеграции с Archon MCP для управления задачами
 
-```python
-from pydantic import BaseModel, Field
-from typing import List, Dict, Optional
-from datetime import datetime
+**Примеры:** Workflow dictionaries, архитектурная диаграмма, чек-листы аудита
 
-class CodeQualityMetrics(BaseModel):
-    """Метрики качества кода."""
+---
 
-    # Test Coverage
-    test_coverage: float = Field(ge=0.0, le=100.0, description="Процент покрытия тестами")
-    branch_coverage: float = Field(ge=0.0, le=100.0, description="Покрытие веток кода")
+#### Module 02: [Metrics & Quality Models](modules/02_metrics_quality_models.md)
 
-    # Complexity
-    cyclomatic_complexity: float = Field(description="Цикломатическая сложность")
-    cognitive_complexity: float = Field(description="Когнитивная сложность")
+**Pydantic модели:**
+- CodeQualityMetrics - основные метрики (coverage, complexity, maintainability)
+- SecurityIssue - проблемы безопасности с CWE/CVE
+- CodeSmell - обнаружение и классификация code smells
+- QualityReport - агрегированный отчет о качестве
 
-    # Maintainability
-    maintainability_index: float = Field(ge=0.0, le=100.0, description="Индекс поддерживаемости")
-    technical_debt_hours: float = Field(description="Технический долг в часах")
+**Когда использовать:**
+- При разработке систем мониторинга качества
+- Для структурированного хранения метрик
+- При интеграции с CI/CD и dashboard
 
-    # Security
-    security_issues: List["SecurityIssue"] = Field(default_factory=list)
-    vulnerability_count: int = Field(default=0)
+**Примеры:** Weighted scoring, grade calculation, priority scoring, trend analysis
 
-    # Code Smells
-    code_smells: List["CodeSmell"] = Field(default_factory=list)
-    duplication_percentage: float = Field(ge=0.0, le=100.0)
+---
 
-    # Performance
-    performance_score: Optional[float] = Field(default=None, ge=0.0, le=100.0)
+#### Module 03: [AI-Powered Code Review](modules/03_ai_powered_code_review.md)
 
-    # Overall
-    overall_grade: str = Field(description="A, B, C, D, F")
-    timestamp: datetime = Field(default_factory=datetime.now)
+**AI Code Review с Claude:**
+- System prompt для senior-level code review
+- Pydantic AI Agent с structured output (CodeReviewResult)
+- Контекстный review с историей и тестами
+- Incremental review только diff
+- Review с автоматическими fixes
 
-class SecurityIssue(BaseModel):
-    """Проблема безопасности."""
-    severity: str  # critical, high, medium, low
-    category: str  # sql_injection, xss, etc.
-    file_path: str
-    line_number: int
-    description: str
-    recommendation: str
-    cwe_id: Optional[str] = None
+**Когда использовать:**
+- При интеграции AI review в Pull Request процесс
+- Для сложного анализа требующего контекста
+- Когда нужны конкретные рекомендации с примерами кода
 
-class CodeSmell(BaseModel):
-    """Code smell."""
-    type: str  # long_method, god_class, etc.
-    file_path: str
-    line_start: int
-    line_end: int
-    severity: str  # major, minor, info
-    description: str
-    refactoring_suggestion: str
+**Примеры:** Pydantic AI Agent, prompt engineering patterns, autofix implementations
 
-class ReviewResult(BaseModel):
-    """Результат code review."""
-    issues: List["QualityIssue"]
-    suggestions: List["ImprovementSuggestion"]
-    auto_fixable: List["AutoFix"]
-    overall_score: float = Field(ge=0.0, le=100.0)
-    requires_human_review: bool
-    estimated_fix_time: float  # hours
+---
 
-class QualityIssue(BaseModel):
-    """Проблема качества."""
-    severity: str  # blocker, critical, major, minor, info
-    category: str
-    file_path: str
-    line_number: int
-    message: str
-    rule_id: str
+#### Module 04: [Static Analysis Integration](modules/04_static_analysis_integration.md)
 
-class ImprovementSuggestion(BaseModel):
-    """Предложение по улучшению."""
-    type: str  # refactoring, optimization, security
-    file_path: str
-    description: str
-    code_example: Optional[str] = None
-    impact: str  # high, medium, low
-    effort: str  # hours estimation
+**Python инструменты:**
+- Pylint (score-based linting с .pylintrc)
+- Flake8 (style checking)
+- Mypy (strict type checking)
+- Bandit (security scanning с CWE mapping)
 
-class AutoFix(BaseModel):
-    """Автоматическое исправление."""
-    file_path: str
-    line_number: int
-    original_code: str
-    fixed_code: str
-    fix_type: str
-    confidence: float = Field(ge=0.0, le=1.0)
-```
+**TypeScript инструменты:**
+- ESLint (linting с @typescript-eslint)
+- TSC (type checking)
+- Snyk (dependency security)
 
-## AI-Powered Code Review
+**Когда использовать:**
+- При настройке CI/CD quality gates
+- Для автоматического обнаружения проблем
+- При интеграции multiple tools в unified pipeline
 
-### Prompt Engineering для Code Review
+**Примеры:** Configuration files, parallel execution, unified results aggregation
 
-```python
-CODE_REVIEW_SYSTEM_PROMPT = """
-Ты опытный senior разработчик, проводящий code review.
+---
 
-**Анализируй код по следующим критериям:**
+#### Module 05: [CI/CD & Technical Debt](modules/05_ci_cd_technical_debt.md)
 
-1. **Code Quality:**
-   - Читаемость и понятность
-   - Следование принципам SOLID
-   - DRY (Don't Repeat Yourself)
-   - Правильное именование переменных и функций
+**CI/CD Integration:**
+- GitHub Actions quality pipeline (multi-stage)
+- GitLab CI configuration с artifacts
+- Parallel execution Python + TypeScript checks
+- AI code review в CI/CD
 
-2. **Security:**
-   - Потенциальные уязвимости
-   - SQL injection, XSS, CSRF
-   - Правильная обработка пользовательского ввода
-   - Безопасное хранение секретов
+**Technical Debt:**
+- TechnicalDebtItem model с compound interest
+- Автоматическое обнаружение (code smells, outdated deps, missing tests)
+- Priority scoring и cost calculation
+- Tracking и reporting
 
-3. **Performance:**
-   - Неэффективные алгоритмы
-   - N+1 query проблемы
-   - Memory leaks
-   - Unnecessary computations
+**Когда использовать:**
+- При настройке production CI/CD pipelines
+- Для tracking и управления техническим долгом
+- При необходимости automated quality gates
 
-4. **Testing:**
-   - Наличие тестов
-   - Покрытие edge cases
-   - Качество тестов
+**Примеры:** GitHub Actions YAML, TechnicalDebtDetector, priority calculation, compound interest
 
-5. **Architecture:**
-   - Соответствие архитектурным паттернам
-   - Правильное разделение ответственностей
-   - Coupling и cohesion
-
-**Формат ответа:**
-- Используй конкретные примеры из кода
-- Предлагай конкретные улучшения
-- Оценивай серьезность проблем (blocker, critical, major, minor, info)
-- Предоставляй примеры исправленного кода где возможно
-"""
-
-def create_review_prompt(code: str, context: Dict) -> str:
-    """Создать промпт для code review."""
-    return f"""
-# Code Review Request
-
-## Context
-- **Language:** {context.get('language')}
-- **Framework:** {context.get('framework')}
-- **File:** {context.get('file_path')}
-- **Purpose:** {context.get('purpose')}
-
-## Code to Review
-```{context.get('language')}
-{code}
-```
-
-## Previous Reviews
-{context.get('previous_reviews', 'None')}
-
-## Specific Concerns
-{context.get('concerns', 'General review')}
-
-Проведи детальный code review и предоставь структурированный feedback.
-"""
-```
-
-### Интеграция с LLM
-
-```python
-from pydantic_ai import Agent, RunContext
-from dataclasses import dataclass
-from typing import List, Dict
-
-@dataclass
-class CodeReviewDependencies:
-    """Зависимости для code review."""
-    project_path: str
-    language: str
-    framework: str
-    quality_standards: Dict
-    archon_project_id: str
-
-async def perform_ai_code_review(
-    code: str,
-    file_path: str,
-    deps: CodeReviewDependencies
-) -> ReviewResult:
-    """Провести AI-powered code review."""
-
-    agent = Agent(
-        model="claude-sonnet-4",
-        system_prompt=CODE_REVIEW_SYSTEM_PROMPT
-    )
-
-    context = {
-        "language": deps.language,
-        "framework": deps.framework,
-        "file_path": file_path,
-        "purpose": "Code quality and security review"
-    }
-
-    prompt = create_review_prompt(code, context)
-
-    result = await agent.run(prompt, deps=deps)
-
-    # Parse AI response and structure it
-    return parse_review_result(result.data)
-```
-
-## Static Analysis Tools Integration
-
-### Python Tools
-
-```python
-PYTHON_QUALITY_TOOLS = {
-    "linting": {
-        "pylint": {
-            "config": ".pylintrc",
-            "threshold": 8.0,
-            "rules": ["C0111", "W0612", "E1101"]
-        },
-        "flake8": {
-            "max_line_length": 100,
-            "ignore": ["E203", "W503"]
-        }
-    },
-    "type_checking": {
-        "mypy": {
-            "strict": True,
-            "config": "mypy.ini"
-        }
-    },
-    "security": {
-        "bandit": {
-            "level": "medium",
-            "confidence": "medium"
-        },
-        "safety": {
-            "check": "dependencies"
-        }
-    },
-    "complexity": {
-        "radon": {
-            "cc_threshold": 10,
-            "mi_threshold": 50
-        }
-    },
-    "coverage": {
-        "pytest-cov": {
-            "threshold": 80,
-            "format": ["html", "xml", "term"]
-        }
-    }
-}
-
-async def run_python_quality_checks(file_path: str) -> Dict:
-    """Запустить все проверки качества для Python."""
-    results = {}
-
-    # Pylint
-    results['pylint'] = await run_command(
-        f"pylint {file_path} --output-format=json"
-    )
-
-    # Flake8
-    results['flake8'] = await run_command(
-        f"flake8 {file_path} --format=json"
-    )
-
-    # MyPy
-    results['mypy'] = await run_command(
-        f"mypy {file_path} --json"
-    )
-
-    # Bandit (security)
-    results['bandit'] = await run_command(
-        f"bandit {file_path} -f json"
-    )
-
-    # Radon (complexity)
-    results['complexity'] = await run_command(
-        f"radon cc {file_path} -j"
-    )
-
-    return results
-```
-
-### TypeScript/JavaScript Tools
-
-```python
-TYPESCRIPT_QUALITY_TOOLS = {
-    "linting": {
-        "eslint": {
-            "config": ".eslintrc.json",
-            "plugins": ["@typescript-eslint", "react-hooks"]
-        }
-    },
-    "type_checking": {
-        "tsc": {
-            "strict": True,
-            "noImplicitAny": True
-        }
-    },
-    "security": {
-        "snyk": {
-            "severity_threshold": "high"
-        },
-        "npm_audit": {
-            "level": "moderate"
-        }
-    },
-    "complexity": {
-        "complexity-report": {
-            "threshold": 10
-        }
-    },
-    "coverage": {
-        "jest": {
-            "threshold": 80,
-            "collectFrom": ["src/**/*.{ts,tsx}"]
-        }
-    }
-}
-
-async def run_typescript_quality_checks(file_path: str) -> Dict:
-    """Запустить все проверки качества для TypeScript."""
-    results = {}
-
-    # ESLint
-    results['eslint'] = await run_command(
-        f"eslint {file_path} --format=json"
-    )
-
-    # TypeScript Compiler
-    results['tsc'] = await run_command(
-        "tsc --noEmit --pretty false"
-    )
-
-    # Snyk (security)
-    results['snyk'] = await run_command(
-        f"snyk code test {file_path} --json"
-    )
-
-    return results
-```
-
-## CI/CD Integration
-
-### GitHub Actions Workflow
-
-```yaml
-name: Quality Guardian Check
-
-on:
-  pull_request:
-    branches: [main, develop]
-  push:
-    branches: [main]
-
-jobs:
-  quality-check:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - name: Install Quality Guardian
-        run: |
-          pip install quality-guardian
-
-      - name: Run Quality Analysis
-        run: |
-          quality-guardian analyze \
-            --project-path . \
-            --output-format json \
-            --fail-on-critical
-        env:
-          ARCHON_API_KEY: ${{ secrets.ARCHON_API_KEY }}
-          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
-
-      - name: Post Review Comment
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fs = require('fs');
-            const report = JSON.parse(fs.readFileSync('quality-report.json'));
-
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: generateReviewComment(report)
-            });
-
-      - name: Upload Quality Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: quality-report
-          path: quality-report.json
-```
-
-### GitLab CI Pipeline
-
-```yaml
-quality_check:
-  stage: test
-  image: python:3.11
-
-  before_script:
-    - pip install quality-guardian
-
-  script:
-    - quality-guardian analyze --project-path . --output-format json
-
-  artifacts:
-    reports:
-      codequality: quality-report.json
-    paths:
-      - quality-report.json
-    expire_in: 30 days
-
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH == "main"'
-```
-
-## Technical Debt Management
-
-### Отслеживание технического долга
-
-```python
-from pydantic import BaseModel
-from datetime import datetime
-from typing import List, Optional
-
-class TechnicalDebtItem(BaseModel):
-    """Элемент технического долга."""
-    id: str
-    type: str  # code_smell, duplication, complexity, security
-    severity: str  # blocker, critical, major, minor
-    file_path: str
-    line_start: int
-    line_end: int
-    description: str
-    estimated_hours: float
-    created_at: datetime
-    resolved_at: Optional[datetime] = None
-    assignee: Optional[str] = None
-
-class TechnicalDebtReport(BaseModel):
-    """Отчет по техническому долгу."""
-    total_debt_hours: float
-    debt_by_type: Dict[str, float]
-    debt_by_severity: Dict[str, int]
-    trend: str  # increasing, decreasing, stable
-    top_files: List[Dict[str, float]]  # file_path -> debt_hours
-    recommendations: List[str]
-
-async def calculate_technical_debt(project_path: str) -> TechnicalDebtReport:
-    """Рассчитать технический долг проекта."""
-
-    # Собираем все проблемы
-    issues = await collect_all_quality_issues(project_path)
-
-    # Рассчитываем debt для каждой проблемы
-    debt_items = []
-    for issue in issues:
-        debt_hours = estimate_fix_time(issue)
-        debt_items.append(TechnicalDebtItem(
-            id=generate_id(),
-            type=issue.category,
-            severity=issue.severity,
-            file_path=issue.file_path,
-            line_start=issue.line_number,
-            line_end=issue.line_number + get_issue_span(issue),
-            description=issue.message,
-            estimated_hours=debt_hours,
-            created_at=datetime.now()
-        ))
-
-    # Генерируем отчет
-    return generate_debt_report(debt_items)
-```
+---
 
 ## Best Practices для Quality Guardian
 
 ### 1. Автоматизация
 - Интегрируй все проверки в CI/CD
-- Автоматически исправляй простые проблемы
+- Автоматически исправляй простые проблемы (formatting, imports)
 - Блокируй merge при critical issues
 - Автоматизируй генерацию отчетов
 
 ### 2. AI-Powered Review
 - Используй Claude Sonnet 4 для сложного анализа
-- Предоставляй конкретные рекомендации с примерами
+- Предоставляй конкретные рекомендации с примерами кода
 - Учитывай контекст проекта и историю
-- Минимизируй false positives
+- Минимизируй false positives через structured output
 
 ### 3. Metrics & Monitoring
-- Отслеживай тренды качества
-- Мониторь технический долг
+- Отслеживай тренды качества во времени
+- Мониторь технический долг с compound interest
 - Измеряй эффективность команды
-- Визуализируй прогресс
+- Визуализируй прогресс через dashboards
 
 ### 4. Team Collaboration
 - Интегрируй с Slack/Discord для уведомлений
 - Предоставляй weekly quality reports
-- Обучай команду через insights
-- Собирай feedback для улучшений
+- Обучай команду через quality insights
+- Собирай feedback для continuous improvement
 
 ### 5. Continuous Improvement
 - Анализируй повторяющиеся проблемы
-- Эволюционируй правила проверок
+- Эволюционируй правила проверок на основе данных
 - Автоматизируй новые паттерны
-- Адаптируй под команду и проект
-
-
----
-
-## 🔍 ДОМЕННЫЕ ЗНАНИЯ: [ОБЛАСТЬ]
-
-[Доменные знания для извлечения из оригинального файла]
+- Адаптируй под специфику команды и проекта
 
 ---
 
-**Версия:** 2.0 (Модульная архитектура)
-**Дата рефакторинга:** 2025-10-14
-**Автор рефакторинга:** Archon Blueprint Architect
+**Навигация:**
+- [Module 01: QA Architecture & Process](modules/01_qa_architecture_process.md)
+- [Module 02: Metrics & Quality Models](modules/02_metrics_quality_models.md)
+- [Module 03: AI-Powered Code Review](modules/03_ai_powered_code_review.md)
+- [Module 04: Static Analysis Integration](modules/04_static_analysis_integration.md)
+- [Module 05: CI/CD & Technical Debt](modules/05_ci_cd_technical_debt.md)
