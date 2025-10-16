@@ -1,6 +1,81 @@
 # Module 04: Cloud & Serverless Architecture
 
+**Версия:** 1.0
+**Дата:** 2025-10-16
+**Автор:** Archon Blueprint Architect
+
 **Назад к:** [Blueprint Architect Knowledge Base](../archon_blueprint_architect_knowledge.md)
+
+---
+
+## 🔧 ТЕХНИЧЕСКИЕ ТРИГГЕРЫ (приоритет для задач Archon)
+
+**Serverless Computing:**
+- AWS Lambda, Google Cloud Functions, Azure Functions
+- Cold Start optimization, Warm Start, Lambda Layers
+- Serverless Framework, SAM (Serverless Application Model)
+- Event-driven triggers, API Gateway integration
+- Function-as-a-Service (FaaS), Backend-as-a-Service (BaaS)
+
+**Infrastructure as Code (IaC):**
+- Terraform (HCL), CloudFormation (YAML/JSON), Pulumi (TypeScript/Python)
+- AWS CDK, Azure Resource Manager (ARM) Templates
+- Ansible, Chef, Puppet for configuration management
+- State Management, Remote State, State Locking
+- Module composition, Resource dependencies
+
+**Container Orchestration:**
+- Kubernetes (K8s), Docker Swarm, Apache Mesos
+- AWS ECS/EKS, Google GKE, Azure AKS
+- Helm Charts, Kustomize, Operators
+- Service Mesh (Istio, Linkerd), Ingress Controllers
+- StatefulSets, DaemonSets, Jobs, CronJobs
+
+**Cloud Services (AWS/GCP/Azure):**
+- Storage: S3, Cloud Storage, Azure Blob Storage
+- Databases: DynamoDB, RDS, Cloud SQL, Cosmos DB
+- Queues: SQS, Cloud Pub/Sub, Service Bus
+- Caching: ElastiCache, Memorystore, Azure Cache
+- CDN: CloudFront, Cloud CDN, Azure CDN
+
+**Auto-scaling & Elasticity:**
+- Horizontal Pod Autoscaler (HPA), Vertical Pod Autoscaler (VPA)
+- AWS Auto Scaling Groups, GCP Managed Instance Groups
+- KEDA (Kubernetes Event-Driven Autoscaling)
+- Load Balancer integration (ALB, NLB, CLB)
+- Scaling policies (Target Tracking, Step Scaling)
+
+**Multi-Cloud & Hybrid:**
+- Multi-cloud deployment strategies
+- Hybrid cloud architecture (on-premise + cloud)
+- Cloud migration patterns (Lift-and-Shift, Refactor, Replatform)
+- Vendor lock-in prevention, Cloud-agnostic design
+- Cross-cloud networking, VPN, Direct Connect
+
+**Cost Optimization:**
+- Reserved Instances, Savings Plans, Spot Instances
+- Right-sizing resources, Auto-shutdown policies
+- Cost allocation tags, Budget alerts
+- Serverless cost optimization (execution time, memory)
+
+---
+
+## 🔍 КЛЮЧЕВЫЕ СЛОВА (для общения с пользователем)
+
+**Русские:** облачная архитектура, serverless, lambda, multi-cloud, IaC, terraform, контейнеризация, kubernetes, автоскейлинг
+
+**English:** cloud architecture, serverless, lambda, multi-cloud, IaC, terraform, containerization, kubernetes, auto-scaling
+
+---
+
+## 📌 КОГДА ЧИТАТЬ (контекст)
+
+- Cloud-native приложения
+- Auto-scaling архитектуры
+- Pay-per-use модели
+- Event-driven serverless workflows
+- Миграция в облако
+- Контейнеризация приложений
 
 ---
 

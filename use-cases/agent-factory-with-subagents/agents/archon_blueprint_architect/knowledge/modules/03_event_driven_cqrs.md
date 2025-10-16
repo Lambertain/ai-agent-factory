@@ -1,6 +1,71 @@
 # Module 03: Event-Driven Architecture & CQRS
 
+**Версия:** 1.0
+**Дата:** 2025-10-16
+**Автор:** Archon Blueprint Architect
+
 **Назад к:** [Blueprint Architect Knowledge Base](../archon_blueprint_architect_knowledge.md)
+
+---
+
+## 🔧 ТЕХНИЧЕСКИЕ ТРИГГЕРЫ (приоритет для задач Archon)
+
+**Event Sourcing Patterns:**
+- Event Store implementation, Event Stream, Event Log
+- Aggregate Root, Domain Event, Event Replay
+- Event Versioning, Event Upcasting, Schema Migration
+- Optimistic Concurrency Control, Version Conflict Resolution
+- Snapshot Pattern, Event Compaction
+
+**CQRS Implementation:**
+- Command Handler, Query Handler, Command Validation
+- Write Model (Command Side), Read Model (Query Side)
+- Command Bus, Query Bus, Message Dispatcher
+- Command/Query Separation, Different Data Models
+- Eventually Consistent Reads
+
+**Event Handlers & Projections:**
+- Event Handler registration, Event Subscriber
+- Read Model Projection, Materialized View
+- Projection Rebuilding, Catch-up Subscription
+- Event Processing Pipeline, Handler Ordering
+
+**Message Bus & Integration:**
+- Message Bus implementation (RabbitMQ, Kafka, AWS SNS/SQS)
+- Event Publishing, Event Subscription
+- Publish-Subscribe Pattern, Topic-based Routing
+- Message Ordering, At-Least-Once Delivery
+- Dead Letter Queue, Retry Policy
+
+**Eventual Consistency:**
+- Asynchronous Processing, Background Jobs
+- Consistency Boundary, Aggregate Boundary
+- Compensating Actions, Saga Pattern coordination
+- Outbox Pattern, Polling Publisher
+
+**Data Management:**
+- Event Sourcing Database schema
+- Separate Write/Read databases
+- CQRS with multiple Read Models
+- Polyglot Persistence for CQRS
+
+---
+
+## 🔍 КЛЮЧЕВЫЕ СЛОВА (для общения с пользователем)
+
+**Русские:** event sourcing, CQRS, событийная архитектура, aggregate root, event store, message bus, eventual consistency, проекция
+
+**English:** event sourcing, CQRS, event-driven architecture, aggregate root, event store, message bus, eventual consistency, projection
+
+---
+
+## 📌 КОГДА ЧИТАТЬ (контекст)
+
+- Системы с audit trail требованиями
+- High-throughput приложения
+- Eventual consistency архитектуры
+- Event-driven системы интеграции
+- Системы с разделением чтения/записи
 
 ---
 

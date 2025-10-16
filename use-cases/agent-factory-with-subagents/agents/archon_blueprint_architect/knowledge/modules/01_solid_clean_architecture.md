@@ -1,6 +1,55 @@
 # Module 01: SOLID Principles & Clean Architecture
 
+**Версия:** 1.0
+**Дата:** 2025-10-16
+**Автор:** Archon Blueprint Architect
+
 **Назад к:** [Blueprint Architect Knowledge Base](../archon_blueprint_architect_knowledge.md)
+
+---
+
+## 🔧 ТЕХНИЧЕСКИЕ ТРИГГЕРЫ (приоритет для задач Archon)
+
+**Domain-Driven Design:**
+- Entity, Value Object, Aggregate Root, Domain Event
+- Repository Pattern, Unit of Work, Specification Pattern
+- Domain Service, Application Service, Infrastructure Service
+
+**Clean Architecture Layers:**
+- Domain Layer, Application Layer, Infrastructure Layer, Interface Layer
+- Use Case, Interactor, Command Handler, Query Handler
+- DTO (Data Transfer Object), Mapper, Presenter
+
+**SOLID Principles Implementation:**
+- SRP (Single Responsibility), OCP (Open/Closed), LSP (Liskov Substitution)
+- ISP (Interface Segregation), DIP (Dependency Inversion)
+- Abstract Factory, Strategy Pattern, Template Method
+
+**Dependency Injection:**
+- IoC Container, Service Locator, Constructor Injection
+- DI Container, Dependency Resolution, Service Lifetime (Singleton/Scoped/Transient)
+
+**Architecture Patterns:**
+- Clean Architecture, Hexagonal Architecture (Ports & Adapters), Onion Architecture
+- Layered Architecture, N-Tier Architecture
+
+---
+
+## 🔍 КЛЮЧЕВЫЕ СЛОВА (для общения с пользователем)
+
+**Русские:** чистый код, SOLID принципы, чистая архитектура, dependency injection, разделение ответственностей, DDD, слои архитектуры
+
+**English:** clean code, SOLID principles, clean architecture, dependency injection, separation of concerns, DDD, layered architecture
+
+---
+
+## 📌 КОГДА ЧИТАТЬ (контекст)
+
+- Проектирование новых приложений с чистой архитектурой
+- Рефакторинг монолитных систем на DDD
+- Создание maintainable кодовой базы с SOLID
+- Внедрение Dependency Injection и IoC
+- Разделение на Domain/Application/Infrastructure слои
 
 ---
 

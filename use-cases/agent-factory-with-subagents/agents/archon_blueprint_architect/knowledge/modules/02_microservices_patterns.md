@@ -1,6 +1,71 @@
 # Module 02: Microservices Architecture Patterns
 
+**Версия:** 1.0
+**Дата:** 2025-10-16
+**Автор:** Archon Blueprint Architect
+
 **Назад к:** [Blueprint Architect Knowledge Base](../archon_blueprint_architect_knowledge.md)
+
+---
+
+## 🔧 ТЕХНИЧЕСКИЕ ТРИГГЕРЫ (приоритет для задач Archon)
+
+**Service Discovery & Registry:**
+- Service Registry (Consul, Eureka, etcd, ZooKeeper)
+- Service Discovery, Health Check, Heartbeat
+- Service Mesh (Istio, Linkerd, Consul Connect)
+
+**Load Balancing:**
+- Client-side Load Balancer, Server-side Load Balancer
+- Round Robin, Random, Least Connections, Weighted Load Balancing
+- Sticky Sessions, Session Affinity
+
+**Resilience Patterns:**
+- Circuit Breaker (Open/Closed/Half-Open states)
+- Retry Pattern, Exponential Backoff, Timeout
+- Bulkhead Pattern, Rate Limiting, Throttling
+
+**API Gateway:**
+- API Gateway, Edge Service, Backend for Frontend (BFF)
+- Request Routing, Authentication, Authorization
+- Rate Limiting, Request Transformation, Response Caching
+
+**Distributed Transactions:**
+- Saga Pattern (Orchestration, Choreography)
+- Two-Phase Commit (2PC), Three-Phase Commit (3PC)
+- Eventual Consistency, Compensating Transactions
+
+**Communication Patterns:**
+- REST API, gRPC, GraphQL
+- Message Queue (RabbitMQ, Kafka, AWS SQS)
+- Publish-Subscribe, Request-Response, Fire-and-Forget
+
+**Observability:**
+- Distributed Tracing (Jaeger, Zipkin, OpenTelemetry)
+- Centralized Logging (ELK Stack, Fluentd)
+- Metrics & Monitoring (Prometheus, Grafana)
+
+**Data Management:**
+- Database per Service, Shared Database (anti-pattern)
+- Event Sourcing for microservices, CQRS
+
+---
+
+## 🔍 КЛЮЧЕВЫЕ СЛОВА (для общения с пользователем)
+
+**Русские:** микросервисы, service discovery, load balancer, circuit breaker, API gateway, распределенная система, saga pattern, resilience
+
+**English:** microservices, service discovery, load balancer, circuit breaker, API gateway, distributed system, saga pattern, resilience
+
+---
+
+## 📌 КОГДА ЧИТАТЬ (контекст)
+
+- Декомпозиция монолита на микросервисы
+- Проектирование распределенных систем
+- Повышение resilience и fault tolerance
+- Внедрение Service Discovery и Load Balancing
+- Saga pattern для распределенных транзакций
 
 ---
 
