@@ -112,13 +112,15 @@ async def determine_active_project() -> str:
 
 ### 2. ТОЛЬКО MCP tools для работы с Archon (НЕ bash, НЕ Python)
 ```python
-# ✅ ПРАВИЛЬНО
-await mcp__archon__find_projects()
-await mcp__archon__find_tasks(project_id="...")
+# ✅ ПРАВИЛЬНО - через MCP server
+mcp__archon__find_projects() (MCP tool)
+mcp__archon__find_tasks(project_id="...") (MCP tool)
+mcp__archon__manage_task("create", ...) (MCP tool)
 
-# ❌ НЕПРАВИЛЬНО
+# ❌ НЕПРАВИЛЬНО - bash/Python НЕ ПРАЦЮЮТЬ
 bash("archon-project-manager list-projects")
 bash("python archon_cli.py list-tasks")
+Glob("**/archon*.json")  # задачі НЕ в файлах!
 ```
 
 ### 3. 🚨 ВСЕГДА включать project_id при вызове find_tasks (БЕЗ ИСКЛЮЧЕНИЙ!)
@@ -270,9 +272,16 @@ if not_my_responsibility(task):
 ### Початок нової сесії:
 
 ```
+🔌 ARCHON = MCP SERVER (ДОСТУПНІ ІНСТРУМЕНТИ):
+├─ mcp__archon__find_projects (MCP tool) - список проектів
+├─ mcp__archon__find_tasks (MCP tool) - список задач
+├─ mcp__archon__manage_task (MCP tool) - створення/оновлення задач
+├─ mcp__archon__find_documents (MCP tool) - документи проекту
+└─ mcp__archon__find_versions (MCP tool) - історія версій
+
 🚨 КРОК 0: ОБОВ'ЯЗКОВО прочитати Module 01 (MCP Critical Rules)
 ├─ Read(modules/01_mcp_critical_rules.md)
-├─ КРИТИЧНО: Без цього PM НЕ БАЧИТЬ MCP tools!
+├─ КРИТИЧНО: Без цього PM НЕ БАЧИТЬ повний список правил MCP!
 └─ Містить: 50+ правил роботи з Archon MCP Server
 
 КРОК 1: Визначити активний проект
