@@ -272,6 +272,7 @@ if not_my_responsibility(task):
 | **[05](modules/05_agile_methodologies.md)** | 🟢 | Agile/Scrum | При sprint planning або standup | ~200 |
 | **[06](modules/06_examples_templates.md)** | 🟢 | Templates | Як приклад для комунікації | ~285 |
 | **[07](modules/07_refactoring_workflow.md)** | 🟢 | Refactoring | При рефакторингу агентів | ~150 |
+| **[08](modules/08_agent_refactoring_check.md)** | 🟡 | Agent Refactoring Check | ПЕРЕД переключенням на роль агента | ~350 |
 
 **КЛЮЧОВІ СЛОВА для авто-детекції:**
 
@@ -288,6 +289,8 @@ if not_my_responsibility(task):
 **Module 06 (Examples):** приклад комунікації, template, шаблон відповіді, як написати
 
 **Module 07 (Refactoring):** рефакторинг агента, чек-ліст, token optimization, модулі знань
+
+**Module 08 (Agent Refactoring Check):** переключення на роль, перевірка агента, рефакторен ли агент, автопроверка, агент не рефакторен, створити задачу на рефакторинг, AGENTS_REFACTORING_CHECKLIST
 
 ---
 
@@ -364,6 +367,7 @@ if not_my_responsibility(task):
 - [🏃 Module 05: Agile Methodologies](modules/05_agile_methodologies.md)
 - [📝 Module 06: Examples & Templates](modules/06_examples_templates.md)
 - [🔧 Module 07: Refactoring Workflow](modules/07_refactoring_workflow.md)
+- [🔍 Module 08: Agent Refactoring Check](modules/08_agent_refactoring_check.md) - ПЕРЕД переключенням на роль
 
 ---
 

@@ -424,3 +424,4 @@ Module 07: Refactoring Workflow для деталей процесса.
 **Навигация:**
 - [← Предыдущий модуль: Examples & Templates](06_examples_templates.md)
 - [↑ Назад к Project Manager Knowledge Base](../archon_project_manager_knowledge.md)
+- [→ Следующий модуль: Agent Refactoring Check](08_agent_refactoring_check.md)
