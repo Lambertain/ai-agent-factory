@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-MVP Script для рефакторинга agent knowledge файлов.
+ИСПРАВЛЕННЫЙ Script для рефакторинга agent knowledge файлов V3.
 
 Преобразует монолитные knowledge файлы в модульную структуру:
 - Удаляет дублирующиеся общие правила (~130 строк)
-- Извлекает системный промпт роли
-- Сохраняет только уникальные доменные знания
+- Чётко разделяет системный промпт и доменные знания
 - Создаёт backup оригинала
+- Валидирует результаты перед записью
 """
 
 import os
@@ -31,6 +31,25 @@ SYSTEM_PROMPT_MARKERS = [
     "системный промпт роли",
     "экспертиза охватывает",
     "Ты специализированный AI-агент"
+]
+
+# Маркеры НАЧАЛА доменных знаний (где ЗАКАНЧИВАЕТСЯ системный промпт)
+DOMAIN_START_MARKERS = [
+    "## Ключевые паттерны",
+    "## Специфичные для домена",
+    "## Архитектурные принципы",
+    "## Доменные знания",
+    "## Методологии анализа требований",
+    "## Архитектурный анализ",
+    "## Декомпозиция задач",
+    "## Паттерны анализа",
+    "## Принципы проектирования",
+    "## Методологии и подходы",
+    "## Технические детали",
+    "## Реализация",
+    "## Практические примеры",
+    "## Мультиагентные паттерны работы",
+    "## Универсальные Performance Optimization Patterns"
 ]
 
 
@@ -147,16 +166,16 @@ def count_lines_with_common_rules(content: str) -> int:
     return common_rules_lines
 
 
-def extract_system_prompt(content: str, agent_name: str) -> Optional[str]:
+def extract_system_prompt(content: str, agent_name: str) -> str:
     """
-    Извлечь системный промпт роли из content.
+    Извлечь ТОЛЬКО системный промпт роли (БЕЗ доменных знаний).
 
     Args:
         content: Содержимое файла
         agent_name: Название агента
 
     Returns:
-        Optional[str]: Системный промпт или None
+        str: Системный промпт БЕЗ доменных знаний
     """
     lines = content.split('\n')
     prompt_lines = []
@@ -164,17 +183,27 @@ def extract_system_prompt(content: str, agent_name: str) -> Optional[str]:
 
     for line in lines:
         # Начало системного промпта
-        for marker in SYSTEM_PROMPT_MARKERS:
-            if marker.lower() in line.lower():
-                in_prompt_section = True
-                break
+        if not in_prompt_section:
+            for marker in SYSTEM_PROMPT_MARKERS:
+                if marker.lower() in line.lower():
+                    in_prompt_section = True
+                    break
 
+        # Если в секции промпта - проверяем не начались ли доменные знания
         if in_prompt_section:
-            prompt_lines.append(line)
+            # ОСТАНОВИТЬСЯ если начались доменные знания
+            is_domain_start = False
+            for domain_marker in DOMAIN_START_MARKERS:
+                if domain_marker in line:
+                    is_domain_start = True
+                    break
 
-            # Конец системного промпта (начало доменных знаний)
-            if "## Ключевые паттерны" in line or "## Специфичные для домена" in line:
+            if is_domain_start:
+                # Доменные знания начались - прекращаем извлечение промпта
                 break
+
+            # Добавляем строку в промпт
+            prompt_lines.append(line)
 
     if prompt_lines:
         return '\n'.join(prompt_lines)
@@ -193,7 +222,7 @@ def extract_system_prompt(content: str, agent_name: str) -> Optional[str]:
 
 def extract_domain_knowledge(content: str) -> str:
     """
-    Извлечь уникальные доменные знания (без общих правил).
+    Извлечь ТОЛЬКО доменные знания (БЕЗ системного промпта и общих правил).
 
     Args:
         content: Содержимое файла
@@ -204,62 +233,66 @@ def extract_domain_knowledge(content: str) -> str:
     lines = content.split('\n')
     domain_lines = []
     in_domain_section = False
-    skip_common_rules = False
-
-    # Маркеры начала доменных знаний
-    domain_start_markers = [
-        "## Ключевые паттерны",
-        "## Специфичные для домена",
-        "## Архитектурные принципы",
-        "## Доменные знания",
-        "## Методологии анализа требований",
-        "## Архитектурный анализ",
-        "## Декомпозиция задач",
-        "## Паттерны анализа",
-        "## Принципы проектирования",
-        "## Методологии и подходы",
-        "## Технические детали",
-        "## Реализация",
-        "## Практические примеры"
-    ]
-
-    # Маркеры конца доменных знаний (начало footer)
-    domain_end_markers = [
-        "**Версия:**",
-        "**Дата рефакторинга:**",
-        "**Автор рефакторинга:**"
-    ]
 
     for line in lines:
-        # Проверить начало секции общих правил (пропускать)
-        for marker in COMMON_RULES_MARKERS:
-            if marker.lower() in line.lower():
-                skip_common_rules = True
-                break
-
-        # Проверить конец секции общих правил (начало системного промпта)
-        for marker in SYSTEM_PROMPT_MARKERS:
-            if marker.lower() in line.lower() and skip_common_rules:
-                skip_common_rules = False
-                break
-
         # Проверить начало доменных знаний
-        for marker in domain_start_markers:
-            if marker in line:
-                in_domain_section = True
+        if not in_domain_section:
+            for marker in DOMAIN_START_MARKERS:
+                if marker in line:
+                    in_domain_section = True
+                    break
+
+        # Если в секции доменных знаний - добавляем строку
+        if in_domain_section:
+            # Проверить конец доменных знаний (footer)
+            if "**Версия:**" in line or "**Дата рефакторинга:**" in line:
                 break
 
-        # Проверить конец доменных знаний (footer)
-        for marker in domain_end_markers:
-            if marker in line:
-                in_domain_section = False
-                break
-
-        # Добавлять ВСЕ строки в секции доменных знаний
-        if in_domain_section and not skip_common_rules:
             domain_lines.append(line)
 
     return '\n'.join(domain_lines) if domain_lines else "[Доменные знания для извлечения из оригинального файла]"
+
+
+def validate_extracted_content(system_prompt: str, domain_knowledge: str, agent_name: str) -> Tuple[bool, str]:
+    """
+    Валидировать извлечённый контент перед генерацией.
+
+    Args:
+        system_prompt: Системный промпт
+        domain_knowledge: Доменные знания
+        agent_name: Название агента
+
+    Returns:
+        Tuple[bool, str]: (is_valid, error_message)
+    """
+    errors = []
+
+    # Проверка 1: Системный промпт не пустой
+    if len(system_prompt.strip()) < 50:
+        errors.append("Системный промпт слишком короткий")
+
+    # Проверка 2: Доменные знания не являются placeholder
+    if "[Доменные знания для извлечения" in domain_knowledge:
+        errors.append("Доменные знания не извлечены (placeholder)")
+
+    # Проверка 3: Нет дубликации секций в системном промпте
+    domain_markers_in_prompt = sum(1 for marker in DOMAIN_START_MARKERS if marker in system_prompt)
+    if domain_markers_in_prompt > 0:
+        errors.append(f"Системный промпт содержит {domain_markers_in_prompt} маркеров доменных знаний (возможна дубликация)")
+
+    # Проверка 4: Доменные знания содержат реальный контент
+    if len(domain_knowledge.strip()) < 100:
+        errors.append("Доменные знания слишком короткие")
+
+    # Проверка 5: Нет пустых code blocks
+    empty_code_blocks = domain_knowledge.count('```python\n```') + domain_knowledge.count('```javascript\n```')
+    if empty_code_blocks > 0:
+        errors.append(f"Найдено {empty_code_blocks} пустых code blocks")
+
+    if errors:
+        return False, f"[{agent_name}] ВАЛИДАЦИЯ ПРОВАЛЕНА: " + "; ".join(errors)
+
+    return True, "OK"
 
 
 def create_backup(file_path: Path) -> Path:
@@ -276,7 +309,7 @@ def create_backup(file_path: Path) -> Path:
     backup_path = file_path.with_suffix(f".backup_{timestamp}.md")
     shutil.copy2(file_path, backup_path)
 
-    print(f"[BACKUP] {backup_path.name}")
+    print(f"  [BACKUP] {backup_path.name}")
     return backup_path
 
 
@@ -290,8 +323,8 @@ def generate_refactored_content(
 
     Args:
         agent_name: Название агента
-        system_prompt: Системный промпт
-        domain_knowledge: Доменные знания
+        system_prompt: Системный промпт (БЕЗ доменных знаний)
+        domain_knowledge: Доменные знания (БЕЗ системного промпта)
 
     Returns:
         str: Новый content
@@ -372,6 +405,15 @@ def refactor_agent_knowledge(
     system_prompt = extract_system_prompt(original_content, agent_name)
     domain_knowledge = extract_domain_knowledge(original_content)
 
+    # Валидация извлечённого контента
+    is_valid, validation_msg = validate_extracted_content(system_prompt, domain_knowledge, agent_name)
+
+    if not is_valid:
+        print(f"  [VALIDATION FAILED] {validation_msg}")
+        return False, validation_msg
+
+    print(f"  [VALIDATION OK] Системный промпт: {len(system_prompt)} символов, Доменные знания: {len(domain_knowledge)} символов")
+
     # Генерировать новый content
     new_content = generate_refactored_content(
         agent_name=agent_name,
@@ -380,10 +422,9 @@ def refactor_agent_knowledge(
     )
 
     new_lines = new_content.count('\n')
-    saved_lines = original_lines - new_lines
 
-    print(f"  Новый: {new_lines} строк")
-    print(f"  Экономия: {saved_lines} строк ({saved_lines / original_lines * 100:.1f}%)")
+    print(f"  Новый файл: {new_lines} строк")
+    print(f"  Удалено дубликатов: ~{common_rules_lines} строк общих правил")
 
     if dry_run:
         print(f"  [DRY RUN] Изменения НЕ применены")
@@ -398,7 +439,7 @@ def refactor_agent_knowledge(
             f.write(new_content)
 
         print(f"  [SUCCESS] Файл обновлён")
-        return True, f"Refactored successfully (saved {saved_lines} lines)"
+        return True, f"Refactored successfully"
 
     except Exception as e:
         # Восстановить из backup при ошибке
@@ -417,7 +458,7 @@ def main():
     DRY_RUN = False  # PRODUCTION MODE - реальный рефакторинг
 
     print("=" * 70)
-    print("AGENT KNOWLEDGE REFACTORING SCRIPT V2 (PHASED)")
+    print("AGENT KNOWLEDGE REFACTORING SCRIPT V3 (FIXED)")
     print("=" * 70)
     print(f"Директория агентов: {AGENTS_DIR}")
     print(f"Группа обработки: {GROUP_FILTER.upper()}")
@@ -458,11 +499,11 @@ def main():
             success_count += 1
         else:
             failed_count += 1
-            print(f"[FAILED] {message}")
+            print(f"  [FAILED] {message}")
 
     # Итоговая статистика
     print("\n" + "=" * 70)
-    print(f"РЕЗУЛЬТАТЫ РЕФАКТОРИНГА - ГРУППА '{GROUP_FILTER.upper()}'")
+    print(f"РЕЗУЛЬТАТЫ РЕФАКТОРИНГА - ГРУППА '{GROUP_FILTER.UPPER()}'")
     print("=" * 70)
     print(f"Успешно: {success_count}/{len(knowledge_files)}")
     print(f"Ошибки: {failed_count}/{len(knowledge_files)}")
