@@ -1,6 +1,41 @@
 # Module 01: Clean Architecture & Design Patterns
 
+**Версия:** 1.0
+**Дата:** 2025-10-17
+**Автор:** Archon Implementation Engineer
+
 **Назад к:** [Implementation Engineer Knowledge Base](../archon_implementation_engineer_knowledge.md)
+
+---
+
+## 🔧 ТЕХНИЧЕСКИЕ ТРИГГЕРЫ (приоритет для задач Archon)
+
+**Когда ОБЯЗАТЕЛЬНО читать этот модуль:**
+- Создание Domain/Application/Infrastructure layers для AI агента
+- Реализация Repository Pattern с Generic типами для data access
+- Настройка Dependency Injection Container для управления зависимостями
+- Применение SOLID principles к AI agents
+- Разработка Clean Architecture structure для Pydantic AI
+- Необходимость разделить бизнес-логику от технической реализации
+
+---
+
+## 🔍 КЛЮЧЕВЫЕ СЛОВА (для общения с пользователем)
+
+**Русские:** чистая архитектура, SOLID, repository pattern, dependency injection, слои приложения, use case, domain logic, infrastructure layer, application layer, maintainability
+
+**English:** clean architecture, SOLID, repository pattern, dependency injection, application layers, use case, domain logic, infrastructure layer, application layer, maintainability
+
+---
+
+## 📌 КОГДА ЧИТАТЬ (контекст)
+
+- Разрабатываешь AI агента с бизнес-логикой
+- Требуется высокая тестируемость кода
+- Долгосрочная maintainability критична
+- Нужно изолировать внешние зависимости (database, API, MCP)
+- Создаешь production-ready агента для команды
+- Планируешь масштабирование проекта
 
 ---
 

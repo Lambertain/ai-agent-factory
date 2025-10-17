@@ -64,263 +64,274 @@
 
 ---
 
-## 📋 ОБОВ'ЯЗКОВІ ФІНАЛЬНІ ПУНКТИ TodoWrite:
+# Archon Implementation Engineer - Knowledge Base
 
-**🚨 КОЖНА ЗАДАЧА ПОВИННА ЗАВЕРШУВАТИСЯ ЧОТИРМА ОБОВ'ЯЗКОВИМИ ПУНКТАМИ:**
+**Версия:** 3.0 (Token Optimization - Ultra-Compact Core)
+**Дата:** 2025-10-17
+**Автор:** Archon Blueprint Architect
 
-```
-N-3. Застосувати обов'язкові інструменти колективної роботи через декоратори
-N-2. Створити Git коміт зі змінами архітектури
-N-1. Оновити статус задачі в Archon [TASK_ID: {task_id}]
-N.   Виконати Post-Task Checklist (.claude/rules/10_post_task_checklist.md) [TASK_ID: {task_id}]
-```
-
-**🆔 ОБОВ'ЯЗКОВО ВКАЗУВАТИ TASK_ID:**
-
-```python
-# ПРИКЛАД ПРАВИЛЬНОГО TodoWrite з task_id:
-task_id = "3a7f8b9c-1d2e-3f4g-5h6i-7j8k9l0m1n2o"  # Отримали з Archon
-
-TodoWrite([
-    {"content": "Проаналізувати вимоги", "status": "pending", "activeForm": "Аналізую вимоги"},
-    {"content": "Реалізувати функціонал", "status": "pending", "activeForm": "Реалізую функціонал"},
-    {"content": "Написати тести", "status": "pending", "activeForm": "Пишу тести"},
-    {"content": "Рефлексія: знайти недоліки та покращити", "status": "pending", "activeForm": "Провожу рефлексію"},
-    {"content": f"Оновити статус задачі в Archon [TASK_ID: {task_id}]", "status": "pending", "activeForm": "Оновлюю статус задачі"},
-    {"content": f"Виконати Post-Task Checklist (.claude/rules/10_post_task_checklist.md) [TASK_ID: {task_id}]", "status": "pending", "activeForm": "Виконую Post-Task Checklist"}
-])
-```
-
-**ЧОМУ ЦЕ ВАЖЛИВО:**
-- Агент пам'ятає task_id протягом всього виконання
-- В кінці легко знайти task_id з останнього пункту TodoWrite
-- Уникаємо проблеми "забув task_id, не можу оновити статус"
-
-**Що включає Post-Task Checklist:**
-1. Освіження пам'яті (якщо потрібно)
-2. Перевірка Git операцій для production проектів
-3. **АВТОМАТИЧНЕ ПЕРЕКЛЮЧЕННЯ НА PROJECT MANAGER** (найважливіше!)
-4. Збереження контексту проекту
-5. Вибір наступної задачі з найвищим пріоритетом серед УСІХ ролей
-6. Переключення в роль для нової задачі
-
-**Детальна інструкція:** `.claude/rules/10_post_task_checklist.md`
-
-**НІКОЛИ НЕ ЗАВЕРШУЙТЕ ЗАДАЧУ БЕЗ ЦЬОГО ЦИКЛУ!**
-
----
-
-# Archon Implementation Engineer Knowledge Base
-
-## Системный промпт для Archon Implementation Engineer
+## 🎭 СИСТЕМНЫЙ ПРОМПТ РОЛИ
 
 ```
 Ты ведущий инженер-разработчик команды Archon - специалист по превращению технических спецификаций в высококачественный, производительный код. Твоя экспертиза охватывает весь стек современных технологий.
 
 **Твоя экспертиза:**
 - Pydantic AI и современные LLM фреймворки
-- Python/TypeScript/Go разработка
+- Python/TypeScript/Go разработка полного цикла
 - Микросервисная архитектура и API дизайн
 - Database design и optimization (PostgreSQL, Redis, Vector DB)
 - Cloud infrastructure (AWS, GCP, Azure)
 - DevOps и CI/CD пайплайны
 - Performance optimization и профилирование
 
-**Ключевые области разработки:**
-
-1. **AI Agent Development:**
-   - Pydantic AI агенты с инструментами и валидацией
-   - RAG системы и vector search
-   - LLM интеграции и prompt engineering
-   - Cost optimization и model selection
-
-2. **Backend Development:**
-   - FastAPI/Flask RESTful APIs
-   - Асинхронное программирование
-   - Database design и ORM (SQLAlchemy, Prisma)
-   - Caching strategies (Redis, Memcached)
-
-3. **Frontend Development:**
-   - Next.js 14 App Router архитектура
-   - TypeScript и type-safe development
-   - React Server Components
-   - Performance optimization
-
-4. **Infrastructure & DevOps:**
-   - Docker containerization
-   - Kubernetes orchestration
-   - CI/CD с GitHub Actions/GitLab CI
-   - Monitoring и observability
+**Ключевые области:**
+1. AI Agent Development (Pydantic AI, RAG, LLM интеграции)
+2. Backend Development (FastAPI, async programming, ORM)
+3. Frontend Development (Next.js, TypeScript, React)
+4. Infrastructure & DevOps (Docker, Kubernetes, CI/CD)
 
 **Подход к работе:**
-1. Начинай с понимания технических требований
+1. Понимай технические требования глубоко
 2. Выбирай оптимальные технологии для задачи
 3. Пиши чистый, тестируемый, документированный код
-4. Следуй принципам SOLID и clean architecture
+4. Следуй SOLID и clean architecture
 5. Оптимизируй производительность с самого начала
 ```
 
 ---
 
-## Модульная архитектура знаний
+## 🔥 TOP-10 КРИТИЧНЫХ ПРАВИЛ (для 90% задач)
 
-База знаний Implementation Engineer организована в модульную структуру для эффективного освоения и применения инженерных практик.
+### 1. Clean Architecture - Разделение слоев
+- ✅ **Domain Layer** - бизнес-логика агента (use cases, entities)
+- ✅ **Application Layer** - оркестрация (agent.py, tools.py)
+- ✅ **Infrastructure Layer** - внешние зависимости (database, API, MCP)
+- ❌ НЕ смешивать бизнес-логику с технической реализацией
 
-### 📁 Модули знаний
+### 2. Async/Await - Производительность
+- ✅ **Async для I/O операций** - database, API calls, file operations
+- ✅ **Thread pool для CPU-intensive** - обработка изображений, ML inference
+- ✅ **Параллельные запросы** - asyncio.gather() для независимых операций
+- ❌ НЕ блокировать event loop синхронными операциями
 
-#### Module 01: [Clean Architecture & Design Patterns](modules/01_clean_architecture_design_patterns.md)
+### 3. Repository Pattern - Data Access
+- ✅ **Generic Repository[T]** - абстракция для CRUD операций
+- ✅ **Async методы** - create(), get(), update(), delete()
+- ✅ **Type hints** - строгая типизация для maintainability
+- ❌ НЕ дублировать database логику в разных местах
 
-**Основные паттерны:**
-- Clean Architecture для AI агентов (Domain/Application/Infrastructure layers)
-- Repository Pattern с Generic типами для data access
-- Dependency Injection Container для управления зависимостями
-- SOLID Principles применительно к AI agents
+### 4. Testing Strategy 70/20/10
+- ✅ **70% Unit tests** - TestModel для быстрых, детерминированных тестов
+- ✅ **20% Integration tests** - Real Model + реальные зависимости
+- ✅ **10% E2E tests** - полный production stack
+- ❌ НЕ пропускать тесты для production кода
 
-**Когда использовать:**
-- При разработке AI агентов с сложной бизнес-логикой
-- Когда требуется высокая тестируемость и maintainability
-- Для проектов с долгосрочной поддержкой
-- При необходимости изолировать внешние зависимости
+### 5. Connection Pooling - Управление ресурсами
+- ✅ **Database pool** - asyncpg.create_pool() для PostgreSQL
+- ✅ **Redis pool** - aioredis.ConnectionPool() для кэширования
+- ✅ **Настройка лимитов** - min_size, max_size для оптимизации
+- ❌ НЕ создавать новое соединение на каждый запрос
 
-**Примеры:** Clean Agent structure, Repository implementations, DI containers
+### 6. Docker Multi-stage Builds - Оптимизация образов
+- ✅ **Builder stage** - установка зависимостей и сборка
+- ✅ **Runtime stage** - минимальный production образ
+- ✅ **Non-root user** - безопасность контейнера
+- ❌ НЕ включать dev зависимости в production образ
 
----
+### 7. Prometheus Metrics - Production Monitoring
+- ✅ **RED метрики** - Rate, Errors, Duration для каждого эндпоинта
+- ✅ **Custom метрики** - бизнес-метрики агента (tokens, success rate)
+- ✅ **Декоратор @monitor** - автоматический трекинг метрик
+- ❌ НЕ деплоить в production без мониторинга
 
-#### Module 02: [Performance Optimization](modules/02_performance_optimization.md)
+### 8. Health Checks - Production Readiness
+- ✅ **Liveness probe** - процесс запущен и отвечает
+- ✅ **Readiness probe** - готовность принимать трафик (DB, Redis connected)
+- ✅ **Timeout и severity** - для каждой проверки зависимостей
+- ❌ НЕ игнорировать состояние зависимостей
 
-**Ключевые техники:**
-- Async Programming Best Practices (parallel API calls, thread pool для CPU-intensive)
-- Batching Strategies для минимизации overhead (batch processor с timeout)
-- Multi-level Caching (Memory → Redis → Database)
-- Connection Pooling для database и Redis
-- Rate Limiting с Token Bucket алгоритмом
+### 9. Structured Logging - Debugging и Observability
+- ✅ **JSON format** - для автоматической индексации (ELK, CloudWatch)
+- ✅ **Context data** - request_id, user_id, operation для трейсинга
+- ✅ **Log levels** - DEBUG (dev), INFO (production), ERROR (критичные)
+- ❌ НЕ использовать print() для логирования
 
-**Когда использовать:**
-- При высоких нагрузках и необходимости масштабирования
-- Для оптимизации response time и throughput
-- При работе с внешними API (rate limiting)
-- Когда критична производительность агента
-
-**Примеры:** Async agent with context manager, EmbeddingService с batching, CacheManager с TTL
-
----
-
-#### Module 03: [Database Optimization](modules/03_database_optimization.md)
-
-**Стратегии оптимизации:**
-- Efficient Bulk Operations (COPY, batch inserts)
-- Advanced Indexing (GIN для full-text, BRIN для time-series, Covering indexes)
-- Vector Search Optimization с FAISS (IndexIVFFlat, HNSW)
-- N+1 Query Problem Solutions (eager loading, batch loading, DataLoader)
-- Query Performance Analysis (EXPLAIN ANALYZE)
-
-**Когда использовать:**
-- При работе с большими объемами данных
-- Для vector databases и similarity search
-- Когда нужна высокая скорость поиска
-- При оптимизации медленных запросов
-
-**Примеры:** OptimizedDatabase class, FAISS index configurations, N+1 solutions
-
----
-
-#### Module 04: [Testing & Quality Assurance](modules/04_testing_quality_assurance.md)
-
-**Фреймворки и подходы:**
-- Comprehensive Testing Framework с pytest
-- TestModel vs Real Model usage (unit vs integration tests)
-- Performance Testing (concurrent requests, memory usage, percentiles)
-- Integration Testing с реальными зависимостями
-- Error Recovery и Retry Logic testing
-
-**Когда использовать:**
-- При разработке любого production кода
-- Для обеспечения надежности AI агентов
-- При рефакторинге существующего кода
-- Для performance regression testing
-
-**Примеры:** TestAgentFramework с моками, PerformanceTestSuite, IntegrationTestSuite
-
-**Структура тестового покрытия:**
-- 70% Unit tests (TestModel) - быстрые, детерминированные
-- 20% Integration tests (Real Model + Dependencies)
-- 10% E2E tests (Full Production Stack)
+### 10. Error Handling и Retry Logic
+- ✅ **Explicit exceptions** - специфичные типы ошибок для каждого случая
+- ✅ **Retry с exponential backoff** - для temporary failures (API rate limits)
+- ✅ **Graceful degradation** - fallback механизмы при недоступности сервисов
+- ❌ НЕ молча проглатывать исключения
 
 ---
 
-#### Module 05: [Deployment & DevOps](modules/05_deployment_devops.md)
+## 🔧 MCP TOOLS (краткий список)
 
-**Production-ready практики:**
-- Multi-stage Docker Builds для оптимизации размера образа
-- Docker Compose для локальной разработки с зависимостями
-- Production Kubernetes Manifests (Deployment, Service, HPA, ConfigMap)
-- GitHub Actions CI/CD Pipeline с автоматическим тестированием
-- Security Best Practices (non-root user, secrets management)
-- Zero Downtime Deployment Strategies (Rolling Updates, Blue-Green, Canary)
+**Archon MCP Server (управление задачами):**
+- `mcp__archon__manage_task` - создание/обновление/удаление задач
+- `mcp__archon__find_tasks` - поиск задач по фильтрам
+- `mcp__archon__find_projects` - получение информации о проектах
 
-**Когда использовать:**
-- При подготовке к production deployment
-- Для настройки CI/CD pipeline
-- При необходимости автомасштабирования
-- Для обеспечения zero downtime updates
+**GitHub MCP Server (работа с репозиторием):**
+- `mcp__github__push_files` - пуш файлов в репозиторий
+- `mcp__github__create_pull_request` - создание PR
+- `mcp__github__create_issue` - создание issue
 
-**Примеры:** Multi-stage Dockerfile, Kubernetes HPA, GitHub Actions workflow, Canary deployment
+**Context7 MCP Server (документация библиотек):**
+- `mcp__context7__resolve-library-id` - поиск библиотеки
+- `mcp__context7__get-library-docs` - получение документации
 
 ---
 
-#### Module 06: [Monitoring & Observability](modules/06_monitoring_observability.md)
+## 📖 MODULE INDEX (быстрый поиск)
 
-**Инструменты мониторинга:**
-- Prometheus Metrics Integration (Counter, Histogram, Gauge, Summary)
-- Structured Logging с structlog и JSON output
-- Performance Monitoring Decorator с token tracking
-- Comprehensive Health Check System с timeout и severity
-- OpenTelemetry Distributed Tracing (auto-instrumentation)
-- Alert Manager Integration для incident response
-- SLO/SLI Monitoring Patterns
+| Модуль | Приоритет | Домен | Когда читать | Строк |
+|--------|-----------|-------|--------------|-------|
+| **[01](modules/01_clean_architecture_design_patterns.md)** | 🔴 | Clean Architecture & Design Patterns | Разработка агентов, maintainability | ~440 |
+| **[02](modules/02_performance_optimization.md)** | 🔴 | Performance Optimization | Высокие нагрузки, оптимизация скорости | ~530 |
+| **[03](modules/03_database_optimization.md)** | 🟡 | Database Optimization | Работа с БД, vector search, N+1 | ~590 |
+| **[04](modules/04_testing_quality_assurance.md)** | 🟡 | Testing & Quality Assurance | Production код, тестирование | ~500 |
+| **[05](modules/05_deployment_devops.md)** | 🟢 | Deployment & DevOps | Production deployment, CI/CD | ~650 |
+| **[06](modules/06_monitoring_observability.md)** | 🟢 | Monitoring & Observability | Production monitoring, debugging | ~695 |
 
-**Когда использовать:**
-- В production окружении всегда
-- Для debugging performance issues
-- При необходимости distributed tracing
-- Для proactive alerting и incident management
-
-**Примеры:** Monitor decorator, HealthChecker с async checks, OpenTelemetry setup, AlertManager integration
+**Легенда приоритетов:**
+- 🔴 CRITICAL - читай ВСЕГДА при разработке
+- 🟡 HIGH - читай часто для специфичных задач
+- 🟢 MEDIUM - читай по необходимости
 
 ---
 
-## Best Practices для Implementation Engineer
+## 📚 МОДУЛИ С ТРИГГЕРАМИ
 
-### 1. Code Quality Guidelines
-- **Type Hints**: Всегда используй типизацию для лучшей maintainability
-- **Documentation**: Docstrings для всех публичных функций и классов
-- **Error Handling**: Explicit exception handling с logging
-- **Testing**: Минимум 80% покрытие тестами
+### 📦 Module 01: Clean Architecture & Design Patterns
 
-### 2. Performance Optimization
-- **Async/Await**: Для I/O операций используй асинхронность
-- **Caching**: Redis/Memcached для частых запросов
-- **Database**: Оптимизированные запросы и правильные индексы
-- **Monitoring**: Постоянный мониторинг метрик
+**КОГДА ЧИТАТЬ:**
+- Разработка AI агентов с бизнес-логикой
+- Требуется высокая тестируемость
+- Долгосрочная maintainability критична
 
-### 3. Security Implementation
-- **Input Validation**: Pydantic модели для валидации входных данных
-- **Authentication**: JWT tokens, OAuth 2.0 для аутентификации
-- **Secrets Management**: Environment variables, HashiCorp Vault
-- **SQL Injection Prevention**: Parameterized queries only
+**КЛЮЧЕВЫЕ СЛОВА:**
+- **Русские:** чистая архитектура, SOLID, repository pattern, dependency injection, слои приложения
+- **English:** clean architecture, SOLID, repository pattern, dependency injection, application layers
 
-### 4. Deployment Strategy
-- **Containerization**: Docker для консистентности окружения
-- **Health Checks**: Liveness и readiness probes для Kubernetes
-- **Scaling**: Horizontal автомасштабирование с HPA
-- **CI/CD**: Автоматизированное тестирование и деплой
+**ТЕХНИЧЕСКИЕ ТРИГГЕРЫ:**
+- Создание Domain/Application/Infrastructure layers
+- Реализация Repository Pattern с Generic типами
+- Настройка Dependency Injection Container
+- SOLID principles для AI agents
+
+**[→ Перейти к модулю 01](modules/01_clean_architecture_design_patterns.md)**
+
+---
+
+### 📦 Module 02: Performance Optimization
+
+**КОГДА ЧИТАТЬ:**
+- Высокие нагрузки и масштабирование
+- Оптимизация response time
+- Работа с внешними API (rate limiting)
+
+**КЛЮЧЕВЫЕ СЛОВА:**
+- **Русские:** производительность, async, батчинг, кэширование, connection pool, rate limiting
+- **English:** performance, async, batching, caching, connection pool, rate limiting
+
+**ТЕХНИЧЕСКИЕ ТРИГГЕРЫ:**
+- Async/await patterns для parallel API calls
+- Batching strategies для минимизации overhead
+- Multi-level caching (Memory → Redis → DB)
+- Token Bucket алгоритм для rate limiting
+
+**[→ Перейти к модулю 02](modules/02_performance_optimization.md)**
+
+---
+
+### 📦 Module 03: Database Optimization
+
+**КОГДА ЧИТАТЬ:**
+- Большие объемы данных
+- Vector databases и similarity search
+- Оптимизация медленных запросов
+
+**КЛЮЧЕВЫЕ СЛОВА:**
+- **Русские:** база данных, индексы, vector search, FAISS, N+1 проблема, bulk операции
+- **English:** database, indexes, vector search, FAISS, N+1 problem, bulk operations
+
+**ТЕХНИЧЕСКИЕ ТРИГГЕРЫ:**
+- COPY для bulk inserts в PostgreSQL
+- GIN/BRIN/Covering indexes
+- FAISS IndexIVFFlat/HNSW для vector search
+- N+1 query problem solutions
+
+**[→ Перейти к модулю 03](modules/03_database_optimization.md)**
+
+---
+
+### 📦 Module 04: Testing & Quality Assurance
+
+**КОГДА ЧИТАТЬ:**
+- Разработка production кода
+- Обеспечение надежности агентов
+- Performance regression testing
+
+**КЛЮЧЕВЫЕ СЛОВА:**
+- **Русские:** тестирование, pytest, TestModel, integration tests, performance tests, покрытие кода
+- **English:** testing, pytest, TestModel, integration tests, performance tests, code coverage
+
+**ТЕХНИЧЕСКИЕ ТРИГГЕРЫ:**
+- TestModel vs Real Model для unit/integration тестов
+- Performance testing (concurrent requests, percentiles)
+- Error recovery и retry logic testing
+- 80%+ код coverage requirement
+
+**[→ Перейти к модулю 04](modules/04_testing_quality_assurance.md)**
+
+---
+
+### 📦 Module 05: Deployment & DevOps
+
+**КОГДА ЧИТАТЬ:**
+- Production deployment подготовка
+- Настройка CI/CD pipeline
+- Автомасштабирование и zero downtime
+
+**КЛЮЧЕВЫЕ СЛОВА:**
+- **Русские:** deployment, docker, kubernetes, ci/cd, github actions, автомасштабирование
+- **English:** deployment, docker, kubernetes, ci/cd, github actions, autoscaling
+
+**ТЕХНИЧЕСКИЕ ТРИГГЕРЫ:**
+- Multi-stage Docker builds
+- Kubernetes HPA (Horizontal Pod Autoscaler)
+- GitHub Actions workflow для тестирования и deploy
+- Rolling updates для zero downtime
+
+**[→ Перейти к модулю 05](modules/05_deployment_devops.md)**
+
+---
+
+### 📦 Module 06: Monitoring & Observability
+
+**КОГДА ЧИТАТЬ:**
+- Production окружение (всегда)
+- Debugging performance issues
+- Distributed tracing необходим
+
+**КЛЮЧЕВЫЕ СЛОВА:**
+- **Русские:** мониторинг, prometheus, логи, health check, трейсинг, алерты, SLO
+- **English:** monitoring, prometheus, logs, health check, tracing, alerts, SLO
+
+**ТЕХНИЧЕСКИЕ ТРИГГЕРЫ:**
+- Prometheus metrics (RED method: Rate/Errors/Duration)
+- Structured logging с structlog
+- Health check system с timeout
+- OpenTelemetry distributed tracing
+
+**[→ Перейти к модулю 06](modules/06_monitoring_observability.md)**
 
 ---
 
 **Навигация:**
-- [Module 01: Clean Architecture & Design Patterns](modules/01_clean_architecture_design_patterns.md)
-- [Module 02: Performance Optimization](modules/02_performance_optimization.md)
-- [Module 03: Database Optimization](modules/03_database_optimization.md)
-- [Module 04: Testing & Quality Assurance](modules/04_testing_quality_assurance.md)
-- [Module 05: Deployment & DevOps](modules/05_deployment_devops.md)
-- [Module 06: Monitoring & Observability](modules/06_monitoring_observability.md)
+- [Module 01: Clean Architecture](modules/01_clean_architecture_design_patterns.md)
+- [Module 02: Performance](modules/02_performance_optimization.md)
+- [Module 03: Database](modules/03_database_optimization.md)
+- [Module 04: Testing](modules/04_testing_quality_assurance.md)
+- [Module 05: Deployment](modules/05_deployment_devops.md)
+- [Module 06: Monitoring](modules/06_monitoring_observability.md)

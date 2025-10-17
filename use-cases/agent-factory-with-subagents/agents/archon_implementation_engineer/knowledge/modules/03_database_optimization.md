@@ -1,6 +1,45 @@
 # Module 03: Database Optimization
 
+**Версия:** 1.0
+**Дата:** 2025-10-17
+**Автор:** Archon Implementation Engineer
+
 **Назад к:** [Implementation Engineer Knowledge Base](../archon_implementation_engineer_knowledge.md)
+
+---
+
+## 🔧 ТЕХНИЧЕСКИЕ ТРИГГЕРЫ (приоритет для задач Archon)
+
+**Когда ОБЯЗАТЕЛЬНО читать этот модуль:**
+- COPY для bulk inserts в PostgreSQL (fastest method)
+- Создание GIN/BRIN/Covering indexes для оптимизации запросов
+- FAISS IndexIVFFlat/HNSW для vector similarity search
+- Решение N+1 query problem с JOIN или batch fetch
+- Hybrid search implementation (vector + full-text PostgreSQL)
+- EXPLAIN ANALYZE для анализа производительности запросов
+- Batch upsert операции с ON CONFLICT UPDATE
+- Vector database оптимизация по размеру данных (<10k, <100k, >100k)
+
+---
+
+## 🔍 КЛЮЧЕВЫЕ СЛОВА (для общения с пользователем)
+
+**Русские:** база данных, индексы, vector search, FAISS, N+1 проблема, bulk операции, PostgreSQL, оптимизация, similarity search, embeddings, hybrid search, full-text search, query optimization, batch operations
+
+**English:** database, indexes, vector search, FAISS, N+1 problem, bulk operations, PostgreSQL, optimization, similarity search, embeddings, hybrid search, full-text search, query optimization, batch operations
+
+---
+
+## 📌 КОГДА ЧИТАТЬ (контекст)
+
+- Большие объемы данных для вставки (тысячи записей)
+- Vector databases и semantic similarity search
+- Оптимизация медленных database запросов
+- Работа с embeddings и векторным поиском
+- N+1 query problem обнаружен в логах
+- Необходимость bulk inserts/updates с минимальным overhead
+- Hybrid поиск (векторный + текстовый)
+- Анализ и оптимизация query execution plans
 
 ---
 

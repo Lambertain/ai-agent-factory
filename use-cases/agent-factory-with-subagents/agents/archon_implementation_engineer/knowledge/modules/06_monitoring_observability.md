@@ -1,6 +1,45 @@
 # Module 06: Monitoring & Observability
 
+**Версия:** 1.0
+**Дата:** 2025-10-17
+**Автор:** Archon Implementation Engineer
+
 **Назад к:** [Implementation Engineer Knowledge Base](../archon_implementation_engineer_knowledge.md)
+
+---
+
+## 🔧 ТЕХНИЧЕСКИЕ ТРИГГЕРЫ (приоритет для задач Archon)
+
+**Когда ОБЯЗАТЕЛЬНО читать этот модуль:**
+- Prometheus metrics implementation (RED method: Rate/Errors/Duration)
+- Structured logging с structlog в JSON формате
+- Health check system с timeout, critical severity, parallel checks
+- OpenTelemetry distributed tracing для microservices
+- Alert Manager integration с webhook notifications
+- SLO/SLI monitoring (Service Level Objectives/Indicators)
+- Performance monitoring decorator для автоматического трекинга
+- Three pillars of Observability: Metrics, Logs, Traces
+
+---
+
+## 🔍 КЛЮЧЕВЫЕ СЛОВА (для общения с пользователем)
+
+**Русские:** мониторинг, prometheus, логи, health check, трейсинг, алерты, SLO, observability, метрики, distributed tracing, structured logging, correlation ID, spans
+
+**English:** monitoring, prometheus, logs, health check, tracing, alerts, SLO, observability, metrics, distributed tracing, structured logging, correlation ID, spans
+
+---
+
+## 📌 КОГДА ЧИТАТЬ (контекст)
+
+- Production окружение (ВСЕГДА для production)
+- Debugging performance issues и bottlenecks
+- Distributed tracing для microservices архитектуры
+- Настройка алертов и SLO/SLI targets
+- Observability для complex systems
+- Proactive monitoring и incident response
+- Root cause analysis для production incidents
+- System reliability engineering (SRE)
 
 ---
 

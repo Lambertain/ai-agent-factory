@@ -1,6 +1,43 @@
 # Module 02: Performance Optimization
 
+**Версия:** 1.0
+**Дата:** 2025-10-17
+**Автор:** Archon Implementation Engineer
+
 **Назад к:** [Implementation Engineer Knowledge Base](../archon_implementation_engineer_knowledge.md)
+
+---
+
+## 🔧 ТЕХНИЧЕСКИЕ ТРИГГЕРЫ (приоритет для задач Archon)
+
+**Когда ОБЯЗАТЕЛЬНО читать этот модуль:**
+- Async/await patterns для parallel API calls
+- Batching strategies для минимизации overhead (embeddings, API requests)
+- Multi-level caching implementation (Memory → Redis → Database)
+- Token Bucket алгоритм для rate limiting внешних API
+- Connection pooling для PostgreSQL и Redis
+- Performance profiling и bottleneck analysis
+- CPU-intensive операции в thread pool (избежание блокировки event loop)
+
+---
+
+## 🔍 КЛЮЧЕВЫЕ СЛОВА (для общения с пользователем)
+
+**Русские:** производительность, async, батчинг, кэширование, connection pool, rate limiting, оптимизация, параллелизм, thread pool, exponential backoff, throughput, latency
+
+**English:** performance, async, batching, caching, connection pool, rate limiting, optimization, parallelism, thread pool, exponential backoff, throughput, latency
+
+---
+
+## 📌 КОГДА ЧИТАТЬ (контекст)
+
+- Высокие нагрузки и необходимость масштабирования
+- Оптимизация response time критична
+- Работа с внешними API с rate limits
+- Агент делает множество parallel операций
+- CPU-intensive обработка данных
+- Необходимость минимизировать latency
+- Throughput агента недостаточен
 
 ---
 

@@ -1,6 +1,45 @@
 # Module 04: Testing & Quality Assurance
 
+**Версия:** 1.0
+**Дата:** 2025-10-17
+**Автор:** Archon Implementation Engineer
+
 **Назад к:** [Implementation Engineer Knowledge Base](../archon_implementation_engineer_knowledge.md)
+
+---
+
+## 🔧 ТЕХНИЧЕСКИЕ ТРИГГЕРЫ (приоритет для задач Archon)
+
+**Когда ОБЯЗАТЕЛЬНО читать этот модуль:**
+- TestModel vs Real Model для unit/integration тестирования
+- Performance testing: concurrent requests, memory leaks, percentiles
+- Error recovery и retry logic testing
+- Tool calls validation и sequence testing
+- Integration testing с реальными зависимостями (PostgreSQL, Redis, Vector DB)
+- Memory leak detection с psutil и gc
+- Response time SLA проверки (P50, P95, P99)
+- 70/20/10 coverage strategy implementation (Unit/Integration/E2E)
+
+---
+
+## 🔍 КЛЮЧЕВЫЕ СЛОВА (для общения с пользователем)
+
+**Русские:** тестирование, pytest, TestModel, integration tests, performance tests, покрытие кода, unit tests, мокирование, assertions, retry logic, error handling, percentiles, CI/CD testing, regression tests
+
+**English:** testing, pytest, TestModel, integration tests, performance tests, code coverage, unit tests, mocking, assertions, retry logic, error handling, percentiles, CI/CD testing, regression tests
+
+---
+
+## 📌 КОГДА ЧИТАТЬ (контекст)
+
+- Разработка production кода для AI агентов
+- Обеспечение надежности и качества агентов
+- Performance regression testing необходим
+- CI/CD pipeline setup и автоматизация тестов
+- Написание новых features с тестами
+- Проверка error recovery механизмов
+- Валидация SLA требований (latency, throughput)
+- Необходимость 80%+ test coverage
 
 ---
 

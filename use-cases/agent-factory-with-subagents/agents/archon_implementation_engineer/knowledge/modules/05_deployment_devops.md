@@ -1,6 +1,45 @@
 # Module 05: Deployment & DevOps
 
+**Версия:** 1.0
+**Дата:** 2025-10-17
+**Автор:** Archon Implementation Engineer
+
 **Назад к:** [Implementation Engineer Knowledge Base](../archon_implementation_engineer_knowledge.md)
+
+---
+
+## 🔧 ТЕХНИЧЕСКИЕ ТРИГГЕРЫ (приоритет для задач Archon)
+
+**Когда ОБЯЗАТЕЛЬНО читать этот модуль:**
+- Multi-stage Docker builds для минимизации размера образа (builder + runtime)
+- Kubernetes Deployment с Rolling Update стратегией (zero downtime)
+- Horizontal Pod Autoscaler (HPA) настройка для автомасштабирования
+- GitHub Actions CI/CD workflow: linting → testing → build → deploy
+- Health/Readiness/Liveness/Startup probes для production readiness
+- Zero downtime deployment с maxSurge/maxUnavailable
+- Resource limits и requests для cost optimization
+- Security hardening: non-root user, RBAC, secrets management
+
+---
+
+## 🔍 КЛЮЧЕВЫЕ СЛОВА (для общения с пользователем)
+
+**Русские:** deployment, docker, kubernetes, ci/cd, github actions, автомасштабирование, devops, контейнеризация, rolling update, helm, terraform, production, infrastructure
+
+**English:** deployment, docker, kubernetes, ci/cd, github actions, autoscaling, devops, containerization, rolling update, helm, terraform, production, infrastructure
+
+---
+
+## 📌 КОГДА ЧИТАТЬ (контекст)
+
+- Production deployment подготовка
+- Настройка CI/CD pipeline с автоматическими тестами
+- Автомасштабирование и zero downtime deployments
+- Контейнеризация AI агентов для production
+- Security hardening и compliance требования
+- Cost optimization через resource management
+- Multi-environment setup (development/staging/production)
+- Infrastructure as Code необходим (IaC)
 
 ---
 
