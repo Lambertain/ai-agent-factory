@@ -79,17 +79,47 @@ async def determine_active_project() -> str:
         registry_path = "D:\\Automation\\agent-factory\\use-cases\\agent-factory-with-subagents\\agents\\archon_project_manager\\knowledge\\PROJECTS_REGISTRY.md"
         registry = Read(registry_path)
 
-        # Шукаємо розділ "## 🔥 Активные проекты" і перший проект під ним
-        if "ОСНОВНОЙ" in registry or "HIGHEST" in registry:
-            # Витягуємо project_id з першого активного проекту
-            lines = registry.split("\n")
-            for i, line in enumerate(lines):
-                if "**Project ID:**" in line and i < 30:  # Перші 30 рядків = активні проекти
-                    project_id = line.split("**Project ID:**")[1].strip()
-                    print(f"✅ Контекст відновлено з реєстру")
-                    print(f"🎯 Активний проект: AI Agent Factory")
-                    print(f"📋 Project ID: {project_id}")
-                    return project_id
+        # Парсимо ВСІ проекти з реєстру
+        lines = registry.split("\n")
+        projects = []
+        current_project = {}
+
+        for line in lines:
+            if line.startswith("### ") and not line.startswith("####"):
+                if current_project and "id" in current_project:
+                    projects.append(current_project)
+                current_project = {"name": line.split("### ")[1].split("(")[0].strip()}
+            elif "**Project ID:**" in line:
+                current_project["id"] = line.split("**Project ID:**")[1].strip()
+            elif "**Приоритет:**" in line:
+                current_project["priority"] = line.split("**Приоритет:**")[1].strip()
+            elif "**Статус:**" in line:
+                current_project["status"] = line.split("**Статус:**")[1].strip()
+
+        if current_project and "id" in current_project:
+            projects.append(current_project)
+
+        # Показуємо ВСІ проекти
+        print("✅ Контекст відновлено з локального реєстру")
+        print("")
+        print("📊 ВСЕ ПРОЕКТЫ В ЭКОСИСТЕМЕ ARCHON (9 проектов):")
+        print("")
+
+        for p in projects:
+            priority = p.get("priority", "")
+            emoji = "🔴" if "HIGHEST" in priority else "🟡" if "HIGH" in priority else "🟢"
+            print(f"{emoji} {p.get('name', 'Unknown')}")
+            print(f"   ID: {p.get('id', 'N/A')[:8]}...")
+            print(f"   Статус: {p.get('status', 'N/A')}")
+            print("")
+
+        # СПРАШИВАЕМ пользователя
+        print("❓ С каким проектом работаем?")
+        print("💡 Подсказка: Обычно это AI Agent Factory (🔴 HIGHEST priority)")
+        print("")
+
+        # Ожидаем ответа пользователя перед продолжением
+
     except Exception as e:
         print(f"⚠️ PROJECTS_REGISTRY.md не знайдено або помилка читання: {e}")
 
