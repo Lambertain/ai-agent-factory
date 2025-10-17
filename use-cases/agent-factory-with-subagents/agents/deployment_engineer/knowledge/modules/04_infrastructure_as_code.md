@@ -1,6 +1,69 @@
-# Module 04: Infrastructure as Code
+# Module 04: Infrastructure as Code (Terraform)
 
 **Назад к:** [Deployment Engineer Knowledge Base](../deployment_engineer_knowledge.md)
+
+---
+
+## 🎯 ТРИГГЕРНАЯ СИСТЕМА - Когда читать этот модуль
+
+### Тип 1: Ключевые слова (Keywords Triggers)
+**Читай этот модуль ЕСЛИ задача содержит:**
+- `terraform`, `iac`, `infrastructure as code`
+- `aws`, `gcp`, `azure`, `cloud infrastructure`
+- `vpc`, `eks`, `rds`, `alb`, `security groups`
+- `terraform apply`, `terraform plan`, `terraform state`
+- `terraform modules`, `remote state`
+- `terragrunt`, `terratest`
+
+### Тип 2: Сценарии использования (Scenario Triggers)
+**Читай этот модуль КОГДА нужно:**
+- Создать AWS инфраструктуру через Terraform
+- Настроить VPC с подсетями (public/private)
+- Развернуть EKS кластер
+- Создать RDS PostgreSQL базу данных
+- Настроить Redis cluster (ElastiCache)
+- Создать Application Load Balancer (ALB)
+- Настроить Security Groups
+- Управлять SSL/TLS сертификатами (ACM)
+- Организовать Terraform модули
+- Настроить remote state (S3 + DynamoDB)
+
+### Тип 3: Технические термины (Technical Terms Triggers)
+**Читай этот модуль ЕСЛИ встречаешь:**
+- Terraform modules (VPC, EKS, RDS, Redis, ALB)
+- Remote state management (S3 backend, DynamoDB locking)
+- AWS resources (VPC, Subnets, NAT Gateway, Internet Gateway)
+- EKS cluster configuration
+- RDS Multi-AZ deployments
+- ElastiCache Redis cluster
+- ALB with target groups
+- Security Groups and NACLs
+- ACM SSL/TLS certificates
+- Terraform best practices (version constraints, workspaces)
+
+---
+
+## 📋 СОДЕРЖАНИЕ МОДУЛЯ
+
+**Основные темы:**
+1. ✅ Complete AWS Infrastructure (VPC, EKS, RDS, Redis, ALB)
+2. ✅ Terraform Modules Organization (модульная структура)
+3. ✅ Remote State Management (S3 backend + DynamoDB lock)
+4. ✅ Best Practices (version constraints, workspaces, testing)
+
+**Конфигурации:**
+- VPC Module (public/private subnets, NAT Gateway, Internet Gateway)
+- EKS Module (Kubernetes cluster, node groups, IAM roles)
+- RDS Module (PostgreSQL Multi-AZ, automated backups)
+- Redis Module (ElastiCache cluster, parameter groups)
+- ALB Module (load balancer, target groups, SSL)
+- Security Groups (least privilege access rules)
+
+**Инструменты:**
+- terraform init/plan/apply/destroy
+- terraform workspace (dev, staging, prod)
+- terraform state (list, show, mv, rm)
+- terratest (infrastructure testing)
 
 ---
 

@@ -4,6 +4,85 @@
 
 ---
 
+## 🎯 ТРИГГЕРНАЯ СИСТЕМА - Когда читать этот модуль
+
+### Тип 1: Ключевые слова (Keywords Triggers)
+**Читай этот модуль ЕСЛИ задача содержит:**
+- `security`, `hardening`, `secure`, `vulnerability`
+- `rbac`, `role`, `rolebinding`, `service account`
+- `network policy`, `ingress`, `egress`
+- `secrets`, `sealed secrets`, `external secrets`
+- `tls`, `ssl`, `certificate`, `cert-manager`
+- `trivy`, `scanning`, `vulnerability scanning`
+- `compliance`, `audit`, `cis benchmark`
+- `pod security`, `security context`
+
+### Тип 2: Сценарии использования (Scenario Triggers)
+**Читай этот модуль КОГДА нужно:**
+- Настроить Network Policies для ограничения трафика
+- Зашифровать Kubernetes secrets (SealedSecrets)
+- Настроить TLS/SSL для приложения (Cert-Manager)
+- Провести vulnerability scanning (Trivy)
+- Настроить RBAC с минимальными правами (least privilege)
+- Настроить Pod Security Standards (restricted)
+- Создать Security Context для контейнеров
+- Настроить External Secrets Operator (AWS Secrets Manager)
+- Провести CIS Kubernetes Benchmark аудит
+- Настроить runtime security (Falco)
+- Подписать Docker образы (Cosign)
+- Создать Pre-Deployment Security Checklist
+
+### Тип 3: Технические термины (Technical Terms Triggers)
+**Читай этот модуль ЕСЛИ встречаешь:**
+- NetworkPolicy (ingress/egress rules, podSelector)
+- SealedSecrets (kubeseal encryption)
+- External Secrets Operator (AWS Secrets Manager integration)
+- Pod Security Standards (restricted, baseline, privileged)
+- Security Context (runAsNonRoot, readOnlyRootFilesystem, allowPrivilegeEscalation)
+- Trivy vulnerability scanning (HIGH, CRITICAL severities)
+- Cert-Manager (ClusterIssuer, Certificate, Let's Encrypt)
+- RBAC least privilege (Role, RoleBinding)
+- CIS Kubernetes Benchmark (kube-bench)
+- Falco runtime security (custom rules)
+- Cosign image signing/verification
+- Defense in Depth strategy
+- Zero Trust Security principles
+
+---
+
+## 📋 СОДЕРЖАНИЕ МОДУЛЯ
+
+**Основные темы:**
+1. ✅ Security Hardening (Network Policies для ограничения трафика)
+2. ✅ Secrets Management (SealedSecrets, External Secrets Operator)
+3. ✅ Pod Security Standards (restricted policy, Security Context)
+4. ✅ TLS/SSL Configuration (Cert-Manager, Let's Encrypt)
+5. ✅ Vulnerability Scanning (Trivy для Docker и Kubernetes)
+6. ✅ RBAC Best Practices (least privilege, audit logging)
+7. ✅ Image Security (Cosign signing/verification)
+8. ✅ Compliance and Auditing (CIS Kubernetes Benchmark, Falco)
+9. ✅ Security Checklist (Pre-Deployment Checklist)
+10. ✅ Best Practices Summary (Defense in Depth, Zero Trust, Security Automation)
+
+**Конфигурации:**
+- Network Policies (ingress/egress restrictions, DNS, external HTTPS)
+- SealedSecrets (encrypted secrets для git)
+- External Secrets Operator (AWS Secrets Manager)
+- Pod Security Context (runAsNonRoot, readOnlyRootFilesystem, capabilities drop)
+- Cert-Manager (ClusterIssuer для Let's Encrypt)
+- RBAC Roles (минимальные permissions)
+- Falco Rules (unauthorized processes, sensitive file access)
+
+**Инструменты:**
+- Trivy (vulnerability scanning)
+- kubeseal (SealedSecrets encryption)
+- Cert-Manager (automated TLS/SSL)
+- kube-bench (CIS Benchmark)
+- Falco (runtime security)
+- Cosign (image signing)
+
+---
+
 ## Security Hardening
 
 ### Kubernetes Network Policies

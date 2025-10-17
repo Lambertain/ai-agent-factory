@@ -4,6 +4,62 @@
 
 ---
 
+## 🎯 ТРИГГЕРНАЯ СИСТЕМА - Когда читать этот модуль
+
+### Тип 1: Ключевые слова (Keywords Triggers)
+**Читай этот модуль ЕСЛИ задача содержит:**
+- `docker`, `dockerfile`, `docker-compose`
+- `container`, `containerization`, `image`
+- `build`, `multi-stage build`, `buildkit`
+- `dockerignore`, `docker build`
+- `alpine`, `slim`, `base image`
+
+### Тип 2: Сценарии использования (Scenario Triggers)
+**Читай этот модуль КОГДА нужно:**
+- Создать Dockerfile для нового приложения
+- Оптимизировать существующий Docker образ
+- Настроить Docker Compose для локальной разработки
+- Уменьшить размер Docker образа
+- Добавить security scanning в Docker workflow
+- Настроить multi-stage build
+- Создать health check для контейнера
+
+### Тип 3: Технические термины (Technical Terms Triggers)
+**Читай этот модуль ЕСЛИ встречаешь:**
+- Multi-stage builds
+- Layer caching
+- BuildKit
+- Security context (Docker)
+- Health checks
+- Non-root user
+- Image optimization
+- Docker registry
+- Container orchestration basics
+
+---
+
+## 📋 СОДЕРЖАНИЕ МОДУЛЯ
+
+**Основные темы:**
+1. ✅ Оптимизированный Multi-Stage Build (production-ready Dockerfile)
+2. ✅ Docker Compose для локальной разработки (complete stack с monitoring)
+3. ✅ Best Practices для Docker (optimization, security, caching)
+4. ✅ Docker Build Strategies (multi-architecture, caching)
+
+**Конфигурации:**
+- Production Dockerfile (3 stages: base → builder → production)
+- Docker Compose с PostgreSQL, Redis, Prometheus, Grafana
+- .dockerignore для оптимизации
+- Health check примеры
+
+**Команды и скрипты:**
+- BuildKit для параллельной сборки
+- Multi-architecture builds
+- Security scanning (Trivy, Snyk)
+- Cache optimization
+
+---
+
 ## Оптимизированный Multi-Stage Build
 
 ### Production-Ready Dockerfile

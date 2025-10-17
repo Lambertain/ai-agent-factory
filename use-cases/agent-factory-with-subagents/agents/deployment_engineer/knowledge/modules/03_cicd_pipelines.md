@@ -4,6 +4,68 @@
 
 ---
 
+## 🎯 ТРИГГЕРНАЯ СИСТЕМА - Когда читать этот модуль
+
+### Тип 1: Ключевые слова (Keywords Triggers)
+**Читай этот модуль ЕСЛИ задача содержит:**
+- `ci/cd`, `pipeline`, `workflow`
+- `github actions`, `gitlab ci`, `jenkins`
+- `deployment automation`, `continuous deployment`
+- `automated testing`, `automated rollback`
+- `build and deploy`, `smoke test`
+- `codecov`, `coverage`, `linting`
+
+### Тип 2: Сценарии использования (Scenario Triggers)
+**Читай этот модуль КОГДА нужно:**
+- Настроить GitHub Actions workflow
+- Создать GitLab CI pipeline
+- Автоматизировать тестирование и деплоймент
+- Настроить security scanning в CI (Trivy, Bandit)
+- Настроить Docker build and push в pipeline
+- Реализовать automated rollback
+- Настроить blue/green deployment
+- Добавить smoke tests после деплоя
+- Оптимизировать pipeline (caching, параллелизм)
+
+### Тип 3: Технические термины (Technical Terms Triggers)
+**Читай этот модуль ЕСЛИ встречаешь:**
+- 5-stage pipeline (test → security → build → deploy → verify)
+- GitHub Actions jobs and workflows
+- GitLab CI stages and artifacts
+- Docker Buildx and caching strategies
+- Automated rollback mechanisms
+- Blue/Green deployment
+- Canary deployments
+- Pipeline metrics and monitoring
+- Security scanning (Trivy, Bandit, Safety)
+- Code coverage reporting (Codecov)
+
+---
+
+## 📋 СОДЕРЖАНИЕ МОДУЛЯ
+
+**Основные темы:**
+1. ✅ GitHub Actions CI/CD Pipeline (5 stages: test → security → build → deploy → smoke)
+2. ✅ GitLab CI Pipeline (alternative configuration)
+3. ✅ Best Practices для CI/CD (testing, security, rollback, environment management)
+4. ✅ Monitoring CI/CD Pipeline (metrics tracking, dashboard)
+
+**Конфигурации:**
+- Complete GitHub Actions workflow (lint, test, security scan, build, deploy, smoke test)
+- GitLab CI multi-stage pipeline
+- Automated rollback strategies
+- Blue/Green deployment patterns
+- Environment-specific configurations (dev, staging, prod)
+
+**Инструменты:**
+- Linters: flake8, mypy, black
+- Testing: pytest with coverage
+- Security: Trivy, Bandit, Safety
+- Docker: BuildKit, multi-platform builds
+- Kubernetes: kubectl set image, rollout status
+
+---
+
 ## GitHub Actions CI/CD Pipeline
 
 ### Complete Multi-Stage Workflow

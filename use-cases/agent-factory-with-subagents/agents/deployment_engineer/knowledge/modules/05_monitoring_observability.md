@@ -4,6 +4,73 @@
 
 ---
 
+## 🎯 ТРИГГЕРНАЯ СИСТЕМА - Когда читать этот модуль
+
+### Тип 1: Ключевые слова (Keywords Triggers)
+**Читай этот модуль ЕСЛИ задача содержит:**
+- `prometheus`, `grafana`, `monitoring`, `observability`
+- `metrics`, `alerts`, `alerting`, `alert rules`
+- `tracing`, `distributed tracing`, `opentelemetry`, `jaeger`
+- `histogram`, `gauge`, `counter`, `prometheus_client`
+- `golden signals`, `sli`, `slo`, `service level`
+- `dashboard`, `visualization`, `grafana dashboard`
+
+### Тип 2: Сценарии использования (Scenario Triggers)
+**Читай этот модуль КОГДА нужно:**
+- Настроить Prometheus для сбора метрик
+- Создать alert rules для приложения
+- Настроить Grafana dashboard для визуализации
+- Инструментировать приложение метриками (FastAPI)
+- Настроить distributed tracing (OpenTelemetry + Jaeger)
+- Создать SLI/SLO для сервиса
+- Настроить Golden Signals monitoring
+- Создать алерты для infrastructure и application
+- Настроить Prometheus middleware для автоматического сбора метрик
+- Интегрировать мониторинг в CI/CD pipeline
+
+### Тип 3: Технические термины (Technical Terms Triggers)
+**Читай этот модуль ЕСЛИ встречаешь:**
+- Golden Signals (Latency, Traffic, Errors, Saturation)
+- SLI/SLO (Service Level Indicators/Objectives)
+- Prometheus exporters и scrape_configs
+- histogram_quantile для расчета percentiles
+- OpenTelemetry spans и трейсинг
+- Jaeger distributed tracing
+- Alert rules (rate, for, labels, annotations)
+- Prometheus middleware для FastAPI
+- Grafana datasources и provisioning
+- Counter, Histogram, Gauge метрики
+- Alert fatigue prevention
+- Node exporter и Kubernetes service discovery
+
+---
+
+## 📋 СОДЕРЖАНИЕ МОДУЛЯ
+
+**Основные темы:**
+1. ✅ Prometheus Configuration (complete setup с Kubernetes service discovery)
+2. ✅ Alert Rules (application + infrastructure alerts с правильными порогами)
+3. ✅ Grafana Dashboards (JSON конфигурация для визуализации метрик)
+4. ✅ Application Instrumentation (FastAPI metrics - Counter, Histogram, Gauge)
+5. ✅ Distributed Tracing (OpenTelemetry + Jaeger интеграция)
+6. ✅ Best Practices (Golden Signals, SLI/SLO, Alert Fatigue Prevention)
+
+**Конфигурации:**
+- Complete Prometheus configuration (global, alerting, scrape_configs)
+- Production alert rules (HighErrorRate, HighResponseTime, ApplicationDown, HighMemoryUsage)
+- Infrastructure alerts (NodeHighCPU, NodeHighMemory, DiskSpaceLow, PodCrashLooping)
+- Grafana dashboard JSON (Request Rate, Response Time, Error Rate, Memory, DB Connections)
+- FastAPI Prometheus middleware (automatic metrics collection)
+
+**Инструменты:**
+- Prometheus (metrics collection, alerting)
+- Grafana (visualization, dashboards)
+- OpenTelemetry (distributed tracing)
+- Jaeger (trace visualization)
+- prometheus_client (Python library)
+
+---
+
 ## Prometheus Configuration
 
 ### Complete Prometheus Setup

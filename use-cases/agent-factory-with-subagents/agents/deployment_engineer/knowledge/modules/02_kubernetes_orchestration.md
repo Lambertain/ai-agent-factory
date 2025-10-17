@@ -4,6 +4,66 @@
 
 ---
 
+## 🎯 ТРИГГЕРНАЯ СИСТЕМА - Когда читать этот модуль
+
+### Тип 1: Ключевые слова (Keywords Triggers)
+**Читай этот модуль ЕСЛИ задача содержит:**
+- `kubernetes`, `k8s`, `kubectl`
+- `deployment`, `pod`, `service`, `ingress`
+- `namespace`, `configmap`, `secret`
+- `hpa`, `horizontal pod autoscaler`
+- `rbac`, `service account`, `role`, `rolebinding`
+- `rolling update`, `rollback`
+
+### Тип 2: Сценарии использования (Scenario Triggers)
+**Читай этот модуль КОГДА нужно:**
+- Развернуть приложение в Kubernetes
+- Настроить Kubernetes манифесты (Deployment, Service, Ingress)
+- Создать namespace и управлять ресурсами
+- Настроить автоскейлинг (HPA)
+- Настроить RBAC и permissions
+- Выполнить rolling update или rollback
+- Настроить health probes (liveness, readiness)
+- Создать Ingress для external access
+
+### Тип 3: Технические термины (Technical Terms Triggers)
+**Читай этот модуль ЕСЛИ встречаешь:**
+- Kubernetes manifests (YAML)
+- RollingUpdate strategy
+- Liveness/Readiness probes
+- Resource requests and limits
+- HorizontalPodAutoscaler (HPA)
+- ServiceAccount, Role, RoleBinding
+- ClusterIP, NodePort, LoadBalancer
+- Ingress controller (nginx)
+- ConfigMap and Secret management
+- Zero-downtime deployments
+
+---
+
+## 📋 СОДЕРЖАНИЕ МОДУЛЯ
+
+**Основные темы:**
+1. ✅ Complete Kubernetes Manifests (Namespace, ConfigMap, Secret, Deployment)
+2. ✅ Service and Ingress (ClusterIP, external access, TLS)
+3. ✅ HorizontalPodAutoscaler (CPU/Memory based autoscaling)
+4. ✅ ServiceAccount and RBAC (permissions, least privilege)
+5. ✅ Deployment Commands (apply, verify, rolling update, rollback)
+6. ✅ Best Practices (resource management, health checks, security)
+
+**Конфигурации:**
+- Full Deployment manifest (replicas, strategy, probes, resources)
+- Service (ClusterIP) + Ingress (nginx, TLS)
+- HPA (CPU 70%, Memory 80%, scale policies)
+- RBAC (ServiceAccount, Role, RoleBinding)
+
+**Команды:**
+- kubectl apply/get/describe
+- Rolling update and rollback commands
+- HPA management
+
+---
+
 ## Complete Kubernetes Manifests
 
 ### Namespace and Configuration
