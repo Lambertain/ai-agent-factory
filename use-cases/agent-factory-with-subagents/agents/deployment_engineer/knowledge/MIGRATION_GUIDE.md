@@ -345,12 +345,17 @@ Result: 3 modules loaded (infrastructure + security focus)
 
 ## 🔄 Workflow Integration
 
-### 7-Stage Process
+### 8-Stage Process
 
 ```
 STAGE 1: Read deployment_engineer_system_prompt.md (~500 tokens)
    ↓ File: knowledge/deployment_engineer_system_prompt.md
    ↓ Contains: Role identity + 5 Core Principles
+
+STAGE 1.5: Read common_agent_rules.md (~1,500 tokens)
+   ↓ File: agents/common_agent_rules.md
+   ↓ Contains: Universal rules for ALL agents (TodoWrite, Git, Escalation, etc.)
+   ↓ Applies to EVERY task execution
 
 STAGE 2: Read task from Archon MCP
    ↓ mcp__archon__find_tasks(task_id="...")
@@ -371,7 +376,7 @@ STAGE 6: Read existing code (MANDATORY!)
    ↓ Grep/Glob for existing implementation
    ↓ Read for code analysis
 
-STAGE 7: Execute task with minimal context
+STAGE 7: Execute task with context-dependent modules
 ```
 
 ---
