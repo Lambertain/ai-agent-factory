@@ -7,13 +7,18 @@
 
 ### Фаза 1.1: Ключевые агенты
 
-- [x] **archon_blueprint_architect** - 2025-10-16
-  - **Підхід:** ⚠️ OLD (потребує оновлення на NEW)
-  - Core: 317 строк (~1,950 токенов) | Модули: 5 (2,123 строки)
-  - Оптимизация: 94% сокращение токенов (35K → 1.95K core)
-  - Триггеров: 155+ (техничес��их) в 5 модулях
-  - MIGRATION_GUIDE: создан (400+ строк)
-  - Commit: `6690d6d` - refactor(blueprint-architect): Оптимізація токенів 94%
+- [x] **archon_blueprint_architect** - 2025-10-20 (ОНОВЛЕНО НА NEW + COMMON RULES)
+  - **Підхід:** ✅ NEW (контекстно-залежне читання + загальні правила)
+  - Knowledge: archon_blueprint_architect_knowledge.md (94 рядки, ~550 токенів) ← редагований, НЕ новий файл
+  - Common Rules: ../common_agent_rules.md (загальний для ВСІХ агентів, ~1,500 токенів)
+  - Module Selection: archon_blueprint_architect_module_selection.md (логіка вибору модулів, 582 рядки)
+  - Модулі: 5 (SOLID, Microservices, Event-Driven, Cloud, AI Agent) - 2,293 рядки
+  - Читається: common_agent_rules + 2-3 релевантні модулі з 5 (~2,600-3,200 токенів)
+  - Триггери: Keywords (Russian + English) + Priority-based (CRITICAL/HIGH/MEDIUM)
+  - Оптимізація: 57% середня економія токенів (3,600 → 1,550 токенів на задачу)
+  - MIGRATION_GUIDE: існуючий, потребує оновлення на NEW workflow
+  - Commit: `d81fef6` - refactor(blueprint-architect): Оновлено з OLD на NEW workflow
+  - Task ID: 9fae4b05-ec42-4270-8585-42950ba57d23
 
 - [x] **archon_project_manager** - 2025-10-20 (ОНОВЛЕНО НА NEW + COMMON RULES)
   - **Підхід:** ✅ NEW (контекстно-залежне читання + загальні правила)
