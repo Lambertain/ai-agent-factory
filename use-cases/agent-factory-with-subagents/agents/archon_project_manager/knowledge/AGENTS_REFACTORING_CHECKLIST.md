@@ -17,7 +17,7 @@
 
 - [x] **archon_project_manager** - 2025-10-20 (ОНОВЛЕНО НА NEW + COMMON RULES)
   - **Підхід:** ✅ NEW (контекстно-залежне читання + загальні правила)
-  - System Prompt: archon_project_manager_system_prompt.md (70 рядків, ~550 токенів)
+  - Knowledge: archon_project_manager_knowledge.md (70 рядків, ~550 токенів) ← редагований, НЕ новий файл
   - Common Rules: ../common_agent_rules.md (загальний для ВСІХ агентів, ~1,500 токенів)
   - Module Selection: archon_project_manager_module_selection.md (логіка вибору модулів)
   - Модулі: 8 (MCP Rules, Project Management, Task Management, Context Recovery, Agile, Examples, Refactoring, Checklist) - ~1,800 строк
@@ -30,7 +30,7 @@
 
 - [x] **archon_implementation_engineer** - 2025-10-20 (ОНОВЛЕНО НА NEW + COMMON RULES)
   - **Підхід:** ✅ NEW (контекстно-залежне читання + загальні правила)
-  - System Prompt: archon_implementation_engineer_system_prompt.md (74 рядки, ~500 токенів)
+  - Knowledge: archon_implementation_engineer_knowledge.md (74 рядки, ~500 токенів) ← редагований, НЕ новий файл
   - Common Rules: ../common_agent_rules.md (загальний для ВСІХ агентів, ~1,500 токенів)
   - Module Selection: archon_implementation_engineer_module_selection.md (логіка вибору модулів)
   - Модулі: 6 (Clean Architecture, Performance, Database, Testing, Deployment, Monitoring) - 3,624 строк
@@ -42,7 +42,7 @@
 
 - [x] **deployment_engineer** - 2025-10-20 (ОНОВЛЕНО НА NEW + COMMON RULES)
   - **Підхід:** ✅ NEW (контекстно-залежне читання + загальні правила)
-  - System Prompt: deployment_engineer_system_prompt.md (74 рядки, ~500 токенів)
+  - Knowledge: deployment_engineer_knowledge.md (74 рядки, ~500 токенів) ← редагований, НЕ новий файл
   - Common Rules: ../common_agent_rules.md (загальний для ВСІХ агентів, ~1,500 токенів)
   - Module Selection: deployment_engineer_module_selection.md (логіка вибору модулів)
   - Модулі: 6 (Docker, Kubernetes, CI/CD, Infrastructure, Monitoring, Security) - 3,656 строк
@@ -143,14 +143,15 @@
 
 #### ✅ NEW підхід (контекстно-залежне читання):
 1. ✅ База знань розбита на модулі (~300-700 рядків кожен)
-2. ✅ Системний промпт БЕЗ модулів (тільки ідентичність ролі, ~500 токенів)
-3. ✅ Додана функція select_modules_for_task() з mapping ключових слів
-4. ✅ MODULE_INDEX.md з пріоритетами (CRITICAL/HIGH/MEDIUM)
-5. ✅ Git log стратегія додана (контекст проекту)
-6. ✅ Тестування контекстного читання пройдено (читаються лише 2-5 з 6 модулів)
-7. ✅ **КРИТИЧНО:** Видалено старий монолітний файл знань (*_knowledge.md) → залишити тільки *_system_prompt.md
-8. ✅ **КРИТИЧНО:** Видалено backup файли (*.backup_*.md, *_OLD_*.md) → уникнути плутанини агентів
-9. ✅ Створено git commit + push в remote
+2. ✅ **КРИТИЧНО:** Файл *_knowledge.md РЕДАГУЄТЬСЯ на місці (НЕ створювати новий *_system_prompt.md!)
+3. ✅ Компактний knowledge.md БЕЗ модулів (тільки ідентичність ролі, ~500 токенів)
+4. ✅ Додана функція select_modules_for_task() з mapping ключових слів
+5. ✅ MODULE_INDEX.md або *_module_selection.md з пріоритетами (CRITICAL/HIGH/MEDIUM)
+6. ✅ Git log стратегія додана (контекст проекту)
+7. ✅ Тестування контекстного читання пройдено (читаються лише 2-5 з 6 модулів)
+8. ✅ **КРИТИЧНО:** Видалено ТІЛЬКИ backup файли (*.backup_*.md, *_OLD_*.md) → уникнути плутанини
+9. ✅ **КРИТИЧНО:** Зберегти назву *_knowledge.md для сумісності з Glob пошуком!
+10. ✅ Створено git commit + push в remote
 
 **Переваги NEW:** 89% економія токенів (15,500 → 1,600 на задачу)
 
