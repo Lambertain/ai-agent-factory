@@ -95,3 +95,15 @@ client_contacts = update_client_profile(
 readme_section = client_contacts.to_readme_section()
 # Will include "Developed by Nikita Solovey | Lazy Income AI"
 ```
+
+### ⚠️ Use-Case Specific Rules
+
+**ВАЖЛИВО:** Деякі use-case мають специфічні workflow правила.
+
+**Для `agent-factory-with-subagents`:**
+- Читай `.claude/rules.md` та `CLAUDE.md` в директорії use-case
+- Ці правила **ПЕРЕВИЗНАЧАЮТЬ** загальні правила вище
+- Використовує: обов'язкове переключення в роль, Archon MCP Server, модульну архітектуру знань
+
+**Якщо є конфлікт правил:**
+- Пріоритет: Use-case правила > Агентні правила > Загальні правила (цей файл)
