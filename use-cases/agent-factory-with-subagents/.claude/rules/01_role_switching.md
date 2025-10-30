@@ -52,6 +52,32 @@ Glob(path="...\\agents",
 Glob(pattern="**/uiux*module_selection*.md")
 ```
 
+**ПРАВИЛА ВИЛУЧЕННЯ КЛЮЧОВОГО СЛОВА:**
+
+1. **Для агентів з префіксом "archon_"** - використовувати ПОВНИЙ префікс:
+   - ✅ `archon_blueprint_architect` → ключове слово: `archon_blueprint`
+   - ✅ `archon_implementation_engineer` → ключове слово: `archon_implementation`
+   - ✅ `archon_project_manager` → ключове слово: `archon_project`
+   - ❌ НЕ використовувати тільки `blueprint`, `implementation`, `project`
+
+2. **Для агентів БЕЗ префіксу "archon_"** - використовувати перше значуще слово:
+   - ✅ `deployment_engineer` → ключове слово: `deployment`
+   - ✅ `uiux_enhancement_agent` → ключове слово: `uiux`
+   - ✅ `typescript_architecture_agent` → ключове слово: `typescript`
+
+**ТАБЛИЦЯ ПРИКЛАДІВ:**
+
+| Назва агента | Ключове слово | Glob патерн | Коментар |
+|--------------|---------------|-------------|----------|
+| archon_blueprint_architect | `archon_blueprint` | `**/archon_blueprint*module_selection*.md` | З префіксом archon_ |
+| archon_implementation_engineer | `archon_implementation` | `**/archon_implementation*module_selection*.md` | З префіксом archon_ |
+| archon_project_manager | `archon_project` | `**/archon_project*module_selection*.md` | З префіксом archon_ |
+| archon_analysis_lead | `archon_analysis` | `**/archon_analysis*module_selection*.md` | З префіксом archon_ |
+| deployment_engineer | `deployment` | `**/deployment*module_selection*.md` | Без префіксу archon_ |
+| uiux_enhancement_agent | `uiux` | `**/uiux*module_selection*.md` | Без префіксу archon_ |
+| typescript_architecture_agent | `typescript` | `**/typescript*module_selection*.md` | Без префіксу archon_ |
+| api_development_agent | `api` | `**/api*module_selection*.md` | Без префіксу archon_ |
+
 ЕТАП 2: ОГОЛОШЕННЯ ПЕРЕКЛЮЧЕННЯ (ОБОВ'ЯЗКОВО ПОКАЗАТИ КОРИСТУВАЧУ)
 ├─ 🎭 "ПЕРЕКЛЮЧАЮСЯ В РОЛЬ [ІМ'Я РОЛІ]"
 ├─ 📋 "Моя експертиза:" + список з промпту
