@@ -103,7 +103,7 @@ EOF
 ### Золоте правило:
 
 ```
-BUILD → COMMIT → PUSH
+BUILD → COMMIT → PUSH → СТОП (перевірка деплою)
 (якщо білд провалився → ВИПРАВИТИ → BUILD → COMMIT → PUSH)
 ```
 
@@ -172,6 +172,15 @@ if [ $? -eq 0 ]; then
     git add .
     git commit -m "feat: додана нова функціональність"
     git push origin main  # 🚨 НЕГАЙНИЙ PUSH
+
+    # 🛑 ОБОВ'ЯЗКОВА ЗУПИНКА ДЛЯ ПЕРЕВІРКИ ДЕПЛОЮ
+    echo "✅ Push виконано. Перевіряю деплой..."
+    read -p "❓ Деплой успішний? (так/ні): " deploy_status
+
+    if [ "$deploy_status" != "так" ]; then
+        echo "[ERROR] Deployment failed - investigate before continuing"
+        exit 1
+    fi
 else
     echo "[ERROR] Tests failed - FIX BEFORE COMMIT!"
     exit 1
@@ -184,6 +193,15 @@ if [ $? -eq 0 ]; then
     git add .
     git commit -m "feat: оновлено UI компонент"
     git push origin main  # 🚨 НЕГАЙНИЙ PUSH
+
+    # 🛑 ОБОВ'ЯЗКОВА ЗУПИНКА ДЛЯ ПЕРЕВІРКИ ДЕПЛОЮ
+    echo "✅ Push виконано. Перевіряю деплой..."
+    read -p "❓ Деплой успішний? (так/ні): " deploy_status
+
+    if [ "$deploy_status" != "так" ]; then
+        echo "[ERROR] Deployment failed - investigate before continuing"
+        exit 1
+    fi
 else
     echo "[ERROR] Build failed - FIX BEFORE COMMIT!"
     exit 1

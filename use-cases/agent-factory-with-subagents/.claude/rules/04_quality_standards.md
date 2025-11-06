@@ -226,23 +226,7 @@ Project ID: c75ef8e3-6f4d-4da2-9e81-8d38d04a341a
 
 ### КРОК 2: ПЕРЕКЛЮЧЕННЯ В РОЛЬ
 
-🔍 Шукаю промпт ролі Implementation Engineer...
-📁 Знайдений файл: agents/archon_implementation_engineer/knowledge/...
-📖 Читаю системний промпт ролі...
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🎭 ПЕРЕКЛЮЧАЮСЯ В РОЛЬ ARCHON IMPLEMENTATION ENGINEER
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-📋 Моя експертиза:
-• Розробка універсальних агентів на Pydantic AI
-• Реалізація інструментів та dependencies
-• Модульна архітектура (файли <500 рядків)
-• Python best practices та type hints
-
-✅ Готовий виконати задачу в ролі Implementation Engineer
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎭 Переключаюся в роль Archon Implementation Engineer
 
 ### КРОК 3: СТВОРЕННЯ МІКРОЗАДАЧ (TodoWrite)
 
